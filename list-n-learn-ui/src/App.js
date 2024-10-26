@@ -1,7 +1,16 @@
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
+import {useState, useEffect} from 'react';
+
+const App = () => {
+  const callApi = () => {
+    fetch('/api')
+      .then(res => res.text())
+      .then(res => setMsg(res));
+  }
+
+  const [msg, setMsg] = useState('');
   return (
     <div className="App">
       <header className="App-header">
@@ -17,6 +26,8 @@ function App() {
         >
           Learn React
         </a>
+        {msg}
+        <button onClick={callApi}>Press me</button>
       </header>
     </div>
   );
