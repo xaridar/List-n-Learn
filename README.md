@@ -1,6 +1,6 @@
-# Link n' Learn
+# List n' Learn
 
-Link n' Learn is a web-based flashcard studying tool, built with text-to-speech and speech recognition integration for improved accessibility by blind and visually impaired students.
+List n' Learn is a web-based flashcard studying tool, built with text-to-speech and speech recognition integration for improved accessibility by blind and visually impaired students.
 
 To start developing:
 - Ensure npm is installed in the system
