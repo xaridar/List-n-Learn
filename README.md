@@ -15,5 +15,6 @@ To start developing:
   - Navigate to `list-n-learn-ui/package.json`
   - Update the `proxy` field to match the URL output by the server
   - Still in the UI directory, use `$ npm start` to start the development client.
+    - The front-end application has been started at http://localhost:3000
 
 - Both the server and client are built with hot-reload functionality, so neither has to be restarted on file changes; rather, this is done automatically.

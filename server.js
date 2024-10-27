@@ -13,6 +13,6 @@ app.get('/api', async (req, res) => {
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
-    console.log(`Listening at port ${PORT}!`);
+    console.log(`Listening at URL http://localhost:${PORT}!`);
 });
 connect().catch(console.dir);
