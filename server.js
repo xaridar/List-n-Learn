@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const {connect, getUser} = require('./db');
+const {connect, getUser, getAll} = require('./db');
+
 
 const app = express();
 
@@ -15,10 +16,15 @@ app.get('/user', async (req, res) => {
     }
 });
 
-app.get('/all', async (req, res) => {
-    res.json({...card});
+app.get('/cards', async (req, res) => {
+    cards = await getAll();
+    console.log(cards);
+    if (!cards.length) {
+        res.json({});
+    } else {
+        res.json({...cards._doc});
+    }
 })
-
 
 const PORT = process.env.PORT || 8080;
 

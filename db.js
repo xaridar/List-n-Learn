@@ -20,4 +20,9 @@ const getUser = async (username) => {
     return user;
 }
 
-module.exports = {connect, createCard, getUser};
+const getAll = async() => {
+    const cards = await Card.find();
+    return cards;
+}
+
+module.exports = {connect, createCard, getUser, getAll};
