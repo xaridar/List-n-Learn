@@ -1,16 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
 
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
+import {Flashcard} from './components/Flashcard';
 
 const App = () => {
   const callApi = () => {
     fetch('/api')
-      .then(res => res.text())
-      .then(res => setMsg(res));
+        .then(res => res.json())
+        .then(res => {
+            console.log(cards);
+            setCards(cards => [...cards, res._doc]);
+        });
   }
 
-  const [msg, setMsg] = useState('');
+  const [cards, setCards] = useState([]);
   return (
     <div className="App">
       <header className="App-header">
@@ -26,8 +30,8 @@ const App = () => {
         >
           Learn React
         </a>
-        {msg}
         <button onClick={callApi}>Press me</button>
+        {cards.map(c => <Flashcard term={c.term} definition={c.definition} key={c._id}></Flashcard>)}
       </header>
     </div>
   );

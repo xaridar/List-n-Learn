@@ -6,8 +6,8 @@ const app = express();
 
 app.use(cors());
 app.get('/api', async (req, res) => {
-    await createCard('apple', 'red');
-    res.json({success: true});
+    card = await createCard('apple', 'red');
+    res.json({...card});
 });
 
 const PORT = process.env.PORT || 8080;

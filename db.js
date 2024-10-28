@@ -12,6 +12,7 @@ const connect = async () => {
 const createCard = async (term, definition) => {
     const card = new Card({term, definition,});
     await card.save();
+    return card;
 }
 
 module.exports = {connect, createCard};
