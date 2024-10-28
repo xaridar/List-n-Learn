@@ -1,30 +1,29 @@
 const express = require('express');
 const cors = require('cors');
-const {connect, getUser, getAll} = require('./db');
-
+const {connect, getUser, getSetsByUser, getAllCards} = require('./db');
 
 const app = express();
 
 app.use(cors());
 app.get('/user', async (req, res) => {
-    user = await getUser(req.params.name);
-    console.log(user);
+    user = await getUser(req.query.name);
     if (!user.length) {
         res.json({});
     } else {
-        res.json({...user._doc});
+        res.json(user[0]);
     }
 });
 
+app.get('/sets', async (req, res) => {
+    sets = await getSetsByUser(req.query.user);
+    res.json(sets);
+});
+
 app.get('/cards', async (req, res) => {
-    cards = await getAll();
+    cards = await getAllCards();
     console.log(cards);
-    if (!cards.length) {
-        res.json({});
-    } else {
-        res.json({...cards._doc});
-    }
-})
+    res.json(cards);
+});
 
 const PORT = process.env.PORT || 8080;
 

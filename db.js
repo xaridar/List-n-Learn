@@ -20,9 +20,14 @@ const getUser = async (username) => {
     return user;
 }
 
-const getAll = async() => {
-    const cards = await Card.find();
+const getSetsByUser = async (username) => {
+    const sets = await Set.find({user: username});
+    return sets;
+}
+
+const getAllCards = async () => {
+    const cards = await Card.find({});
     return cards;
 }
 
-module.exports = {connect, createCard, getUser, getAll};
+module.exports = {connect, createCard, getUser, getSetsByUser, getAllCards};

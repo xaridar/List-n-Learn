@@ -7,8 +7,7 @@ export const ViewSet = () => {
         fetch('/cards')
             .then(res => res.json())
             .then(res => {
-                console.log(cards);
-                setCards(cards => [...cards, res._doc]);
+                setCards(cards => res);
             });
     }
     
@@ -20,9 +19,10 @@ export const ViewSet = () => {
         getAll();
     }, []);
     return (
-        
-        <div classname="view">
-            {cards.map(c => <Flashcard term={c.term} definition={c.definition} key={c._id}></Flashcard>)}
+        <div className='App'>
+            <div className="view">
+                {cards.map(c => <Flashcard term={c.term} definition={c.definition} key={c._id}></Flashcard>)}
+            </div>
         </div>
     );
 }
