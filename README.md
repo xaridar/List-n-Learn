@@ -8,7 +8,7 @@ To start developing:
 
 - *Set Environment Variables*
   - In the root directory, copy `.env.example` into a `.env` file
-    - After each key name, paste the value associated (found in MongoDB Atlas) in this file
+    - Set MONGODB_PASS to the provided password
 - *Start the Server*
   - In the root directory, call `$ npm start` to start the server
 - *Start the Client*
