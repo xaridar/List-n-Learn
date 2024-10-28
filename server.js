@@ -10,6 +10,11 @@ app.get('/api', async (req, res) => {
     res.json({...card});
 });
 
+app.get('/all', async (req, res) => {
+    res.json({...card});
+})
+
+
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {

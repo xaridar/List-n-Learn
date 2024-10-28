@@ -1,7 +1,32 @@
+import React, {useState, useEffect} from 'react';
+import {Flashcard} from '../components/Flashcard';
 import { useParams } from "react-router-dom";
-import React from 'react';
 
 export const ViewSet = () => {
+    const callApi = () => {
+        fetch('/api')
+            .then(res => res.json())
+            .then(res => {
+                console.log(cards);
+                setCards(cards => [...cards, res._doc]);
+            });
+    }
+
+    const getAll = () => {
+        fetch('/all')
+    }
+    
     const {id: setID} = useParams();
-    return <></>;
+    // if current username exists setOwner, then do all this
+    
+    const [cards, setCards] = useState([]);
+    useEffect(() => {
+        getAll();
+    }, []);
+    return (
+        
+        <div classname="view">
+            {cards.map(c => <Flashcard term={c.term} definition={c.definition} key={c._id}></Flashcard>)}
+        </div>
+    );
 }
