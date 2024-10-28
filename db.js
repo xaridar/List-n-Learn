@@ -20,4 +20,9 @@ const getUser = async (username) => {
     return user;
 }
 
-module.exports = {connect, createCard, getUser};
+const getSetsByUser = async (username) => {
+    const sets = await Set.find({user: username});
+    return sets;
+}
+
+module.exports = {connect, createCard, getUser, getSetsByUser};

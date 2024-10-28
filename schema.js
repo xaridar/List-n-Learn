@@ -5,13 +5,15 @@ const defineSchemas = () => {
         term: String,
         definition: String,
         favorite: Boolean,
+        set: mongoose.Schema.Types.ObjectId,
     });
     Card = mongoose.model('Card', cardSchema);
     const userSchema = new mongoose.Schema({
         username: {type: String, unique: true},
     });
     const setSchema = new mongoose.Schema({
-        cards: [mongoose.Schema.Types.ObjectId],
+        title: String,
+        description: String,
         user: String,
     });
     return [

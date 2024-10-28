@@ -7,8 +7,9 @@ export const Home = () => {
             const user = localStorage.getItem('lnl-user');
             if (user) {
                 if (await checkUser(user)) {
-                    console.log(checkUser(user));
                     setUsername(user);
+                    const sets = await fetch(`/sets?user=${user}`);
+                    setSets(await sets.json());
                 }
                 else localStorage.removeItem('lnl-user');
             }
@@ -17,8 +18,8 @@ export const Home = () => {
     }, []);
 
     const [username, setUsername] = useState(null);
-    const [cards, setCards] = useState([]);
+    const [sets, setSets] = useState([]);
     return (
-        username ? <p>{username}</p> : <p>nah</p>
+        username ? <p>{sets.map(s => s.title)}</p> : <p>nah</p>
     );
 }
