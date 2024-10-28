@@ -2,13 +2,25 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
-import Home from './routes/Home';
+import {Home, EditSet, ViewSet, StudySet} from './routes';
 import reportWebVitals from './reportWebVitals';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Home/>
+  },
+  {
+    path: '/edit',
+    element: <EditSet/>
+  },
+  {
+    path: '/view',
+    element: <ViewSet/>
+  },
+  {
+    path: '/study',
+    element: <StudySet/>
   }
 ])
 
