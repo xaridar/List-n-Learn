@@ -14,6 +14,7 @@ To start developing:
 - *Start the Client*
   - Navigate to `list-n-learn-ui/package.json`
   - Update the `proxy` field to match the URL output by the server
+  - Use `$ npm install` to install all necessary project dependencies for the frontend
   - Still in the UI directory, use `$ npm start` to start the development client.
     - The front-end application has been started at http://localhost:3000
 
