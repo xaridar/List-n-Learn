@@ -1,13 +1,18 @@
 const express = require('express');
 const cors = require('cors');
-const {connect, createCard} = require('./db');
+const {connect, getUser} = require('./db');
 
 const app = express();
 
 app.use(cors());
-app.get('/api', async (req, res) => {
-    card = await createCard('apple', 'red');
-    res.json({...card});
+app.get('/user', async (req, res) => {
+    user = await getUser(req.params.name);
+    console.log(user);
+    if (!user.length) {
+        res.json({});
+    } else {
+        res.json({...user._doc});
+    }
 });
 
 const PORT = process.env.PORT || 8080;

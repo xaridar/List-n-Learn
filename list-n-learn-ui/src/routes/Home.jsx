@@ -1,22 +1,24 @@
-import React, {useState} from 'react';
-import {Flashcard} from '../components/Flashcard';
+import React, {useState, useEffect} from 'react';
+import { checkUser } from '../util';
 
 export const Home = () => {
-    const callApi = () => {
-        fetch('/api')
-            .then(res => res.json())
-            .then(res => {
-                console.log(cards);
-                setCards(cards => [...cards, res._doc]);
-            });
-    }
+    useEffect(() => {
+        const fetchUser = async () => {
+            const user = localStorage.getItem('lnl-user');
+            if (user) {
+                if (await checkUser(user)) {
+                    console.log(checkUser(user));
+                    setUsername(user);
+                }
+                else localStorage.removeItem('lnl-user');
+            }
+        }
+        fetchUser();
+    }, []);
 
+    const [username, setUsername] = useState(null);
     const [cards, setCards] = useState([]);
     return (
-        <div className="App">
-            <h1>List n' Learn</h1>
-            <button onClick={callApi}>Press me</button>
-            {cards.map(c => <Flashcard term={c.term} definition={c.definition} key={c._id}></Flashcard>)}
-        </div>
+        username ? <p>{username}</p> : <p>nah</p>
     );
 }

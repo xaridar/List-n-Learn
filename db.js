@@ -3,10 +3,10 @@ const {defineSchemas} = require('./schema')
 require('dotenv').config();
 
 const uri = `mongodb+srv://Cluster86935:${process.env.MONGODB_PASS}@cluster86935.4megh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster86935`;
-let Card;
+let Card, User, Set;
 const connect = async () => {
     await mongoose.connect(uri);
-    [Card] = defineSchemas();
+    [Card, User, Set] = defineSchemas();
 }
 
 const createCard = async (term, definition) => {
@@ -15,4 +15,9 @@ const createCard = async (term, definition) => {
     return card;
 }
 
-module.exports = {connect, createCard};
+const getUser = async (username) => {
+    const user = await User.find({username});
+    return user;
+}
+
+module.exports = {connect, createCard, getUser};
