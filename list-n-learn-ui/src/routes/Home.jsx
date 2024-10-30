@@ -25,7 +25,7 @@ export const Home = () => {
 		let uniqueUsername = false;
 		let username;
 		while (!uniqueUsername) {
-			// Extremely low chance of collisions (random selection of approx. 5.39B options)
+			// Extremely low chance of collisions (random selection of approx. 5.4B options)
 			username = generateUsername('', 2);
 			const res = await fetch('/user', {
 				method: 'POST',
@@ -43,48 +43,48 @@ export const Home = () => {
 		setLoading(false);
 	};
 	const signIn = () => {
-        setSignin(true);
-        nameRef.current?.focus();
-    };
-    const closeInput = () => {
-        setSignin(false);
-    }
-    const setName = async (e) => {
-        e.preventDefault();
-        const newName = nameRef.current.value;
-        if (!newName) return;
-        setLoading(true);
-        if (await checkUser(newName)) {
-            setUsername(newName);
-            setSignin(false);
-        } else {
-            setError('Username not found');
-            nameRef.current?.focus();
-        }
-        setLoading(false);
-    }
-    const logout = () => {
-        setUsername(null);
-        localStorage.removeItem('lnl-user');
-    }
+		setSignin(true);
+		nameRef.current?.focus();
+	};
+	const closeInput = () => {
+		setSignin(false);
+	};
+	const setName = async (e) => {
+		e.preventDefault();
+		const newName = nameRef.current.value;
+		if (!newName) return;
+		setLoading(true);
+		if (await checkUser(newName)) {
+			setUsername(newName);
+			setSignin(false);
+		} else {
+			setError('Username not found');
+			nameRef.current?.focus();
+		}
+		setLoading(false);
+	};
+	const logout = () => {
+		setUsername(null);
+		localStorage.removeItem('lnl-user');
+	};
 
 	const [username, setUsername] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [sets, setSets] = useState([]);
-    const [signin, setSignin] = useState(false);
-    const [error, setError] = useState('');
-    const nameRef = useRef(null);
+	const [signin, setSignin] = useState(false);
+	const [error, setError] = useState('');
+	const nameRef = useRef(null);
 
-    useEffect(() => {
-        if (!username) return;
+	useEffect(() => {
+		if (!username) return;
 
-        const setupUN = async () => {
-            localStorage.setItem('lnl-user', username);
-            const sets = await fetch(`/sets?user=${username}`);
-            setSets(await sets.json());
-        }
-        setupUN();
-    }, [username]);
+		const setupUN = async () => {
+			localStorage.setItem('lnl-user', username);
+			const sets = await fetch(`/sets?user=${username}`);
+			setSets(await sets.json());
+		};
+		setupUN();
+	}, [username]);
 
 	return loading ? (
 		<ReactLoading
@@ -94,28 +94,49 @@ export const Home = () => {
 		/>
 	) : (
 		<div className='App'>
-            <h1>List n' Learn</h1>
+			<h1>List n' Learn</h1>
 			{username ? (
 				<>
 					<p>{username}</p>
-                    <button onClick={logout}>Logout</button>
-					<div>{sets.map((s) => <SetPreview title={s.title} description={s.description} numCards={0} id={s._id} />)}</div>
+					<button onClick={logout}>Logout</button>
+					{/* TODO: find num of cards */}
+					<div>
+						{sets.map((s) => (
+							<SetPreview
+								title={s.title}
+								description={s.description}
+								numCards={0}
+								id={s._id}
+							/>
+						))}
+					</div>
 				</>
-			) :
-                <div className='buttons-row'>
-                    <button onClick={createUser}>Create Account</button>
-                    <button onClick={signIn}>Log into Existing Account</button>
-                </div>}
-            {signin ? <form onSubmit={setName} className='fullpage'>
-                <div className='dialog'>
-                    <div>
-                        <input ref={nameRef} />
-                        <button type={'submit'}>Login</button>
-                    </div>
-                    <span className='error-msg'>{error}</span>
-                </div>
-                <button className='close' onClick={closeInput}><FontAwesomeIcon icon={faClose} /></button>
-            </form> : <></>}
+			) : (
+				<div className='buttons-row'>
+					<button onClick={createUser}>Create Account</button>
+					<button onClick={signIn}>Log into Existing Account</button>
+				</div>
+			)}
+			{signin ? (
+				<form
+					onSubmit={setName}
+					className='fullpage'>
+					<div className='dialog'>
+						<div>
+							<input ref={nameRef} />
+							<button type={'submit'}>Login</button>
+						</div>
+						<span className='error-msg'>{error}</span>
+					</div>
+					<button
+						className='close'
+						onClick={closeInput}>
+						<FontAwesomeIcon icon={faClose} />
+					</button>
+				</form>
+			) : (
+				<></>
+			)}
 		</div>
 	);
 };
