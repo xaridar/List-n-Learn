@@ -7,7 +7,7 @@ export const Flashcard = ({term, definition}) => {
 
     const [flipped, setFlipped] = useState(false);
     return <div className='card-ctr'>
-        <div className='card' tabIndex={-1} onClick={flipCard}>
+        <div className='card selectable' tabIndex={-1} onClick={flipCard}>
             <p>
                 {flipped ? definition : term}
             </p>
@@ -15,5 +15,5 @@ export const Flashcard = ({term, definition}) => {
         <button className='flip-btn' onClick={flipCard}>
             <FontAwesomeIcon icon={faArrowsRotate}/>
         </button>
-    </div>
+    </div>;
 }

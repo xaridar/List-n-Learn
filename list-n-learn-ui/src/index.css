@@ -1,5 +1,5 @@
 :root {
-	--background-color: rgb(106, 90, 205);
+	--background-color: 106, 90, 205;
 	--button-color: rgb(42, 24, 155);
 	--button-color-active: rgb(24, 11, 114);
 }
@@ -10,7 +10,7 @@ body {
 		'Droid Sans', 'Helvetica Neue', sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	background-color: var(--background-color);
+	background-color: rgb(var(--background-color));
 }
 
 code {
@@ -18,6 +18,7 @@ code {
 }
 
 .App {
+  min-height: 75vh;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -26,7 +27,7 @@ code {
 	color: white;
 }
 
-.buttons-row {
+.buttons-row, .buttons-col {
 	display: flex;
 	gap: 1rem;
 	flex-wrap: wrap;
@@ -34,8 +35,14 @@ code {
 	justify-content: center;
 }
 
+.buttons-col {
+	flex-direction: column;
+}
+
 .buttons-row > a,
-.buttons-row > button {
+.buttons-row > button,
+.buttons-col > a,
+.buttons-col > button {
 	background-color: var(--button-color);
 	border: none;
 	border-radius: 0.75rem;
@@ -45,11 +52,14 @@ code {
 	font-family: inherit;
 	padding: 1rem 2rem;
 	cursor: pointer;
+	height: 100%;
 	transition: all 0.3s ease;
 }
 
 .buttons-row > a:hover,
-.buttons-row > button:hover {
+.buttons-row > button:hover,
+.buttons-col > a:hover,
+.buttons-col > button:hover {
 	background-color: var(--button-color-active);
 	transform: scale(105%);
 }
@@ -57,6 +67,7 @@ code {
 .card-ctr {
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 	gap: 1rem;
 	margin: 1.5rem;
 }
@@ -75,29 +86,68 @@ code {
 	text-align: center;
 	background-color: white;
 	border-radius: 0.75rem;
-	width: 20rem;
-	aspect-ratio: 3.5 / 2;
-	cursor: pointer;
+	width: 30rem;
+	height: 22rem;
 	position: relative;
 	color: black;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.card-short {
+	width: 20rem;
+	height: auto;
+	padding-block: 1em;
+	margin-block: 2em;
+}
+
+.card.selectable {
+	cursor: pointer;
 }
 
 .card > p {
-	position: absolute;
-	top: 25%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+	margin: 0;
 }
 
-.home-page {
-	position: absolute;
-	top: 30%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
-
-.home-page > h1 {
+.App > h1 {
 	font-size: 3em;
+}
+
+.dialog {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2em;
+	border-radius: 1em;
+	background-color: rgb(var(--background-color));
+}
+
+.error-msg {
+	color: rgb(170, 0, 0);
+}
+
+.fullpage {
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.7);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.fullpage .close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 2rem;
+    font-size: 3em;
+	cursor: pointer;
+	color: currentColor;
+	background: none;
+	border: none;
 }
 
 .loading {
@@ -107,4 +157,12 @@ code {
 	transform: translate(-50%, -50%);
 	height: unset !important;
 	max-width: 20em;
+}
+
+.num-cards {
+	position: absolute;
+	left: 0;
+	top: 0;
+	margin: 0.5em;
+	font-size: 0.7em;
 }
