@@ -19,7 +19,7 @@ app.get('/sets', async (req, res) => {
     res.json(sets);
 });
 
-app.get('/cards', async (req, res) => {
+app.get('/allcards', async (req, res) => {
     cards = await getAllCards();
     console.log(cards);
     res.json(cards);

@@ -40,7 +40,13 @@ code {
   color: currentColor;
 }
 
-.card {
+.fullCard {
+  align-content: center;
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.card, .cardFront, .cardBack {
   text-align: center;
   background-color: white;
   border-radius: 0.75rem;
@@ -49,6 +55,14 @@ code {
   cursor: pointer;
   position: relative;
   color: black;
+}
+
+.cardFront {
+  margin-right: 10px;
+}
+
+.cardBack {
+  margin-left: 10px;
 }
 
 .card > p {

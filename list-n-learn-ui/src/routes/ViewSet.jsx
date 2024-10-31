@@ -1,14 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {Flashcard} from '../components/Flashcard';
 import { useParams } from "react-router-dom";
+import { FullFlashcard } from '../components/FullFlashcard';
 
 export const ViewSet = () => {
     const getAll = () => {
-        fetch('/cards')
+        fetch('/allcards')
             .then(res => res.json())
-            .then(res => {
-                setCards(cards => res);
-            });
     }
     
     const {id: setID} = useParams();
@@ -21,7 +18,7 @@ export const ViewSet = () => {
     return (
         <div className='App'>
             <div className="view">
-                {cards.map(c => <Flashcard term={c.term} definition={c.definition} key={c._id}></Flashcard>)}
+                {cards.map(c => <FullFlashcard term={c.term} definition={c.definition} key={c._id}></FullFlashcard>)}
             </div>
         </div>
     );
