@@ -36,7 +36,6 @@ export const Home = () => {
 				},
 			});
 			const json = await res.json();
-			console.log(json);
 			if (json.success) uniqueUsername = true;
 		}
 		setUsername(username);
@@ -44,7 +43,6 @@ export const Home = () => {
 	};
 	const signIn = () => {
 		setSignin(true);
-		nameRef.current?.focus();
 	};
 	const closeInput = () => {
 		setSignin(false);
@@ -76,6 +74,10 @@ export const Home = () => {
 	const nameRef = useRef(null);
 
 	useEffect(() => {
+		nameRef.current?.focus();
+	}, [nameRef.current]);
+
+	useEffect(() => {
 		if (!username) return;
 
 		const setupUN = async () => {
@@ -85,6 +87,19 @@ export const Home = () => {
 		};
 		setupUN();
 	}, [username]);
+	const keyListener = (e) => {
+		if (signin && e.key === 'Escape') {
+			closeInput();
+		}
+	}
+
+	useEffect(() => {
+		document.addEventListener('keydown', keyListener, true);
+
+		return () => {
+			document.removeEventListener('keydown', keyListener);
+		}
+	}, []);
 
 	return loading ? (
 		<ReactLoading
@@ -107,6 +122,7 @@ export const Home = () => {
 								description={s.description}
 								numCards={0}
 								id={s._id}
+								key={s._id}
 							/>
 						))}
 					</div>
