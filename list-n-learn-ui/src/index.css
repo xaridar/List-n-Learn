@@ -90,17 +90,20 @@ code {
   margin-bottom: 20px;
 }
 
-.card, .cardFront, .cardBack {
+
+
+.cardFront, .cardBack {
   text-align: center;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   border-radius: 0.75rem;
   width: 20rem;
   aspect-ratio: 3.5 / 2;
   cursor: pointer;
   position: relative;
   color: black;
+}
   
-  .card {
+.card {
 	text-align: center;
 	background-color: white;
 	border-radius: 0.75rem;
@@ -111,8 +114,8 @@ code {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-  }
 }
+
 
 .card-short {
 	width: 20rem;

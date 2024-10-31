@@ -25,7 +25,7 @@ const getSetsByUser = async (username) => {
 };
 
 const getAllCards = async () => {
-	const cards = await Card.find({});
+	const cards = await Card.find();
 	return cards;
 };
 
