@@ -14,7 +14,7 @@ const defineSchemas = () => {
         title: String,
         description: String,
         user: String,
-        card: [{type: mongoose.Schema.Types.ObjectId, ref: 'Card'}]
+        cards: [{type: mongoose.Schema.Types.ObjectId, ref: 'Card'}]
     });
     return [
         Card,
