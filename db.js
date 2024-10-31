@@ -29,6 +29,11 @@ const getAllCards = async () => {
 	return cards;
 };
 
+const getCardsInSet = async (id) => {
+	const cards = await Card.find({ set: id });
+	return cards;
+};
+
 const createUser = async (username) => {
 	const user = new User({ username });
 	return await user.save();
