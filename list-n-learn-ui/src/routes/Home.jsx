@@ -13,9 +13,13 @@ export const Home = () => {
 			if (user) {
 				if (await checkUser(user)) {
 					setUsername(user);
-				} else localStorage.removeItem('lnl-user');
+				} else {
+					localStorage.removeItem('lnl-user');
+					setLoading(false);
+				}
+			} else {
+				setLoading(false);
 			}
-			setLoading(false);
 		};
 		fetchUser();
 	}, []);
@@ -39,7 +43,6 @@ export const Home = () => {
 			if (json.success) uniqueUsername = true;
 		}
 		setUsername(username);
-		setLoading(false);
 	};
 	const signIn = () => {
 		setSignin(true);
@@ -58,8 +61,8 @@ export const Home = () => {
 		} else {
 			setError('Username not found');
 			nameRef.current?.focus();
+			setLoading(false);
 		}
-		setLoading(false);
 	};
 	const logout = () => {
 		setUsername(null);
@@ -87,6 +90,9 @@ export const Home = () => {
 		};
 		setupUN();
 	}, [username]);
+	useEffect(() => {
+		setLoading(false);
+	}, [sets]);
 	const keyListener = (e) => {
 		if (signin && e.key === 'Escape') {
 			closeInput();
@@ -114,13 +120,12 @@ export const Home = () => {
 				<>
 					<p>{username}</p>
 					<button onClick={logout}>Logout</button>
-					{/* TODO: find num of cards */}
 					<div>
 						{sets.map((s) => (
 							<SetPreview
 								title={s.title}
 								description={s.description}
-								numCards={0}
+								numCards={s.cards.length}
 								id={s._id}
 								key={s._id}
 							/>

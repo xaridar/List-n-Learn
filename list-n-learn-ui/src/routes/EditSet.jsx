@@ -1,7 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import React from 'react';
 
 export const EditSet = () => {
-    const {id: setID} = useParams();
+    const [searchParams] = useSearchParams();
+    const setID = searchParams.get('id');
     return <></>;
 }

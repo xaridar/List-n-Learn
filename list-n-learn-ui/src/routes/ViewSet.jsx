@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { FullFlashcard } from '../components/FullFlashcard';
 import { checkUser } from '../util';
 
@@ -35,7 +35,8 @@ export const ViewSet = () => {
     
     
 
-    const {id: setID} = useParams();
+    const [searchParams] = useSearchParams();
+    const setID = searchParams.get('id');
     // if current username exists setOwner, then do all this
     
     const [sets, getSets] = useState([]);
