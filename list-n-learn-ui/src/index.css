@@ -1,43 +1,87 @@
+:root {
+	--background-color: 106, 90, 205;
+	--button-color: rgb(42, 24, 155);
+	--button-color-active: rgb(24, 11, 114);
+}
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: slateblue;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+		'Droid Sans', 'Helvetica Neue', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-color: rgb(var(--background-color));
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 .App {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+	min-height: 75vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: calc(10px + 2vmin);
+	color: white;
+}
+
+.buttons-row,
+.buttons-col {
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+}
+
+.buttons-col {
+	flex-direction: column;
+}
+
+.buttons-row > a,
+.buttons-row > button,
+.buttons-col > a,
+.buttons-col > button {
+	background-color: var(--button-color);
+	border: none;
+	border-radius: 0.75rem;
+	font-size: inherit;
+	color: currentColor;
+	text-decoration: none;
+	font-family: inherit;
+	padding: 1rem 2rem;
+	cursor: pointer;
+	height: 100%;
+	transition: all 0.3s ease;
+	box-sizing: border-box;
+}
+
+.buttons-row > a:hover,
+.buttons-row > button:hover,
+.buttons-col > a:hover,
+.buttons-col > button:hover {
+	background-color: var(--button-color-active);
+	transform: scale(105%);
 }
 
 .card-ctr {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 1rem;
+	margin: 2.5rem;
 }
 
 .card-ctr .flip-btn {
-  width: fit-content;
-  text-align: center;
-  margin: auto;
-  background: none;
-  border: none;
-  font-size: 1em;
-  color: currentColor;
+	width: fit-content;
+	text-align: center;
+	margin: auto;
+	background: none;
+	border: none;
+	font-size: 1em;
+	color: currentColor;
 }
 
 .fullCard {
@@ -55,6 +99,30 @@ code {
   cursor: pointer;
   position: relative;
   color: black;
+  
+  .card {
+	text-align: center;
+	background-color: white;
+	border-radius: 0.75rem;
+	width: 30rem;
+	height: 22rem;
+	position: relative;
+	color: black;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
+}
+
+.card-short {
+	width: 20rem;
+	height: auto;
+	padding-block: 1em;
+}
+
+.card.selectable {
+	cursor: pointer;
+
 }
 
 .cardFront {
@@ -66,8 +134,62 @@ code {
 }
 
 .card > p {
-  position: absolute;
-  top:25%;
-  left:50%;
-  transform: translate(-50%, -50%);
+	margin: 0;
+}
+
+.App > h1 {
+	font-size: 3em;
+}
+
+.dialog {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 2em;
+	border-radius: 1em;
+	background-color: rgb(var(--background-color));
+}
+
+.error-msg {
+	color: rgb(170, 0, 0);
+}
+
+.fullpage {
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.7);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.fullpage .close {
+	position: absolute;
+	right: 0;
+	top: 0;
+	margin: 2rem;
+	font-size: 3em;
+	cursor: pointer;
+	color: currentColor;
+	background: none;
+	border: none;
+}
+
+.loading {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	height: unset !important;
+	max-width: 20em;
+}
+
+.num-cards {
+	position: absolute;
+	left: 0;
+	top: 0;
+	margin: 0.5em;
+	font-size: 0.7em;
 }
