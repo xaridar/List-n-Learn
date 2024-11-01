@@ -29,9 +29,9 @@ const getAllCards = async () => {
 	return cards;
 };
 
-const getCardsInSet = async (id) => {
-	const cards = await Card.find({ set: id });
-	return cards;
+const getSet = async (id) => {
+	const set = await Set.findById(id).populate('cards');
+	return set;
 };
 
 const createUser = async (username) => {
@@ -39,4 +39,4 @@ const createUser = async (username) => {
 	return await user.save();
 };
 
-module.exports = { connect, createCard, getUser, getSetsByUser, getAllCards, createUser };
+module.exports = { connect, createCard, getUser, getSetsByUser, getAllCards, createUser, getSet };

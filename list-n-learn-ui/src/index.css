@@ -27,6 +27,14 @@ code {
 	color: white;
 }
 
+.view {
+  position: fixed;
+  margin-top: 15%;
+  padding-left: 190px;
+  width: 100%;
+  margin-right: 35px;
+}
+
 .buttons-row,
 .buttons-col {
 	display: flex;
@@ -88,9 +96,9 @@ code {
   align-content: center;
   display: flex;
   margin-bottom: 20px;
+  align-self: center;
+  margin-left: -130px;
 }
-
-
 
 .cardFront, .cardBack {
   text-align: center;
