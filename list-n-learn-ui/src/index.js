@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 import { Home, EditSet, ViewSet, StudySet } from './routes';
 import reportWebVitals from './reportWebVitals';
+import 'react-tooltip/dist/react-tooltip.css';
 
 const router = createBrowserRouter([
 	{

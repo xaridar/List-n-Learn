@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip } from 'react-tooltip';
 
 export const SetPreview = ({ title, description, numCards, id }) => {
 	return (
@@ -11,7 +12,13 @@ export const SetPreview = ({ title, description, numCards, id }) => {
 					<br />
 					<small style={{ fontSize: '0.75em' }}>{description}</small>
 					{/* TODO: tooltip */}
-					<span className='num-cards'>{numCards}</span>
+					<Tooltip id='my-tooltip' />
+					<span
+						className='num-cards'
+						data-tooltip-id='my-tooltip'
+						data-tooltip-content={`${numCards} card(s) in set`}>
+						{numCards}
+					</span>
 				</p>
 			</div>
 			<div className='buttons-row'>
