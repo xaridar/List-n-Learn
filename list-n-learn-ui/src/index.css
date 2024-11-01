@@ -40,11 +40,6 @@ header {
 	color: white;
 }
 
-.view {
-  position: relative;
-  width: 130%;
-}
-
 .buttons-row,
 .buttons-col {
 	display: flex;

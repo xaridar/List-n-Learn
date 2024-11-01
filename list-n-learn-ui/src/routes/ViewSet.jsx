@@ -1,21 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { useSearchParams } from "react-router-dom";
 import { FullFlashcard } from '../components/FullFlashcard';
-import { checkUser } from '../util';
 
 export const ViewSet = () => {
     useEffect(() => {
-        const fetchUser = async () => {
-            const user = localStorage.getItem('lnl-user');
-            if (user) {
-                if (await checkUser(user)) {
-                    console.log("Valid user");
-                } else localStorage.removeItem('lnl-user');
-            }
-        }
-        fetchUser();
         getSet();
-    })
+    }, []);
 
     // retrieves all cards in db
     // const getAll = () => {
@@ -44,16 +34,14 @@ export const ViewSet = () => {
     const [cards, setCards] = useState([]);
 
     return (
-        <div className='App'>
-            <div className='view'>
-                <h1 className='title'>My Cards</h1>
-                {cards.map(c => console.log(c))}
-                {cards.map(c => (<FullFlashcard 
-                                term={c.term} 
-                                definition={c.definition} 
-                                key={c._id}></FullFlashcard>
-                ))}
-            </div>
+        <div>
+            <h1 className='title'>My Cards</h1>
+            {cards.map(c => console.log(c))}
+            {cards.map(c => (<FullFlashcard 
+                            term={c.term} 
+                            definition={c.definition} 
+                            key={c._id}></FullFlashcard>
+            ))}
         </div>
     );
 }
