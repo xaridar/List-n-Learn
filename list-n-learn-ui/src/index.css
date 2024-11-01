@@ -2,6 +2,7 @@
 	--background-color: 106, 90, 205;
 	--button-color: rgb(42, 24, 155);
 	--button-color-active: rgb(24, 11, 114);
+	--header-color: rgb(85, 0, 196);
 }
 
 body {
@@ -19,8 +20,18 @@ code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+header {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: end;
+	gap: 2em;
+	padding-inline: 1em;
+	box-sizing: border-box;
+	background-color: var(--header-color);
+}
+
 .App {
-	min-height: 75vh;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -141,10 +152,7 @@ code {
 }
 
 .dialog {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+	font-size: 1.5em;
 	padding: 2em;
 	border-radius: 1em;
 	background-color: rgb(var(--background-color));
@@ -184,7 +192,7 @@ code {
 	margin: 2rem;
 	font-size: 3em;
 	cursor: pointer;
-	color: currentColor;
+	color: white;
 	background: none;
 	border: none;
 }
