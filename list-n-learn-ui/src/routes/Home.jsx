@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import ReactLoading from 'react-loading';
 import { SetPreview } from '../components/SetPreview';
 
 export const Home = () => {
@@ -21,7 +22,10 @@ export const Home = () => {
 
 	return (
 		<div>
-			{sets.map((s) => (
+			{loading ? <ReactLoading
+					type='spinningBubbles'
+					width='30vw'
+					className='loading' /> : sets.map((s) => (
 				<SetPreview
 					title={s.title}
 					description={s.description}
