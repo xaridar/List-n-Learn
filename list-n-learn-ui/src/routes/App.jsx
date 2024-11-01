@@ -1,12 +1,13 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { Home, EditSet, ViewSet, StudySet } from '../routes';
+import { Home, EditSet, ViewSet, StudySet } from '.';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { faClose, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faClose, faPaperPlane, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateUsername } from 'unique-username-generator';
 import { checkUser } from '../util';
 import ReactLoading from 'react-loading';
+import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
 
 const router = createBrowserRouter([
 	{
@@ -138,13 +139,10 @@ export const App = () => {
 				<div className='App'>
 					{username ? (
 						<header>
-							<p>{username}</p>
-
-							<button
-								className='button'
-								onClick={logout}>
-								Logout
-							</button>
+							<Menu menuButton={<MenuButton className='button button-sm'>{username}<FontAwesomeIcon icon={faCaretDown} /></MenuButton>} transition>
+								<MenuItem href={'/'}>View your sets</MenuItem>
+								<MenuItem onClick={logout}>Logout</MenuItem>
+							</Menu>
 						</header>
 					) : (
 						<></>

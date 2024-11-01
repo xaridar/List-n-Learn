@@ -26,7 +26,7 @@ header {
 	align-items: center;
 	justify-content: end;
 	gap: 2em;
-	padding-inline: 1em;
+	padding: 1em 2em;
 	box-sizing: border-box;
 	background-color: var(--header-color);
 }
@@ -74,6 +74,13 @@ header {
 .button:hover {
 	background-color: var(--button-color-active);
 	transform: scale(105%);
+}
+
+.button-sm {
+	font-size: 1rem;
+	padding: 0.75rem 1rem;
+	display: flex;
+	gap: 1em;
 }
 
 .card-ctr {
@@ -212,4 +219,9 @@ header {
 	top: 0;
 	margin: 0.5em;
 	font-size: 0.7em;
+}
+
+.szh-menu a {
+	text-decoration: none;
+	color: currentColor;
 }

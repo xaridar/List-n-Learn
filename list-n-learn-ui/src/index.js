@@ -4,6 +4,8 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { App } from './routes/App';
 import 'react-tooltip/dist/react-tooltip.css';
+import '@szhsin/react-menu/dist/index.css';
+import '@szhsin/react-menu/dist/transitions/zoom.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
