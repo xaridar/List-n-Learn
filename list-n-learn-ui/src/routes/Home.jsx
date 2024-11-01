@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ReactLoading from 'react-loading';
 import { generateUsername } from 'unique-username-generator';
 import { checkUser } from '../util';
-import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { faClose, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SetPreview } from '../components/SetPreview';
 
@@ -56,7 +56,7 @@ export const Home = () => {
 			setUsername(newName);
 			setSignin(false);
 		} else {
-			setError('Username not found');
+			setError(`Username '${newName}' not found`);
 			nameRef.current?.focus();
 		}
 		setLoading(false);
@@ -75,10 +75,11 @@ export const Home = () => {
 
 	useEffect(() => {
 		nameRef.current?.focus();
-	}, [nameRef.current]);
+	}, [nameRef]);
 
 	useEffect(() => {
 		if (!username) return;
+		setSets([]);
 
 		const setupUN = async () => {
 			localStorage.setItem('lnl-user', username);
@@ -87,19 +88,22 @@ export const Home = () => {
 		};
 		setupUN();
 	}, [username]);
-	const keyListener = (e) => {
-		if (signin && e.key === 'Escape') {
-			closeInput();
-		}
-	}
+	const keyListener = useCallback(
+		(e) => {
+			if (signin && e.key === 'Escape') {
+				closeInput();
+			}
+		},
+		[signin],
+	);
 
 	useEffect(() => {
 		document.addEventListener('keydown', keyListener, true);
 
 		return () => {
 			document.removeEventListener('keydown', keyListener);
-		}
-	}, []);
+		};
+	}, [keyListener]);
 
 	return loading ? (
 		<ReactLoading
@@ -113,9 +117,13 @@ export const Home = () => {
 			{username ? (
 				<>
 					<p>{username}</p>
-					<button onClick={logout}>Logout</button>
+					<button
+						className='button'
+						onClick={logout}>
+						Logout
+					</button>
 					{/* TODO: find num of cards */}
-					<div>
+					<div style={{ marginBlock: '5em' }}>
 						{sets.map((s) => (
 							<SetPreview
 								title={s.title}
@@ -129,18 +137,38 @@ export const Home = () => {
 				</>
 			) : (
 				<div className='buttons-row'>
-					<button onClick={createUser}>Create Account</button>
-					<button onClick={signIn}>Log into Existing Account</button>
+					<button
+						className='button'
+						onClick={createUser}>
+						{/* TODO: banner to remember */}
+						Create Account
+					</button>
+					<button
+						className='button'
+						onClick={signIn}>
+						Log into Existing Account
+					</button>
 				</div>
 			)}
 			{signin ? (
 				<form
 					onSubmit={setName}
-					className='fullpage'>
-					<div className='dialog'>
+					className='fullpage'
+					onClick={closeInput}>
+					<div
+						className='dialog'
+						onClick={(e) => e.stopPropagation()}>
 						<div>
-							<input ref={nameRef} />
-							<button type={'submit'}>Login</button>
+							<input
+								title='Username'
+								placeholder='Username'
+								ref={nameRef}
+							/>
+							<button
+								className='button'
+								type={'submit'}>
+								<FontAwesomeIcon icon={faPaperPlane} />
+							</button>
 						</div>
 						<span className='error-msg'>{error}</span>
 					</div>

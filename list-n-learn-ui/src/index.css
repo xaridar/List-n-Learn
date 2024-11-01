@@ -40,10 +40,7 @@ code {
 	flex-direction: column;
 }
 
-.buttons-row > a,
-.buttons-row > button,
-.buttons-col > a,
-.buttons-col > button {
+.button {
 	background-color: var(--button-color);
 	border: none;
 	border-radius: 0.75rem;
@@ -56,12 +53,12 @@ code {
 	height: 100%;
 	transition: all 0.3s ease;
 	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
-.buttons-row > a:hover,
-.buttons-row > button:hover,
-.buttons-col > a:hover,
-.buttons-col > button:hover {
+.button:hover {
 	background-color: var(--button-color-active);
 	transform: scale(105%);
 }
@@ -125,8 +122,28 @@ code {
 	background-color: rgb(var(--background-color));
 }
 
+.dialog > div {
+	display: flex;
+	gap: 0.2em;
+}
+
+.dialog input {
+	font-size: 1em;
+	border: none;
+	border-radius: 0.75rem;
+	padding: 0.3em 0.4em;
+}
+
+.dialog button {
+	/* cursor: pointer;
+	border: none;
+	border-radius: 0.25em;
+	padding: 0.3em 0.4em; */
+}
+
 .error-msg {
-	color: rgb(170, 0, 0);
+	color: rgb(2, 11, 139);
+	margin-top: 1em;
 }
 
 .fullpage {
