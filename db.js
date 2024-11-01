@@ -20,7 +20,7 @@ const getUser = async (username) => {
 };
 
 const getSetsByUser = async (username) => {
-	const sets = await Set.find({ user: username });
+	const sets = await Set.find({ user: username }).populate();
 	return sets;
 };
 

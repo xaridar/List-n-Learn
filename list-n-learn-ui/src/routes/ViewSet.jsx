@@ -15,7 +15,7 @@ export const ViewSet = () => {
         }
         fetchUser();
         getSet();
-    }, [])
+    })
 
     // retrieves all cards in db
     // const getAll = () => {
@@ -37,15 +37,16 @@ export const ViewSet = () => {
             }) 
     }
 
-    const setID = useSearchParams()[0].get('id');
+    const [searchParams] = useSearchParams();
+    const setID = searchParams.get('id');
     // if current username exists setOwner, then do all this
     
     const [cards, setCards] = useState([]);
-    
+
     return (
         <div className='App'>
             <div className='view'>
-                <h1>My Cards</h1>
+                <h1 className='title'>My Cards</h1>
                 {cards.map(c => console.log(c))}
                 {cards.map(c => (<FullFlashcard 
                                 term={c.term} 

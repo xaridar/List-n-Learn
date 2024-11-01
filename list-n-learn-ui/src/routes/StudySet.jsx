@@ -1,7 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import React from 'react';
 
 export const StudySet = () => {
-    const {id: setID} = useParams();
+    const [searchParams] = useSearchParams();
+    const setID = searchParams.get('id');
+    const starred = searchParams.get('starred') === 'true';
     return <></>;
 }
