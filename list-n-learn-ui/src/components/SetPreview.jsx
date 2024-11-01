@@ -11,7 +11,6 @@ export const SetPreview = ({ title, description, numCards, id }) => {
 					<span>{title}</span>
 					<br />
 					<small style={{ fontSize: '0.75em' }}>{description}</small>
-					{/* TODO: tooltip */}
 					<Tooltip id='my-tooltip' />
 					<span
 						className='num-cards'

@@ -5,6 +5,7 @@ import { checkUser } from '../util';
 import { faClose, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SetPreview } from '../components/SetPreview';
+import toast, { Toaster } from 'react-hot-toast';
 
 export const Home = () => {
 	useEffect(() => {
@@ -42,6 +43,9 @@ export const Home = () => {
 			const json = await res.json();
 			if (json.success) uniqueUsername = true;
 		}
+		toast(
+			'Make sure to keep track of your username! This is necessary to login fom another device, and cannot be changed.',
+		);
 		setUsername(username);
 	};
 	const signIn = () => {
@@ -111,82 +115,86 @@ export const Home = () => {
 		};
 	}, [keyListener]);
 
-	return loading ? (
-		<ReactLoading
-			type='spinningBubbles'
-			width='30vw'
-			className='loading'
-		/>
-	) : (
-		<div className='App'>
-			<h1>List n' Learn</h1>
-			{username ? (
-				<>
-					<p>{username}</p>
-
-					<button
-						className='button'
-						onClick={logout}>
-						Logout
-					</button>
-					<div>
-						{sets.map((s) => (
-							<SetPreview
-								title={s.title}
-								description={s.description}
-								numCards={s.cards.length}
-								id={s._id}
-								key={s._id}
-							/>
-						))}
-					</div>
-				</>
+	return (
+		<>
+			<Toaster position='top-center' />
+			{loading ? (
+				<ReactLoading
+					type='spinningBubbles'
+					width='30vw'
+					className='loading'
+				/>
 			) : (
-				<div className='buttons-row'>
-					<button
-						className='button'
-						onClick={createUser}>
-						{/* TODO: banner to remember */}
-						Create Account
-					</button>
-					<button
-						className='button'
-						onClick={signIn}>
-						Log into Existing Account
-					</button>
-				</div>
-			)}
-			{signin ? (
-				<form
-					onSubmit={setName}
-					className='fullpage'
-					onClick={closeInput}>
-					<div
-						className='dialog'
-						onClick={(e) => e.stopPropagation()}>
-						<div>
-							<input
-								title='Username'
-								placeholder='Username'
-								ref={nameRef}
-							/>
+				<div className='App'>
+					<h1>List n' Learn</h1>
+					{username ? (
+						<>
+							<p>{username}</p>
+
 							<button
 								className='button'
-								type={'submit'}>
-								<FontAwesomeIcon icon={faPaperPlane} />
+								onClick={logout}>
+								Logout
+							</button>
+							<div>
+								{sets.map((s) => (
+									<SetPreview
+										title={s.title}
+										description={s.description}
+										numCards={s.cards.length}
+										id={s._id}
+										key={s._id}
+									/>
+								))}
+							</div>
+						</>
+					) : (
+						<div className='buttons-row'>
+							<button
+								className='button'
+								onClick={createUser}>
+								Create Account
+							</button>
+							<button
+								className='button'
+								onClick={signIn}>
+								Log into Existing Account
 							</button>
 						</div>
-						<span className='error-msg'>{error}</span>
-					</div>
-					<button
-						className='close'
-						onClick={closeInput}>
-						<FontAwesomeIcon icon={faClose} />
-					</button>
-				</form>
-			) : (
-				<></>
+					)}
+					{signin ? (
+						<form
+							onSubmit={setName}
+							className='fullpage'
+							onClick={closeInput}>
+							<div
+								className='dialog'
+								onClick={(e) => e.stopPropagation()}>
+								<div>
+									<input
+										title='Username'
+										placeholder='Username'
+										ref={nameRef}
+									/>
+									<button
+										className='button'
+										type={'submit'}>
+										<FontAwesomeIcon icon={faPaperPlane} />
+									</button>
+								</div>
+								<span className='error-msg'>{error}</span>
+							</div>
+							<button
+								className='close'
+								onClick={closeInput}>
+								<FontAwesomeIcon icon={faClose} />
+							</button>
+						</form>
+					) : (
+						<></>
+					)}
+				</div>
 			)}
-		</div>
+		</>
 	);
 };
