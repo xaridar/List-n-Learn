@@ -81,6 +81,25 @@ code {
 	color: currentColor;
 }
 
+.fullCard {
+  align-content: center;
+  display: flex;
+  margin-bottom: 20px;
+}
+
+
+
+.cardFront, .cardBack {
+  text-align: center;
+  background-color: rgb(255, 255, 255);
+  border-radius: 0.75rem;
+  width: 20rem;
+  aspect-ratio: 3.5 / 2;
+  cursor: pointer;
+  position: relative;
+  color: black;
+}
+  
 .card {
 	text-align: center;
 	background-color: white;
@@ -94,6 +113,7 @@ code {
 	justify-content: center;
 }
 
+
 .card-short {
 	width: 20rem;
 	height: auto;
@@ -102,6 +122,15 @@ code {
 
 .card.selectable {
 	cursor: pointer;
+
+}
+
+.cardFront {
+  margin-right: 10px;
+}
+
+.cardBack {
+  margin-left: 10px;
 }
 
 .card > p {

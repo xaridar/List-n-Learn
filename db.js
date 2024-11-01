@@ -20,12 +20,17 @@ const getUser = async (username) => {
 };
 
 const getSetsByUser = async (username) => {
-	const sets = await Set.find({ user: username });
+	const sets = await Set.find({ user: username }).populate();
 	return sets;
 };
 
 const getAllCards = async () => {
-	const cards = await Card.find({});
+	const cards = await Card.find();
+	return cards;
+};
+
+const getCardsInSet = async (id) => {
+	const cards = await Card.find({ set: id });
 	return cards;
 };
 

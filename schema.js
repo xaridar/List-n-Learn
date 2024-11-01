@@ -5,7 +5,6 @@ const defineSchemas = () => {
         term: String,
         definition: String,
         favorite: Boolean,
-        set: mongoose.Schema.Types.ObjectId,
     });
     Card = mongoose.model('Card', cardSchema);
     const userSchema = new mongoose.Schema({
@@ -15,6 +14,7 @@ const defineSchemas = () => {
         title: String,
         description: String,
         user: String,
+        cards: [{type: mongoose.Schema.Types.ObjectId, ref: 'Card'}]
     });
     return [
         Card,
