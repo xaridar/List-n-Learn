@@ -139,15 +139,15 @@ export const App = () => {
 				<div className='App'>
 					{username ? (
 						<header>
+							List n' Learn
 							<Menu menuButton={<MenuButton className='button button-sm'>{username}<FontAwesomeIcon icon={faCaretDown} /></MenuButton>} transition>
 								<MenuItem href={'/'}>View your sets</MenuItem>
 								<MenuItem onClick={logout}>Logout</MenuItem>
 							</Menu>
 						</header>
 					) : (
-						<></>
+						<h1>List n' Learn</h1>
 					)}
-					<h1>List n' Learn</h1>
 					{username ? (
 						<RouterProvider router={router} />
 					) : (
