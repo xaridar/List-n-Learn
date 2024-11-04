@@ -5,7 +5,7 @@ import { FullFlashcard } from '../components/FullFlashcard';
 export const ViewSet = () => {
     useEffect(() => {
         getSet();
-    }, []);
+    });
 
     // retrieves all cards in db
     // const getAll = () => {
@@ -21,8 +21,8 @@ export const ViewSet = () => {
         fetch(`/set?id=${setID}`)
             .then(res => res.json())
             .then(res => {
-                console.log(res.cards);
-                setCards(sets => res.cards);
+                setInfo(set => res);
+                setCards(set => res.cards);
                 
             }) 
     }
@@ -32,11 +32,14 @@ export const ViewSet = () => {
     // if current username exists setOwner, then do all this
     
     const [cards, setCards] = useState([]);
+    const [set, setInfo] = useState([]);
 
     return (
         <div>
-            <h1 className='title'>My Cards</h1>
-            {cards.map(c => console.log(c))}
+            <div className="setInformation">
+                <h1 className='title'>{set.title}</h1>
+                <div className='setDescription'>{set.description}</div>
+            </div>
             {cards.map(c => (<FullFlashcard 
                             term={c.term} 
                             definition={c.definition} 
