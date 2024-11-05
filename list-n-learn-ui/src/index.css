@@ -102,21 +102,21 @@ header {
 }
 
 .fullCard {
-  align-content: center;
-  display: flex;
-  margin-bottom: 20px;
-  align-self: center;
+	align-content: center;
+	display: flex;
+	margin-bottom: 20px;
+	align-self: center;
 }
 
-.cardFront, .cardBack {
-  text-align: center;
-  background-color: rgb(255, 255, 255);
-  border-radius: 0.75rem;
-  width: 20rem;
-  aspect-ratio: 3.5 / 2;
-  cursor: pointer;
-  position: relative;
-  color: black;
+.cardFront,
+.cardBack {
+	text-align: center;
+	background-color: rgb(255, 255, 255);
+	border-radius: 0.75rem;
+	width: 20rem;
+	aspect-ratio: 3.5 / 2;
+	position: relative;
+	color: black;
 }
 
 .card {
