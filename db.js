@@ -39,4 +39,13 @@ const createUser = async (username) => {
 	return await user.save();
 };
 
-module.exports = { connect, createCard, getUser, getSetsByUser, getAllCards, createUser, getSet };
+const updateSet = async (title, description, cards, id) => {
+	const set = await getSet(id);
+	set.title = title;
+	set.description = description;
+	console.log(set.cards);
+	set.cards = cards;
+	await set.save();
+};
+
+module.exports = { connect, createCard, getUser, getSetsByUser, getAllCards, createUser, getSet, updateSet };
