@@ -4,7 +4,7 @@ const defineSchemas = () => {
 	const cardSchema = new mongoose.Schema({
 		term: String,
 		definition: String,
-		favorite: Boolean,
+		favorite: { type: Boolean, default: false }
 	});
 	const userSchema = new mongoose.Schema({
 		username: { type: String, unique: true },
