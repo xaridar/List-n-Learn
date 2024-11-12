@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import { useSearchParams } from "react-router-dom";
 import { Flashcard } from '../components/Flashcard';
-
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 export const StudySet = () => {
     const [searchParams] = useSearchParams();
@@ -19,26 +19,67 @@ export const StudySet = () => {
 		getSet();
 	}, [setID]);
     //check if user exist
-    
+	const keyListener = useCallback(
+		(e) => {
+			if (e.code === 'Space') {
+				cardRef.current.flipCard();
+			}
+			if (e.code === 'ArrowLeft') {
+				decrementCount();
+			}
+			if (e.code === 'ArrowRight') {
+				incrementCount();
+			}
+		},
+		[incrementCount, decrementCount],
+	);
+	useEffect(() => {
+		document.addEventListener('keydown', keyListener, true);
 
-
-
-    const [cards, setCards] = useState([]);
-    const [info, setInfo] = useState([]);
-    const [index, setIndex] = useState(0);
+		return () => {
+			document.removeEventListener('keydown', keyListener);
+		};
+	}, [keyListener]);
     
 
     function incrementCount() {
         if(index + 1 < cards.length){
-            setIndex(index + 1)
+            setIndex(index + 1);
+            cardRef.current.flipToTerm();
         }
     }
 
     function decrementCount() {
         if(index - 1 >= 0){
-            setIndex(index - 1)
+            setIndex(index - 1);
+            cardRef.current.flipToTerm();
         }
     }
+
+    const commands = [
+        {
+            command: 'Next card',
+            callback: incrementCount
+        },
+        {
+            command: 'Previous card',
+            callback: decrementCount
+        },
+        {
+            command: 'Flip',
+            callback: () => cardRef.current.flipCard()
+        }
+    ];
+    const {} = useSpeechRecognition({commands});
+    useEffect(() => {
+        SpeechRecognition.startListening({continuous: true});
+        return () => SpeechRecognition.stopListening();
+    }, []);
+
+    const [cards, setCards] = useState([]);
+    const [info, setInfo] = useState();
+    const [index, setIndex] = useState(0);
+    const cardRef = useRef();
 
     
 
@@ -56,7 +97,7 @@ export const StudySet = () => {
 
     return (
     <>
-    {cards.length ? <Flashcard term = {cards[index].term} definition = {cards[index].definition} /> : ''}
+    {cards.length ? <Flashcard ref={cardRef} term = {cards[index].term} definition = {cards[index].definition} /> : ''}
     <button onClick = {incrementCount} >Next Card</button>
     <button onClick = {decrementCount} >Previous Card</button>
     </>

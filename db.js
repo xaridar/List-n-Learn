@@ -40,6 +40,13 @@ const createUser = async (username) => {
 };
 
 const updateSet = async (title, description, cards, id) => {
+	await Promise.all(cards.map(async c => {
+		card = await Card.findById(c._id);
+		card.term = c.term;
+		card.definition = c.definition;
+		card.favorite = c.favorite;
+		card.save();
+	}));
 	const set = await getSet(id);
 	set.title = title;
 	set.description = description;
