@@ -139,8 +139,19 @@ export const App = () => {
 				<div className='App'>
 					{username ? (
 						<header>
-							<a href='/' style={{color: 'currentcolor', textDecoration: 'none'}}>List n' Learn</a>
-							<Menu menuButton={<MenuButton className='button button-sm'>{username}<FontAwesomeIcon icon={faCaretDown} /></MenuButton>} transition>
+							<a
+								href='/'
+								style={{ color: 'currentcolor', textDecoration: 'none' }}>
+								List n' Learn
+							</a>
+							<Menu
+								menuButton={
+									<MenuButton className='button button-sm'>
+										{username}
+										<FontAwesomeIcon icon={faCaretDown} />
+									</MenuButton>
+								}
+								transition>
 								<MenuItem href={'/'}>View your sets</MenuItem>
 								<MenuItem onClick={logout}>Logout</MenuItem>
 							</Menu>
@@ -149,7 +160,9 @@ export const App = () => {
 						<h1>List n' Learn</h1>
 					)}
 					{username ? (
-						<RouterProvider router={router} />
+						<main>
+							<RouterProvider router={router} />
+						</main>
 					) : (
 						<div className='buttons-row'>
 							<button

@@ -1,41 +1,52 @@
-import React, {useEffect, useState, forwardRef, useImperativeHandle} from 'react';
+import React, { useEffect, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate } from '@fortawesome/free-solid-svg-icons';
 
-export const Flashcard = forwardRef(({term, definition, style, resetTrigger}, ref) => {
+export const Flashcard = forwardRef(({ term, definition, style }, ref) => {
+	useImperativeHandle(ref, () => ({
+		flipToTerm() {
+			setFlipped(false);
+		},
+		flipCard() {
+			flipCard();
+		},
+		speak() {
+			speakCurr();
+		},
+		stopSpeech() {
+			window.speechSynthesis.cancel();
+		},
+	}));
 
-    useImperativeHandle(ref, () => ({
-        flipToTerm() {
-            setFlipped(false);
-        },
-        flipCard() {
-            flipCard();
-        }
-    }))
+	const flipCard = () => setFlipped((f) => !f);
 
-    const flipCard = () => setFlipped(f => !f);
+	const [flipped, setFlipped] = useState(false);
 
-    const [flipped, setFlipped] = useState(false);
+	const speakCurr = useCallback(async () => {
+		window.speechSynthesis.cancel();
+		const utterance = new SpeechSynthesisUtterance(flipped ? definition : term);
+		await window.speechSynthesis.speak(utterance);
+		console.log('done!');
+	}, [definition, term, flipped]);
 
-    const speakCurr = async () => {
-        // const utterance = new SpeechSynthesisUtterance(flipped ? definition : term);
-        // await window.speechSynthesis.speak(utterance);
-        console.log('done!');
-    }
+	useEffect(() => {
+		speakCurr();
+	}, [flipped, speakCurr]);
 
-    useEffect(() => {
-        speakCurr();
-    }, [flipped]);
-
-    return <div style={style} className='card-ctr'>
-        <div className='card selectable' onClick={flipCard}>
-            <p>
-                {flipped ? definition : term}
-            </p>
-        </div>
-        <button className='flip-btn' onClick={flipCard}>
-            <FontAwesomeIcon icon={faArrowsRotate}/>
-        </button>
-        <button onClick={speakCurr}>speak</button>
-    </div>;
+	return (
+		<div
+			style={style}
+			className='card-ctr'>
+			<div
+				className='card selectable'
+				onClick={flipCard}>
+				<p>{flipped ? definition : term}</p>
+			</div>
+			<button
+				className='flip-btn'
+				onClick={flipCard}>
+				<FontAwesomeIcon icon={faArrowsRotate} />
+			</button>
+		</div>
+	);
 });

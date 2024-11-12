@@ -22,18 +22,24 @@ export const Home = () => {
 
 	return (
 		<div>
-			{loading ? <ReactLoading
+			<h1>My Sets</h1>
+			{loading ? (
+				<ReactLoading
 					type='spinningBubbles'
 					width='30vw'
-					className='loading' /> : sets.map((s) => (
-				<SetPreview
-					title={s.title}
-					description={s.description}
-					numCards={s.cards.length}
-					id={s._id}
-					key={s._id}
+					className='loading'
 				/>
-			))}
+			) : (
+				sets.map((s) => (
+					<SetPreview
+						title={s.title}
+						description={s.description}
+						numCards={s.cards.length}
+						id={s._id}
+						key={s._id}
+					/>
+				))
+			)}
 		</div>
 	);
 };

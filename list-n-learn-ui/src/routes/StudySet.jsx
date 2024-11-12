@@ -1,12 +1,33 @@
-import React, {useState, useEffect, useRef, useCallback} from 'react';
-import { useSearchParams } from "react-router-dom";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Flashcard } from '../components/Flashcard';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 export const StudySet = () => {
-    const [searchParams] = useSearchParams();
-    const setID = searchParams.get('id');
-    useEffect(() => {
+	const [searchParams] = useSearchParams();
+	const setID = searchParams.get('id');
+	const favorites = searchParams.get('favorite') === 'true';
+
+	const [cards, setCards] = useState([]);
+	const [info, setInfo] = useState();
+	const [index, setIndex] = useState(0);
+	const cardRef = useRef();
+
+	const incrementCount = useCallback(() => {
+		if (index + 1 < cards.length) {
+			setIndex(index + 1);
+			cardRef.current.flipToTerm();
+		}
+	}, [cards.length, index]);
+
+	const decrementCount = useCallback(() => {
+		if (index - 1 >= 0) {
+			setIndex(index - 1);
+			cardRef.current.flipToTerm();
+		}
+	}, [index]);
+
+	useEffect(() => {
 		const getSet = () => {
 			console.log(setID);
 			fetch(`/set?id=${setID}`)
@@ -18,7 +39,7 @@ export const StudySet = () => {
 		};
 		getSet();
 	}, [setID]);
-    //check if user exist
+	//check if user exist
 	const keyListener = useCallback(
 		(e) => {
 			if (e.code === 'Space') {
@@ -40,67 +61,59 @@ export const StudySet = () => {
 			document.removeEventListener('keydown', keyListener);
 		};
 	}, [keyListener]);
-    
+	const commands = [
+		{
+			command: 'Next card',
+			callback: incrementCount,
+		},
+		{
+			command: 'Previous card',
+			callback: decrementCount,
+		},
+		{
+			command: 'Flip',
+			callback: () => cardRef.current.flipCard(),
+		},
+		{
+			command: 'Repeat',
+			callback: () => cardRef.current.speak(),
+		},
+		{
+			command: 'Stop',
+			callback: () => cardRef.current.stopSpeech(),
+		},
+	];
+	useSpeechRecognition({ commands });
+	useEffect(() => {
+		SpeechRecognition.startListening({ continuous: true, interimResults: true });
+		return () => SpeechRecognition.stopListening();
+	}, []);
 
-    function incrementCount() {
-        if(index + 1 < cards.length){
-            setIndex(index + 1);
-            cardRef.current.flipToTerm();
-        }
-    }
+	//call function that displays card
+	//const displaySet = ({term, definition}) => {
+	//return (
+	// <div>
+	//<h1 className = 'cardFront'>My Cards</h1>
+	//</div>
+	//)
 
-    function decrementCount() {
-        if(index - 1 >= 0){
-            setIndex(index - 1);
-            cardRef.current.flipToTerm();
-        }
-    }
+	//}
 
-    const commands = [
-        {
-            command: 'Next card',
-            callback: incrementCount
-        },
-        {
-            command: 'Previous card',
-            callback: decrementCount
-        },
-        {
-            command: 'Flip',
-            callback: () => cardRef.current.flipCard()
-        }
-    ];
-    const {} = useSpeechRecognition({commands});
-    useEffect(() => {
-        SpeechRecognition.startListening({continuous: true});
-        return () => SpeechRecognition.stopListening();
-    }, []);
+	//Use flashcard component
 
-    const [cards, setCards] = useState([]);
-    const [info, setInfo] = useState();
-    const [index, setIndex] = useState(0);
-    const cardRef = useRef();
-
-    
-
-    //call function that displays card
-    //const displaySet = ({term, definition}) => {
-        //return (
-           // <div>
-                //<h1 className = 'cardFront'>My Cards</h1>
-            //</div>
-        //)
-        
-    //}
-
-    //Use flashcard component
-
-    return (
-    <>
-    {cards.length ? <Flashcard ref={cardRef} term = {cards[index].term} definition = {cards[index].definition} /> : ''}
-    <button onClick = {incrementCount} >Next Card</button>
-    <button onClick = {decrementCount} >Previous Card</button>
-    </>
-           
-    )
-}
+	return (
+		<>
+			{cards.length ? (
+				<Flashcard
+					ref={cardRef}
+					term={cards[index].term}
+					definition={cards[index].definition}
+				/>
+			) : (
+				''
+			)}
+			<button onClick={decrementCount}>Previous Card</button>
+			<button onClick={incrementCount}>Next Card</button>
+		</>
+	);
+};
