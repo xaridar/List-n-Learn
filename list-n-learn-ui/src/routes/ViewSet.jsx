@@ -33,10 +33,10 @@ export const ViewSet = () => {
 	const [set, setInfo] = useState([]);
 
 	return (
-		<div>
+		<div className='view-set'>
 			<div className='setInformation'>
 				<h1 className='title'>{set.title}</h1>
-				<div className='setDescription'>{set.description}</div>
+				<h2 className='setDescription'>{set.description}</h2>
 			</div>
 			{cards.map((c) => (
 				<FullFlashcard

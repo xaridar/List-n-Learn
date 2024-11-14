@@ -5,7 +5,7 @@ export const SetPreview = ({ title, description, numCards, id }) => {
 	return (
 		<div
 			className='card-ctr'
-			style={{ flexDirection: 'row' }}>
+			style={{ flexDirection: 'row', paddingBlock: '1rem' }}>
 			<div className='card card-short'>
 				<p>
 					<span>{title}</span>
