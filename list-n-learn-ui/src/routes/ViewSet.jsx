@@ -18,6 +18,8 @@ export const ViewSet = () => {
 		getSet();
 	}, [setID]);
 
+	const username = localStorage.getItem('lnl-user');
+
 	// retrieves all cards in db
 	// const getAll = () => {
 	//     fetch('/allcards')
@@ -34,6 +36,7 @@ export const ViewSet = () => {
 
 	return (
 		<div className='view-set'>
+			{username === set.user ? <a className='button editSet' href={`/edit?id=${setID}`}>Edit</a> : <></>}
 			<div className='setInformation'>
 				<h1 className='title'>{set.title}</h1>
 				<h2 className='setDescription'>{set.description}</h2>
@@ -45,5 +48,7 @@ export const ViewSet = () => {
 					key={c._id}></FullFlashcard>
 			))}
 		</div>
+
+		
 	);
 };
