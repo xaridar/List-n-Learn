@@ -43,8 +43,8 @@ app.get('/set', async (req, res) => {
 app.put('/set', async (req, res) => {
 	try {
 		const {id, title, description, cards} = req.body;
-		await updateSet(title, description, cards, id);
-		res.json({ success: true});
+		const success = await updateSet(title, description, cards, id);
+		res.json({ success });
 	} catch (e) {
 		console.log(e);
 		res.json({ success: false });
