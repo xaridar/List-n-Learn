@@ -22,6 +22,7 @@ export const Home = () => {
 
 	return (
 		<div>
+			<button className="new-set" onClick={newSet}>New Set</button>
 			{loading ? <ReactLoading
 					type='spinningBubbles'
 					width='30vw'
