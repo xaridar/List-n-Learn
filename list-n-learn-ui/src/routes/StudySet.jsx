@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Flashcard } from '../components/Flashcard';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
@@ -12,6 +12,7 @@ export const StudySet = () => {
 	const [info, setInfo] = useState();
 	const [index, setIndex] = useState(0);
 	const cardRef = useRef();
+	const navigate = useNavigate();
 
 	const incrementCount = useCallback(() => {
 		if (index + 1 < cards.length) {
@@ -82,12 +83,15 @@ export const StudySet = () => {
 			command: 'Stop',
 			callback: () => cardRef.current.stopSpeech(),
 		},
+		{
+			command: 'View set',
+			callback: () => navigate(`/view?id=${setID}`),
+		},
 	];
 	useSpeechRecognition({ commands });
-	useEffect(() => {
-		SpeechRecognition.startListening({ continuous: true, interimResults: true });
-		return () => SpeechRecognition.stopListening();
-	}, []);
+	// useEffect(() => {
+	// 	SpeechRecognition.startListening({ continuous: true, interimResults: true });
+	// }, []);
 
 	//Use flashcard component
 

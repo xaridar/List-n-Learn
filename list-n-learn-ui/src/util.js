@@ -13,9 +13,10 @@ export const speakPhrase = async (phrase, recog = null, response = false) => {
 	});
 	if (response)
 		return new Promise((res, rej) => {
+			const old = recog.onresult;
 			recog.onresult = function (e) {
 				if (e.results[e.results.length - 1].isFinal) {
-					recog.onresult = null;
+					recog.onresult = old;
 					res(e.results[e.results.length - 1][0].transcript);
 				}
 			};

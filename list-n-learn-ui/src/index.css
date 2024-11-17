@@ -301,7 +301,7 @@ ul {
 }
 
 @media screen and (max-width: 1300px) {
-	.buttons-row {
+	.card-ctr .buttons-row {
 		flex-direction: column;
 	}
 }

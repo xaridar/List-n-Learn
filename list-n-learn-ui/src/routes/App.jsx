@@ -9,6 +9,7 @@ import { checkUser } from '../util';
 import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
+import SpeechRecognition from 'react-speech-recognition';
 
 const router = createBrowserRouter([
 	{
@@ -126,6 +127,9 @@ export const App = () => {
 			document.removeEventListener('keydown', keyListener);
 		};
 	}, [keyListener]);
+	useEffect(() => {
+		SpeechRecognition.startListening({ continuous: true, interimResults: true });
+	}, []);
 
 	return (
 		<>

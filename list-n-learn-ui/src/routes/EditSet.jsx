@@ -24,9 +24,12 @@ export const EditSet = () => {
 			try {
 				const res = await fetch(`/set?id=${setID}`);
 				const data = await res.json();
-				setTitle(data.title || '');
-				setCards(data.cards || []);
-				setDescription(data.description || '');
+				if (data.user !== localStorage.getItem('lnl-user')) navigate('/');
+				else {
+					setTitle(data.title || '');
+					setCards(data.cards || []);
+					setDescription(data.description || '');
+				}
 			} catch (error) {
 				console.error('Error fetching set:', error);
 			}
@@ -85,7 +88,17 @@ export const EditSet = () => {
 			SpeechRecognition.getRecognition(),
 			true,
 		);
-		setTitle(newTitle);
+
+		console.log(newTitle);
+		setTitle(
+			newTitle
+				.split(' ')
+				.filter((w) => w)
+				.map((w) => {
+					return w[0].toUpperCase() + w.substring(1).toLowerCase();
+				})
+				.join(' '),
+		);
 	};
 
 	const editDesc = async () => {
@@ -135,10 +148,6 @@ export const EditSet = () => {
 		},
 	];
 	useSpeechRecognition({ commands });
-	useEffect(() => {
-		SpeechRecognition.startListening({ continuous: true, interimResults: true });
-		return () => SpeechRecognition.stopListening();
-	}, []);
 
 	return (
 		<>
