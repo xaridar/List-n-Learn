@@ -89,16 +89,6 @@ export const StudySet = () => {
 		return () => SpeechRecognition.stopListening();
 	}, []);
 
-	//call function that displays card
-	//const displaySet = ({term, definition}) => {
-	//return (
-	// <div>
-	//<h1 className = 'cardFront'>My Cards</h1>
-	//</div>
-	//)
-
-	//}
-
 	//Use flashcard component
 
 	return (

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate } from '@fortawesome/free-solid-svg-icons';
+import { speakPhrase } from '../util';
 
 export const Flashcard = forwardRef(({ term, definition, style }, ref) => {
 	useImperativeHandle(ref, () => ({
@@ -11,7 +12,7 @@ export const Flashcard = forwardRef(({ term, definition, style }, ref) => {
 			flipCard();
 		},
 		speak() {
-			speakCurr();
+			speakPhrase(flipped ? definition : term);
 		},
 		stopSpeech() {
 			window.speechSynthesis.cancel();
@@ -22,16 +23,9 @@ export const Flashcard = forwardRef(({ term, definition, style }, ref) => {
 
 	const [flipped, setFlipped] = useState(false);
 
-	const speakCurr = useCallback(async () => {
-		window.speechSynthesis.cancel();
-		const utterance = new SpeechSynthesisUtterance(flipped ? definition : term);
-		await window.speechSynthesis.speak(utterance);
-		console.log('done!');
-	}, [definition, term, flipped]);
-
 	useEffect(() => {
-		speakCurr();
-	}, [flipped, speakCurr]);
+		speakPhrase(flipped ? definition : term);
+	}, [flipped, definition, term]);
 
 	return (
 		<div

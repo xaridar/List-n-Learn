@@ -10,7 +10,7 @@ export const EditableCard = ({ card }) => {
 	return (
 		<Reorder.Item
 			value={card}
-			style={{ width: '100%', padding: '1rem', boxSizing: 'border-box' }}
+			style={{ width: '100%', paddingInline: '1rem', boxSizing: 'border-box' }}
 			dragListener={false}
 			dragControls={dragController}>
 			<div className='reorderable-card'>

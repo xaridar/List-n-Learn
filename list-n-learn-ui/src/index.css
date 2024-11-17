@@ -1,6 +1,7 @@
 :root {
 	--background-color: 106, 90, 205;
 	--button-color: rgb(42, 24, 155);
+	--input-color: rgb(112, 55, 123);
 	--button-color-active: rgb(24, 11, 114);
 	--header-color: rgb(85, 0, 196);
 }
@@ -100,6 +101,18 @@ ul {
 	justify-content: center;
 }
 
+.action-button {
+	position: fixed;
+	right: 1em;
+	bottom: 1em;
+	aspect-ratio: 1 / 1;
+	z-index: 99;
+	box-sizing: border-box;
+	padding: 1.25em;
+	border-radius: 50%;
+	height: unset;
+}
+
 .button:hover {
 	background-color: var(--button-color-active);
 	transform: scale(105%);
@@ -119,6 +132,7 @@ ul {
 	gap: 1rem;
 	width: 100%;
 	justify-content: center;
+	padding-block: 1rem;
 }
 
 .card-ctr .flip-btn {
@@ -162,6 +176,7 @@ ul {
 
 .card.selectable {
 	cursor: pointer;
+	margin: auto;
 }
 
 .cardFront {
@@ -238,8 +253,8 @@ ul {
 [class^='input-h'] {
 	font-family: inherit;
 	color: inherit;
-	background-color: var(--button-color);
-	border: 0.5rem solid var(--button-color);
+	background-color: var(--input-color);
+	border: 0.5rem solid var(--input-color);
 	outline: none;
 	border-radius: 0.75rem;
 	display: block;
@@ -283,7 +298,6 @@ ul {
 .view-set {
 	display: flex;
 	flex-direction: column;
-	gap: 2rem;
 }
 
 @media screen and (max-width: 1300px) {

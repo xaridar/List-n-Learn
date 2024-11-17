@@ -1,17 +1,15 @@
 import React from 'react';
-import { Tooltip } from 'react-tooltip';
 
 export const SetPreview = ({ title, description, numCards, id }) => {
 	return (
 		<div
 			className='card-ctr'
-			style={{ flexDirection: 'row', paddingBlock: '1rem' }}>
+			style={{ flexDirection: 'row' }}>
 			<div className='card card-short'>
 				<p>
 					<span>{title}</span>
 					<br />
 					<small style={{ fontSize: '0.75em' }}>{description}</small>
-					<Tooltip id='my-tooltip' />
 					<span
 						className='num-cards'
 						data-tooltip-id='my-tooltip'

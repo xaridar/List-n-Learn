@@ -8,6 +8,7 @@ import { generateUsername } from 'unique-username-generator';
 import { checkUser } from '../util';
 import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
+import { Tooltip } from 'react-tooltip';
 
 const router = createBrowserRouter([
 	{
@@ -129,6 +130,10 @@ export const App = () => {
 	return (
 		<>
 			<Toaster position='top-center' />
+			<Tooltip
+				id='my-tooltip'
+				style={{ zIndex: 99 }}
+			/>
 			{loading ? (
 				<ReactLoading
 					type='spinningBubbles'
