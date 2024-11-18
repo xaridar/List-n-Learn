@@ -3,6 +3,9 @@ import ReactLoading from 'react-loading';
 import { useNavigate } from 'react-router-dom';
 import { SetPreview } from '../components/SetPreview';
 import toast from 'react-hot-toast';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useSpeechRecognition } from 'react-speech-recognition';
 
 export const Home = () => {
 	const [sets, setSets] = useState([]);
@@ -24,17 +27,17 @@ export const Home = () => {
 	}, [sets]);
 
 	const newSet = async () => {
-		try{
+		try {
 			const response = await fetch('/set', {
 				method: 'POST',
 				body: JSON.stringify({
-					username: localStorage.getItem('lnl-user')
+					username: localStorage.getItem('lnl-user'),
 				}),
 				headers: {
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
 				},
-			});		
+			});
 
 			const json = await response.json();
 			const setID = json.id;
@@ -44,16 +47,22 @@ export const Home = () => {
 				navigate(`/edit?id=${setID}`);
 			} else {
 				toast.error('Set has not been made');
-			} 
+			}
 		} catch (error) {
 			console.error('Error creating set:', error);
 			toast.error('Failed to create set');
 		}
-	}
+	};
+	const commands = [
+		{
+			command: 'New set',
+			callback: newSet,
+		},
+	];
+	useSpeechRecognition({ commands });
 
 	return (
 		<div>
-			<button className="new-set" onClick={newSet}>New Set</button>
 			<h1>My Sets</h1>
 			{loading ? (
 				<ReactLoading
@@ -62,15 +71,24 @@ export const Home = () => {
 					className='loading'
 				/>
 			) : (
-				sets.map((s) => (
-					<SetPreview
-						title={s.title}
-						description={s.description}
-						numCards={s.cards.length}
-						id={s._id}
-						key={s._id}
-					/>
-				))
+				<>
+					{sets.map((s) => (
+						<SetPreview
+							title={s.title}
+							description={s.description}
+							numCards={s.cards.length}
+							id={s._id}
+							key={s._id}
+						/>
+					))}
+					<button
+						onClick={newSet}
+						className='action-button button new-set'
+						data-tooltip-id='my-tooltip'
+						data-tooltip-content='New Set'>
+						<FontAwesomeIcon icon={faPlus} />
+					</button>
+				</>
 			)}
 		</div>
 	);

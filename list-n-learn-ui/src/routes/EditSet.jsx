@@ -48,6 +48,16 @@ export const EditSet = () => {
 
 	// Save changes to the backend
 	const handleSave = async (audio = false) => {
+		if (title === '') {
+			toast.error('Set needs title to be saved!');
+			if (audio) await speakPhrase('Set needs title to be saved!');
+			return;
+		}
+		if (description === '') {
+			toast.error('Set needs description to be saved!');
+			if (audio) await speakPhrase('Set needs description to be saved!');
+			return;
+		}
 		const updatedSet = {
 			id: setID,
 			title,
@@ -69,11 +79,11 @@ export const EditSet = () => {
 			const json = await response.json();
 			if (json.success) {
 				toast.success('Set saved');
-				if (audio) speakPhrase('Your set has been saved!');
+				if (audio) await speakPhrase('Your set has been saved!');
 				navigate(`/view?id=${setID}`);
 			} else {
 				toast.error('Set has not been saved');
-				if (audio) speakPhrase('Set has not been saved due to an error.');
+				if (audio) await speakPhrase('Set has not been saved due to an error.');
 			}
 		} catch (error) {
 			console.error('Error saving set:', error);

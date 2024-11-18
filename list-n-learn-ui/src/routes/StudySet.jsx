@@ -89,9 +89,6 @@ export const StudySet = () => {
 		},
 	];
 	useSpeechRecognition({ commands });
-	// useEffect(() => {
-	// 	SpeechRecognition.startListening({ continuous: true, interimResults: true });
-	// }, []);
 
 	//Use flashcard component
 
