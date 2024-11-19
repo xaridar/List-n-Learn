@@ -40,6 +40,7 @@ const createUser = async (username) => {
 };
 
 const updateSet = async (title, description, cards, id) => {
+	console.log(cards);
 	if (cards.some((c) => ((c.term === '') != c.definition) === '')) return false;
 	await Promise.all(
 		cards.map(async (c, i) => {
@@ -63,7 +64,7 @@ const updateSet = async (title, description, cards, id) => {
 	);
 	let i = 0;
 	while (i < cards.length) {
-		console.log(i, cards[i], cards, cards.length);
+//		console.log(i, cards[i], cards, cards.length);
 		if (cards[i]._id === -1) cards.splice(i, 1);
 		else i++;
 	}
