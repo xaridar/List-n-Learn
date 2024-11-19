@@ -19,9 +19,6 @@ export const StudySet = () => {
 		getSet();
 	}, [setID]);
     //check if user exist
-    
-
-
 
     const [cards, setCards] = useState([]);
     const [info, setInfo] = useState([]);
@@ -40,19 +37,12 @@ export const StudySet = () => {
         }
     }
 
-    
-
-    //call function that displays card
-    //const displaySet = ({term, definition}) => {
-        //return (
-           // <div>
-                //<h1 className = 'cardFront'>My Cards</h1>
-            //</div>
-        //)
-        
-    //}
 
     //Use flashcard component
+    //add title and description
+    //disabled attribute on next card and previous card buttons
+    //disabled = true : false
+    //put arrows in the buttons
 
     return (
     <>
