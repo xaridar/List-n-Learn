@@ -191,7 +191,7 @@ export const EditSet = () => {
 				<div ref={bottomRef}></div>
 			</Reorder.Group>
 			<button
-				onClick={handleSave}
+				onClick={() => handleSave()}
 				className='button save'>
 				Save Changes
 			</button>
