@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate } from '@fortawesome/free-solid-svg-icons';
 import { speakPhrase } from '../util';
 
-export const Flashcard = forwardRef(({ term, definition, style }, ref) => {
+export const Flashcard = forwardRef(({ started, term, definition, style }, ref) => {
 	useImperativeHandle(ref, () => ({
 		flipToTerm() {
 			setFlipped(false);
@@ -24,8 +24,8 @@ export const Flashcard = forwardRef(({ term, definition, style }, ref) => {
 	const [flipped, setFlipped] = useState(false);
 
 	useEffect(() => {
-		speakPhrase(flipped ? definition : term);
-	}, [flipped, definition, term]);
+		if (started) speakPhrase(flipped ? definition : term);
+	}, [flipped, definition, term, started]);
 
 	return (
 		<div

@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Flashcard } from '../components/Flashcard';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+
 
 export const StudySet = () => {
 	const [searchParams] = useSearchParams();
@@ -11,18 +14,36 @@ export const StudySet = () => {
 	const [cards, setCards] = useState([]);
 	const [info, setInfo] = useState();
 	const [index, setIndex] = useState(0);
+	const [started, setStarted] = useState(false);
+	const [leftDisable, setLeftDisabled] = useState(true);
+	const [rightDisable, setRightDisabled] = useState(false);
 	const cardRef = useRef();
 	const navigate = useNavigate();
 
 	const incrementCount = useCallback(() => {
+		if(index + 1 >= cards.length - 1){
+			setRightDisabled(true);
+		}
+		else {
+			setRightDisabled(false);
+		}
 		if (index + 1 < cards.length) {
+			setLeftDisabled(false);
 			setIndex(index + 1);
 			cardRef.current.flipToTerm();
 		}
+		console.log(index);
 	}, [cards.length, index]);
 
 	const decrementCount = useCallback(() => {
+		if (index - 1 <= 0){
+			setLeftDisabled(true);
+		}
+		else{
+			setLeftDisabled(false);
+		}
 		if (index - 1 >= 0) {
+			setRightDisabled(false);
 			setIndex(index - 1);
 			cardRef.current.flipToTerm();
 		}
@@ -87,15 +108,27 @@ export const StudySet = () => {
 			command: 'View set',
 			callback: () => navigate(`/view?id=${setID}`),
 		},
+		{
+			command: 'Start studying',
+			callback: () => setStarted(true),
+		},
 	];
 	useSpeechRecognition({ commands });
 
 	//Use flashcard component
 
 	return (
-		<>
+		<div>
+			<div className='buttons-row'>
+				<a
+						className='button viewSet'
+						href={`/view?id=${setID}`}>
+						View Set
+				</a>
+			</div>
 			{cards.length ? (
 				<Flashcard
+					started={started}
 					ref={cardRef}
 					term={cards[index].term}
 					definition={cards[index].definition}
@@ -103,8 +136,17 @@ export const StudySet = () => {
 			) : (
 				''
 			)}
-			<button onClick={decrementCount}>Previous Card</button>
-			<button onClick={incrementCount}>Next Card</button>
-		</>
+			<button
+				disabled={!leftDisable? '': 'true'}
+				onClick={decrementCount}>
+				<FontAwesomeIcon icon={faArrowLeft}/>
+			</button>
+			<button 
+				disabled={!rightDisable? '': 'true'}
+				onClick={incrementCount}>
+				<FontAwesomeIcon icon={faArrowRight}/>
+			</button>
+		</div>
+
 	);
 };
