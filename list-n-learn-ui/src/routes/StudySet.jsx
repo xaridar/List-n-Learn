@@ -15,18 +15,35 @@ export const StudySet = () => {
 	const [info, setInfo] = useState();
 	const [index, setIndex] = useState(0);
 	const [started, setStarted] = useState(false);
+	const [leftDisable, setLeftDisabled] = useState(true);
+	const [rightDisable, setRightDisabled] = useState(false);
 	const cardRef = useRef();
 	const navigate = useNavigate();
 
 	const incrementCount = useCallback(() => {
+		if(index + 1 >= cards.length - 1){
+			setRightDisabled(true);
+		}
+		else {
+			setRightDisabled(false);
+		}
 		if (index + 1 < cards.length) {
+			setLeftDisabled(false);
 			setIndex(index + 1);
 			cardRef.current.flipToTerm();
 		}
+		console.log(index);
 	}, [cards.length, index]);
 
 	const decrementCount = useCallback(() => {
+		if (index - 1 <= 0){
+			setLeftDisabled(true);
+		}
+		else{
+			setLeftDisabled(false);
+		}
 		if (index - 1 >= 0) {
+			setRightDisabled(false);
 			setIndex(index - 1);
 			cardRef.current.flipToTerm();
 		}
@@ -119,11 +136,13 @@ export const StudySet = () => {
 			) : (
 				''
 			)}
-			<button 
+			<button
+				disabled={!leftDisable? '': 'true'}
 				onClick={decrementCount}>
 				<FontAwesomeIcon icon={faArrowLeft}/>
 			</button>
 			<button 
+				disabled={!rightDisable? '': 'true'}
 				onClick={incrementCount}>
 				<FontAwesomeIcon icon={faArrowRight}/>
 			</button>
