@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const SetPreview = ({ title, description, numCards, id }) => {
+export const SetPreview = ({ title, description, numCards, id, deleteSet }) => {
 	return (
 		<div
 			className='card-ctr'
@@ -34,6 +34,9 @@ export const SetPreview = ({ title, description, numCards, id }) => {
 					href={`/study?id=${id}`}>
 					Study Set
 				</a>
+				<button onClick={(() => deleteSet(id))}>
+					Remove
+				</button>
 			</div>
 		</div>
 	);

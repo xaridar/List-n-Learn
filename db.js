@@ -34,13 +34,18 @@ const getSet = async (id) => {
 	return set;
 };
 
+const deleteSet = async (setId) => {
+	const set = await Set.findById(setId);
+    await Card.deleteMany({ _id: { $in: set.cards } });
+    await Set.findByIdAndDelete(setId);
+}
+
 const createUser = async (username) => {
 	const user = new User({ username });
 	return await user.save();
 };
 
-const updateSet = async (title, description, cards, id) => {
-	console.log(cards);
+const updateSet = async (title, description, cards, id, toDel) => {
 	if (cards.some((c) => ((c.term === '') != c.definition) === '')) return false;
 	await Promise.all(
 		cards.map(async (c, i) => {
@@ -67,6 +72,12 @@ const updateSet = async (title, description, cards, id) => {
 //		console.log(i, cards[i], cards, cards.length);
 		if (cards[i]._id === -1) cards.splice(i, 1);
 		else i++;
+	}
+
+	console.log(toDel);
+
+	for (let i = 0; i < toDel.length; i++) {
+		await Card.deleteOne({_id: toDel[i]});
 	}
 
 	if (!cards.length) return false;
@@ -100,4 +111,5 @@ module.exports = {
 	updateSet,
 	newSet,
 	newCard,
+	deleteSet,
 };

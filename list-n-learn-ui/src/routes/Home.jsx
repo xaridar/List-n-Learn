@@ -26,6 +26,30 @@ export const Home = () => {
 		setLoading(false);
 	}, [sets]);
 
+	const deleteSet = async (setId) => {
+		try {
+			const response = await fetch('/set', {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ setId }),
+			});
+	
+			const json = await response.json();
+	
+			if (json.success) {
+				toast.success('Set deleted successfully');
+				setSets((prevSets) => prevSets.filter((set) => set._id !== setId)); // Remove set from state
+			} else {
+				toast.error('Failed to delete set');
+			}
+		} catch (error) {
+			console.error('Error deleting set:', error);
+			toast.error('An error occurred while deleting the set');
+		}
+	};
+
 	const newSet = async () => {
 		try {
 			const response = await fetch('/set', {
@@ -79,6 +103,7 @@ export const Home = () => {
 							numCards={s.cards.length}
 							id={s._id}
 							key={s._id}
+							deleteSet={deleteSet}
 						/>
 					))}
 					<button

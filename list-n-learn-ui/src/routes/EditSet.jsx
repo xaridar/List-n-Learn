@@ -15,6 +15,7 @@ export const EditSet = () => {
 
 	const [title, setTitle] = useState('');
 	const [cards, setCards] = useState([]);
+	const [toDel, setToDel] = useState([]);
 	const [description, setDescription] = useState('');
 	const bottomRef = useRef();
 
@@ -37,14 +38,21 @@ export const EditSet = () => {
 		getSet();
 	}, [setID]);
 
-	// Handle input changes for title
-	const handleTitleChange = (e) => {
-		setTitle(e.target.value);
+	// Remove a card from the set
+	const removeCard = async (i, cardId) => {
+		setCards((cards) => {
+			cards.splice(i, 1);
+			return cards;
+		});
+		if (cardId.startsWith('newcard')) return;
+		setToDel((cards) => {
+			return [...cards, cardId];
+		});
 	};
 
-	const handleDescriptionChange = (e) => {
-		setDescription(e.target.value);
-	};
+	// Handle input changes for title and description
+	const handleTitleChange = (e) => setTitle(e.target.value);
+	const handleDescriptionChange = (e) => setDescription(e.target.value);
 
 	// Save changes to the backend
 	const handleSave = async (audio = false) => {
@@ -63,6 +71,7 @@ export const EditSet = () => {
 			title,
 			cards,
 			description,
+			toDel,
 		};
 		console.log(updatedSet);
 
@@ -92,34 +101,35 @@ export const EditSet = () => {
 	};
 
 	const editTitle = async () => {
-		await speakPhrase(`The current title of this set is: ${title}`);
-		const newTitle = await speakPhrase(
-			'What would you like to change the title to?',
-			SpeechRecognition.getRecognition(),
-			true,
-		);
+        await speakPhrase(`The current title of this set is: ${title}`);
+        const newTitle = await speakPhrase(
+            'What would you like to change the title to?',
+            SpeechRecognition.getRecognition(),
+            true,
+        );
 
-		console.log(newTitle);
-		setTitle(
-			newTitle
-				.split(' ')
-				.filter((w) => w)
-				.map((w) => {
-					return w[0].toUpperCase() + w.substring(1).toLowerCase();
-				})
-				.join(' '),
-		);
-	};
+        console.log(newTitle);
+        setTitle(
+            newTitle
+                .split(' ')
+                .filter((w) => w)
+                .map((w) => {
+                    return w[0].toUpperCase() + w.substring(1).toLowerCase();
+                })
+                .join(' '),
+        );
+    };
 
-	const editDesc = async () => {
-		await speakPhrase(`The current description of this set is: ${description}`);
-		const newDesc = await speakPhrase(
-			'What would you like to change the description to?',
-			SpeechRecognition.getRecognition(),
-			true,
-		);
-		setDescription(newDesc);
-	};
+    const editDesc = async () => {
+        await speakPhrase(`The current description of this set is: ${description}`);
+        const newDesc = await speakPhrase(
+            'What would you like to change the description to?',
+            SpeechRecognition.getRecognition(),
+            true,
+        );
+        setDescription(newDesc);
+    };
+
 
 	// Add a new blank card to the set
 	const handleNewCard = async () => {
@@ -139,6 +149,7 @@ export const EditSet = () => {
 		bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
 		bottomRef.current?.previousSibling?.querySelector('.card:first-child p')?.focus();
 	}, [cards]);
+
 	const commands = [
 		{
 			command: 'Add card',
@@ -186,6 +197,8 @@ export const EditSet = () => {
 					<EditableCard
 						card={c}
 						key={c._id}
+						index={i}
+						onRemove={removeCard} // Pass remove function
 					/>
 				))}
 				<div ref={bottomRef}></div>
