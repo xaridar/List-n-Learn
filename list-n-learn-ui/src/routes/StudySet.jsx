@@ -93,7 +93,14 @@ export const StudySet = () => {
 	//Use flashcard component
 
 	return (
-		<>
+		<div>
+			<div className='buttons-row'>
+				<a
+						className='button viewSet'
+						href={`/view?id=${setID}`}>
+						View Set
+				</a>
+			</div>
 			{cards.length ? (
 				<Flashcard
 					ref={cardRef}
@@ -105,6 +112,6 @@ export const StudySet = () => {
 			)}
 			<button onClick={decrementCount}>Previous Card</button>
 			<button onClick={incrementCount}>Next Card</button>
-		</>
+		</div>
 	);
 };
