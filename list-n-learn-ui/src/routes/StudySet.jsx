@@ -1,12 +1,37 @@
-import React, {useState, useEffect} from 'react';
-import { useSearchParams } from "react-router-dom";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Flashcard } from '../components/Flashcard';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 
 export const StudySet = () => {
-    const [searchParams] = useSearchParams();
-    const setID = searchParams.get('id');
-    useEffect(() => {
+	const [searchParams] = useSearchParams();
+	const setID = searchParams.get('id');
+	const favorites = searchParams.get('favorite') === 'true';
+
+	const [cards, setCards] = useState([]);
+	const [info, setInfo] = useState();
+	const [index, setIndex] = useState(0);
+	const cardRef = useRef();
+	const navigate = useNavigate();
+
+	const incrementCount = useCallback(() => {
+		if (index + 1 < cards.length) {
+			setIndex(index + 1);
+			cardRef.current.flipToTerm();
+		}
+	}, [cards.length, index]);
+
+	const decrementCount = useCallback(() => {
+		if (index - 1 >= 0) {
+			setIndex(index - 1);
+			cardRef.current.flipToTerm();
+		}
+	}, [index]);
+
+	useEffect(() => {
 		const getSet = () => {
 			console.log(setID);
 			fetch(`/set?id=${setID}`)
@@ -18,38 +43,77 @@ export const StudySet = () => {
 		};
 		getSet();
 	}, [setID]);
-    //check if user exist
+	//check if user exist
+	const keyListener = useCallback(
+		(e) => {
+			if (e.code === 'Space') {
+				cardRef.current.flipCard();
+			}
+			if (e.code === 'ArrowLeft') {
+				decrementCount();
+			}
+			if (e.code === 'ArrowRight') {
+				incrementCount();
+			}
+		},
+		[incrementCount, decrementCount],
+	);
+	useEffect(() => {
+		document.addEventListener('keydown', keyListener, true);
 
-    const [cards, setCards] = useState([]);
-    const [info, setInfo] = useState([]);
-    const [index, setIndex] = useState(0);
-    
+		return () => {
+			document.removeEventListener('keydown', keyListener);
+		};
+	}, [keyListener]);
+	const commands = [
+		{
+			command: 'Next card',
+			callback: incrementCount,
+		},
+		{
+			command: 'Previous card',
+			callback: decrementCount,
+		},
+		{
+			command: 'Flip',
+			callback: () => cardRef.current.flipCard(),
+		},
+		{
+			command: 'Repeat',
+			callback: () => cardRef.current.speak(),
+		},
+		{
+			command: 'Stop',
+			callback: () => cardRef.current.stopSpeech(),
+		},
+		{
+			command: 'View set',
+			callback: () => navigate(`/view?id=${setID}`),
+		},
+	];
+	useSpeechRecognition({ commands });
 
-    function incrementCount() {
-        if(index + 1 < cards.length){
-            setIndex(index + 1)
-        }
-    }
+	//Use flashcard component
 
-    function decrementCount() {
-        if(index - 1 >= 0){
-            setIndex(index - 1)
-        }
-    }
-
-
-    //Use flashcard component
-    //add title and description
-    //disabled attribute on next card and previous card buttons
-    //disabled = true : false
-    //put arrows in the buttons
-
-    return (
-    <>
-    {cards.length ? <Flashcard term = {cards[index].term} definition = {cards[index].definition} /> : ''}
-    <button onClick = {incrementCount} >Next Card</button>
-    <button onClick = {decrementCount} >Previous Card</button>
-    </>
-           
-    )
-}
+	return (
+		<>
+			{cards.length ? (
+				<Flashcard
+					ref={cardRef}
+					term={cards[index].term}
+					definition={cards[index].definition}
+				/>
+			) : (
+				''
+			)}
+			<button 
+				onClick={decrementCount}>
+				<FontAwesomeIcon icon={faArrowLeft}/>
+			</button>
+			<button 
+				onClick={incrementCount}>
+				<FontAwesomeIcon icon={faArrowRight}/>
+			</button>
+		</>
+	);
+};

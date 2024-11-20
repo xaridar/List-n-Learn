@@ -8,6 +8,8 @@ import { generateUsername } from 'unique-username-generator';
 import { checkUser } from '../util';
 import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
+import { Tooltip } from 'react-tooltip';
+import SpeechRecognition from 'react-speech-recognition';
 
 const router = createBrowserRouter([
 	{
@@ -125,10 +127,17 @@ export const App = () => {
 			document.removeEventListener('keydown', keyListener);
 		};
 	}, [keyListener]);
+	useEffect(() => {
+		SpeechRecognition.startListening({ continuous: true, interimResults: true });
+	}, []);
 
 	return (
 		<>
 			<Toaster position='top-center' />
+			<Tooltip
+				id='my-tooltip'
+				style={{ zIndex: 99 }}
+			/>
 			{loading ? (
 				<ReactLoading
 					type='spinningBubbles'
@@ -139,8 +148,19 @@ export const App = () => {
 				<div className='App'>
 					{username ? (
 						<header>
-							List n' Learn
-							<Menu menuButton={<MenuButton className='button button-sm'>{username}<FontAwesomeIcon icon={faCaretDown} /></MenuButton>} transition>
+							<a
+								href='/'
+								style={{ color: 'currentcolor', textDecoration: 'none' }}>
+								List n' Learn
+							</a>
+							<Menu
+								menuButton={
+									<MenuButton className='button button-sm'>
+										{username}
+										<FontAwesomeIcon icon={faCaretDown} />
+									</MenuButton>
+								}
+								transition>
 								<MenuItem href={'/'}>View your sets</MenuItem>
 								<MenuItem onClick={logout}>Logout</MenuItem>
 							</Menu>
@@ -149,7 +169,9 @@ export const App = () => {
 						<h1>List n' Learn</h1>
 					)}
 					{username ? (
-						<RouterProvider router={router} />
+						<main>
+							<RouterProvider router={router} />
+						</main>
 					) : (
 						<div className='buttons-row'>
 							<button

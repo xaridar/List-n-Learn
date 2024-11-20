@@ -1,8 +1,13 @@
 :root {
 	--background-color: 106, 90, 205;
 	--button-color: rgb(42, 24, 155);
+	--input-color: rgb(112, 55, 123);
 	--button-color-active: rgb(24, 11, 114);
 	--header-color: rgb(85, 0, 196);
+}
+
+* {
+	box-sizing: border-box;
 }
 
 body {
@@ -31,6 +36,33 @@ header {
 	background-color: var(--header-color);
 }
 
+h1,
+.input-h1 {
+	font-size: 3rem;
+	font-weight: bold;
+	margin-block: 0.75em;
+}
+
+h2,
+.input-h2 {
+	font-size: 2rem;
+	font-weight: bold;
+	margin-block: 1em;
+}
+
+main {
+	margin-inline: 2em;
+	width: calc(100% - 4em);
+	margin: auto;
+	margin-bottom: 2em;
+	text-align: center;
+}
+
+ul {
+	list-style-type: none;
+	padding: 0;
+}
+
 .App {
 	display: flex;
 	flex-direction: column;
@@ -44,7 +76,6 @@ header {
 .buttons-col {
 	display: flex;
 	gap: 1rem;
-	flex-wrap: wrap;
 	align-items: center;
 	justify-content: center;
 }
@@ -64,11 +95,21 @@ header {
 	padding: 1rem 2rem;
 	cursor: pointer;
 	height: 100%;
-	transition: all 0.3s ease;
-	box-sizing: border-box;
+	transition: transform 0.3s ease, background-color 0.3s ease;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.action-button {
+	position: fixed;
+	right: 1em;
+	bottom: 1em;
+	aspect-ratio: 1 / 1;
+	z-index: 99;
+	box-sizing: border-box;
+	border-radius: 50%;
+	height: unset;
 }
 
 .button:hover {
@@ -88,7 +129,9 @@ header {
 	flex-direction: column;
 	align-items: stretch;
 	gap: 1rem;
-	margin: 2.5rem;
+	width: 100%;
+	justify-content: center;
+	padding-block: 1rem;
 }
 
 .card-ctr .flip-btn {
@@ -104,42 +147,35 @@ header {
 .fullCard {
 	align-content: center;
 	display: flex;
-	margin-bottom: 20px;
-	align-self: center;
-}
-
-.cardFront,
-.cardBack {
-	text-align: center;
-	background-color: rgb(255, 255, 255);
-	border-radius: 0.75rem;
-	width: 20rem;
-	aspect-ratio: 3.5 / 2;
-	position: relative;
-	color: black;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	width: 100%;
 }
 
 .card {
 	text-align: center;
 	background-color: white;
 	border-radius: 0.75rem;
-	width: 30rem;
-	height: 22rem;
+	aspect-ratio: 4 / 3;
 	position: relative;
 	color: black;
 	display: flex;
-	align-items: center;
-	justify-content: center;
+	flex: 1;
+	max-width: 40rem;
+	overflow-y: auto;
+	overflow-x: hidden;
+	width: 10em;
 }
 
 .card-short {
 	width: 20rem;
-	height: auto;
-	padding-block: 1em;
+	aspect-ratio: 4 / 1;
 }
 
 .card.selectable {
 	cursor: pointer;
+	margin: auto;
 }
 
 .cardFront {
@@ -151,7 +187,11 @@ header {
 }
 
 .card > p {
-	margin: 0;
+	margin: auto;
+	padding: 1em;
+	width: 100%;
+	overflow-wrap: break-word;
+	outline: 0;
 }
 
 .App > h1 {
@@ -175,6 +215,11 @@ header {
 	border: none;
 	border-radius: 0.75rem;
 	padding: 0.3em 0.4em;
+}
+
+.drag-handle {
+	user-select: none;
+	cursor: pointer;
 }
 
 .error-msg {
@@ -204,6 +249,17 @@ header {
 	border: none;
 }
 
+[class^='input-h'] {
+	font-family: inherit;
+	color: inherit;
+	background-color: var(--input-color);
+	border: 0.5rem solid var(--input-color);
+	outline: none;
+	border-radius: 0.75rem;
+	display: block;
+	width: 100%;
+}
+
 .loading {
 	position: absolute;
 	left: 50%;
@@ -221,7 +277,30 @@ header {
 	font-size: 0.7em;
 }
 
+.reorderable-card {
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	align-items: center;
+}
+
+.save {
+	text-align: center;
+	margin: auto;
+}
+
 .szh-menu a {
 	text-decoration: none;
 	color: currentColor;
+}
+
+.view-set {
+	display: flex;
+	flex-direction: column;
+}
+
+@media screen and (max-width: 1300px) {
+	.card-ctr .buttons-row {
+		flex-direction: column;
+	}
 }

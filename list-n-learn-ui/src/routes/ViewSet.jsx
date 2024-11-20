@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FullFlashcard } from '../components/FullFlashcard';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { speakPhrase } from '../util';
 
 export const ViewSet = () => {
 	const [searchParams] = useSearchParams();
 	const setID = searchParams.get('id');
+	const navigate = useNavigate();
 	useEffect(() => {
 		const getSet = () => {
 			console.log(setID);
@@ -17,6 +20,8 @@ export const ViewSet = () => {
 		};
 		getSet();
 	}, [setID]);
+
+	const username = localStorage.getItem('lnl-user');
 
 	// retrieves all cards in db
 	// const getAll = () => {
@@ -31,12 +36,44 @@ export const ViewSet = () => {
 
 	const [cards, setCards] = useState([]);
 	const [set, setInfo] = useState([]);
+	const commands = [
+		{
+			command: 'Study set',
+			callback: () => {
+				navigate(`/study?id=${setID}`);
+			},
+		},
+		{
+			command: 'Edit set',
+			callback: () => {
+				if (username === set.user) navigate(`/edit?id=${setID}`);
+				else speakPhrase('You cannot edit this set!');
+			},
+		},
+	];
+	useSpeechRecognition({ commands });
 
 	return (
-		<div>
+		<div className='view-set'>
+			<div className='buttons-row'>
+				{username === set.user ? (
+					<a
+						className='button editSet'
+						href={`/edit?id=${setID}`}>
+						Edit
+					</a>
+				) : (
+					<></>
+				)}
+				<a
+					className='button editSet'
+					href={`/study?id=${setID}`}>
+					Study
+				</a>
+			</div>
 			<div className='setInformation'>
 				<h1 className='title'>{set.title}</h1>
-				<div className='setDescription'>{set.description}</div>
+				<h2 className='setDescription'>{set.description}</h2>
 			</div>
 			{cards.map((c) => (
 				<FullFlashcard
