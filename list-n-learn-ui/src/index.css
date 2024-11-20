@@ -144,6 +144,22 @@ ul {
 	color: currentColor;
 }
 
+.favorite-toggle .favorite-button {
+	display: none;
+}
+
+.favorite-toggle .favorite-button:checked + * {
+	color: yellow;
+}
+
+.view-set .favorite-toggle .favorite-button + * {
+	cursor: default;
+}
+
+.favorite-toggle .favorite-button + * {
+	cursor: pointer;
+}
+
 .fullCard {
 	align-content: center;
 	display: flex;

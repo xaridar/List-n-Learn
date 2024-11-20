@@ -79,6 +79,7 @@ export const ViewSet = () => {
 				<FullFlashcard
 					term={c.term}
 					definition={c.definition}
+					favorite={c.favorite}
 					key={c._id}></FullFlashcard>
 			))}
 		</div>

@@ -1,11 +1,15 @@
 import React, { useRef } from 'react';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const FullFlashcard = ({
 	term,
 	definition,
+	favorite,
 	editable = false,
 	onTermInput = () => null,
 	onDefInput = () => null,
+	onFavorite = () => null,
 }) => {
 	const termRef = useRef();
 	const defRef = useRef();
@@ -36,6 +40,16 @@ export const FullFlashcard = ({
 						onInput={onDefInput}>
 						{definition}
 					</p>
+				</div>
+				<div className='favorite-toggle'>
+					<label>
+						<input
+							type='checkbox'
+							checked={favorite}
+							onChange={editable ? onFavorite : undefined}
+							className='favorite-button'></input>
+						<FontAwesomeIcon icon={faStar} />
+					</label>
 				</div>
 			</div>
 		</div>

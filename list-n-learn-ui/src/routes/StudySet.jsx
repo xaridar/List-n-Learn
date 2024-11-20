@@ -14,6 +14,7 @@ export const StudySet = () => {
 	const [cards, setCards] = useState([]);
 	const [info, setInfo] = useState();
 	const [index, setIndex] = useState(0);
+	const [started, setStarted] = useState(false);
 	const cardRef = useRef();
 	const navigate = useNavigate();
 
@@ -90,15 +91,27 @@ export const StudySet = () => {
 			command: 'View set',
 			callback: () => navigate(`/view?id=${setID}`),
 		},
+		{
+			command: 'Start studying',
+			callback: () => setStarted(true),
+		},
 	];
 	useSpeechRecognition({ commands });
 
 	//Use flashcard component
 
 	return (
-		<>
+		<div>
+			<div className='buttons-row'>
+				<a
+						className='button viewSet'
+						href={`/view?id=${setID}`}>
+						View Set
+				</a>
+			</div>
 			{cards.length ? (
 				<Flashcard
+					started={started}
 					ref={cardRef}
 					term={cards[index].term}
 					definition={cards[index].definition}
@@ -114,6 +127,7 @@ export const StudySet = () => {
 				onClick={incrementCount}>
 				<FontAwesomeIcon icon={faArrowRight}/>
 			</button>
-		</>
+		</div>
+
 	);
 };
