@@ -108,7 +108,7 @@ export const Home = () => {
 	};
 	const commands = [
 		{
-			command: 'New set',
+			command: 'Add set',
 			callback: newSet,
 		},
 	];

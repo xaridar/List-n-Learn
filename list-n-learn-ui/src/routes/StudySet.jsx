@@ -132,6 +132,11 @@ export const StudySet = () => {
 
 	return (
 		<div style={{ maxWidth: '1000px', margin: 'auto' }}>
+			<div
+				className='button'
+				onClick={() => setStarted(true)}>
+				Start Studying
+			</div>
 			<div className='study-group'>
 				<div className='arrow-ctr'>
 					<button

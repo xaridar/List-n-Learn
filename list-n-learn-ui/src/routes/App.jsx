@@ -5,9 +5,9 @@ import toast, { Toaster } from 'react-hot-toast';
 import { faClose, faPaperPlane, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateUsername } from 'unique-username-generator';
-import { checkUser } from '../util';
+import { checkUser, setSpeed } from '../util';
 import ReactLoading from 'react-loading';
-import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
+import { Menu, MenuItem, MenuButton, FocusableItem, SubMenu } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
@@ -136,6 +136,22 @@ export const App = () => {
 			command: 'Log out',
 			callback: () => logout(),
 		},
+		{
+			command: 'Half speed',
+			callback: () => setSpeed(0.5),
+		},
+		{
+			command: 'Default speed',
+			callback: () => setSpeed(1),
+		},
+		{
+			command: 'Double speed',
+			callback: () => setSpeed(2),
+		},
+		{
+			command: 'Triple speed',
+			callback: () => setSpeed(3),
+		},
 	];
 	useSpeechRecognition(commands);
 	useEffect(() => {
@@ -173,6 +189,12 @@ export const App = () => {
 								}
 								transition>
 								<MenuItem href={'/'}>View your sets</MenuItem>
+								<SubMenu label='Set Playback Speed'>
+									<MenuItem onClick={() => setSpeed(0.5)}>Half Speed</MenuItem>
+									<MenuItem onClick={() => setSpeed(1)}>Default Speed</MenuItem>
+									<MenuItem onClick={() => setSpeed(2)}>2x Speed</MenuItem>
+									<MenuItem onClick={() => setSpeed(3)}>3x Speed</MenuItem>
+								</SubMenu>
 								<MenuItem onClick={logout}>Logout</MenuItem>
 							</Menu>
 						</header>

@@ -4,9 +4,16 @@ export const checkUser = async (username) => {
 	return Object.keys(json).length !== 0;
 };
 
+let speechRate = 1;
+
+export const setSpeed = (rate) => {
+	speechRate = rate;
+};
+
 export const speakPhrase = async (phrase, response = false, recog = null) => {
 	window.speechSynthesis.cancel();
 	const utterance = new SpeechSynthesisUtterance(phrase);
+	utterance.rate = speechRate;
 	window.speechSynthesis.speak(utterance);
 	await new Promise((res, rej) => {
 		utterance.onend = res;
