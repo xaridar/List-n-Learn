@@ -9,7 +9,7 @@ import { checkUser } from '../util';
 import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
-import SpeechRecognition from 'react-speech-recognition';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 const router = createBrowserRouter([
 	{
@@ -127,6 +127,17 @@ export const App = () => {
 			document.removeEventListener('keydown', keyListener);
 		};
 	}, [keyListener]);
+	const commands = [
+		{
+			command: 'Home',
+			callback: () => window.location.href = '/'
+		},
+		{
+			command: 'Logout',
+			callback: () => logout
+		},
+	];
+	useSpeechRecognition(commands);
 	useEffect(() => {
 		SpeechRecognition.startListening({ continuous: true, interimResults: true });
 	}, []);
