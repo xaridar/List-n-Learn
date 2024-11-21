@@ -134,7 +134,7 @@ export const App = () => {
 		},
 		{
 			command: 'Logout',
-			callback: () => logout
+			callback: () => logout()
 		}, 
 	];
 	useSpeechRecognition(commands);
