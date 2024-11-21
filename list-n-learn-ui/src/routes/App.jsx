@@ -208,7 +208,7 @@ export const App = () => {
 								<FontAwesomeIcon icon={faPaperPlane} />
 							</button>
 						</div>
-						<span className='error-msg'>{error}</span>
+						<p className='error-msg'>{error}</p>
 					</div>
 					<button
 						className='close'

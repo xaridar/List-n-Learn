@@ -4,6 +4,7 @@
 	--input-color: rgb(112, 55, 123);
 	--button-color-active: rgb(24, 11, 114);
 	--header-color: rgb(85, 0, 196);
+	--error-color: rgb(202, 100, 122);
 }
 
 * {
@@ -112,6 +113,34 @@ ul {
 	height: unset;
 }
 
+.ab-left {
+	right: unset;
+	left: 1em;
+}
+
+.arrow {
+	color: currentColor;
+	font-size: 1em;
+	padding: 1em 0.5em;
+	border-radius: 0.5em;
+	transition: background-color 0.3s ease;
+}
+
+.arrow:hover:not(:disabled) {
+	background: rgba(0, 0, 0, 0.25);
+}
+
+.arrow:disabled {
+	cursor: default;
+	filter: brightness(65%);
+}
+
+.arrow-ctr {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
 .button:hover {
 	background-color: var(--button-color-active);
 	transform: scale(105%);
@@ -126,7 +155,6 @@ ul {
 
 .card-ctr {
 	display: flex;
-	flex-direction: column;
 	align-items: stretch;
 	gap: 1rem;
 	width: 100%;
@@ -140,8 +168,10 @@ ul {
 	margin: auto;
 	background: none;
 	border: none;
-	font-size: 1em;
+	font-size: 1.5em;
 	color: currentColor;
+	cursor: pointer;
+	padding: 0.75em;
 }
 
 .favorite-toggle .favorite-button {
@@ -238,9 +268,14 @@ ul {
 	cursor: pointer;
 }
 
+.error-msg:empty {
+	margin: 0;
+}
+
 .error-msg {
-	color: rgb(2, 11, 139);
+	color: var(--error-color);
 	margin-top: 1em;
+	margin-bottom: 0;
 }
 
 .fullpage {
@@ -285,6 +320,12 @@ ul {
 	max-width: 20em;
 }
 
+.no-button {
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
 .num-cards {
 	position: absolute;
 	left: 0;
@@ -303,6 +344,14 @@ ul {
 .save {
 	text-align: center;
 	margin: auto;
+}
+
+.study-group {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	margin-top: 4em;
+	gap: 1em;
 }
 
 .szh-menu a {

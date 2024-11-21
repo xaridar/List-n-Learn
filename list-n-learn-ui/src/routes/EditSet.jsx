@@ -15,6 +15,7 @@ export const EditSet = () => {
 
 	const [title, setTitle] = useState('');
 	const [cards, setCards] = useState([]);
+	const [toDel, setToDel] = useState([]);
 	const [description, setDescription] = useState('');
 	const bottomRef = useRef();
 
@@ -35,16 +36,51 @@ export const EditSet = () => {
 			}
 		};
 		getSet();
-	}, [setID]);
+	}, [setID, navigate]);
 
-	// Handle input changes for title
-	const handleTitleChange = (e) => {
-		setTitle(e.target.value);
+	// Remove a card from the set
+	const removeCard = async (i, cardId, audio = false) => {
+		if (!audio) {
+			if (
+				!window.confirm(
+					'Are you sure you want to delete this card? A deleted card cannot be retrieved unless edits are discarded.',
+				)
+			)
+				return;
+		} else {
+			let response = await speakPhrase(
+				'Are you sure you want to delete this card? A deleted card cannot be retrieved unless edits are discarded.',
+				true,
+				SpeechRecognition.getRecognition(),
+			);
+			let decided = false;
+			while (!decided) {
+				if (response === 'yes') {
+					decided = true;
+				} else if (response === 'no') {
+					decided = true;
+					return;
+				}
+				response = speakPhrase(
+					"Sorry, I didn't get that. Are you sure you want to delete this card?",
+					true,
+					SpeechRecognition.getRecognition(),
+				);
+			}
+		}
+		setCards((cards) => {
+			cards.splice(i, 1);
+			return cards;
+		});
+		if (cardId.startsWith('newcard')) return;
+		setToDel((cards) => {
+			return [...cards, cardId];
+		});
 	};
 
-	const handleDescriptionChange = (e) => {
-		setDescription(e.target.value);
-	};
+	// Handle input changes for title and description
+	const handleTitleChange = (e) => setTitle(e.target.value);
+	const handleDescriptionChange = (e) => setDescription(e.target.value);
 
 	// Save changes to the backend
 	const handleSave = async (audio = false) => {
@@ -63,6 +99,7 @@ export const EditSet = () => {
 			title,
 			cards,
 			description,
+			toDel,
 		};
 		console.log(updatedSet);
 
@@ -95,8 +132,8 @@ export const EditSet = () => {
 		await speakPhrase(`The current title of this set is: ${title}`);
 		const newTitle = await speakPhrase(
 			'What would you like to change the title to?',
-			SpeechRecognition.getRecognition(),
 			true,
+			SpeechRecognition.getRecognition(),
 		);
 
 		console.log(newTitle);
@@ -115,8 +152,8 @@ export const EditSet = () => {
 		await speakPhrase(`The current description of this set is: ${description}`);
 		const newDesc = await speakPhrase(
 			'What would you like to change the description to?',
-			SpeechRecognition.getRecognition(),
 			true,
+			SpeechRecognition.getRecognition(),
 		);
 		setDescription(newDesc);
 	};
@@ -139,6 +176,7 @@ export const EditSet = () => {
 		bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
 		bottomRef.current?.previousSibling?.querySelector('.card:first-child p')?.focus();
 	}, [cards]);
+
 	const commands = [
 		{
 			command: 'Add card',
@@ -169,7 +207,6 @@ export const EditSet = () => {
 					className='input-h1'
 					placeholder='Set Title'
 				/>
-				<div></div>
 				<input
 					value={description}
 					onChange={handleDescriptionChange}
@@ -186,15 +223,24 @@ export const EditSet = () => {
 					<EditableCard
 						card={c}
 						key={c._id}
+						index={i}
+						onRemove={removeCard} // Pass remove function
 					/>
 				))}
 				<div ref={bottomRef}></div>
 			</Reorder.Group>
-			<button
-				onClick={() => handleSave()}
-				className='button save'>
-				Save Changes
-			</button>
+			<div className='buttons-row save'>
+				<button
+					onClick={() => navigate(`/view?id=${setID}`)}
+					className='button cancel'>
+					Cancel
+				</button>
+				<button
+					onClick={() => handleSave()}
+					className='button'>
+					Save Changes
+				</button>
+			</div>
 			<button
 				onClick={handleNewCard}
 				className='action-button button add-card'

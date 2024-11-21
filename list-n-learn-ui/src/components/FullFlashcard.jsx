@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const FullFlashcard = ({
@@ -7,9 +7,12 @@ export const FullFlashcard = ({
 	definition,
 	favorite,
 	editable = false,
+	index = -1,
+	id = '',
 	onTermInput = () => null,
 	onDefInput = () => null,
 	onFavorite = () => null,
+	onRemove = () => null,
 }) => {
 	const termRef = useRef();
 	const defRef = useRef();
@@ -51,6 +54,21 @@ export const FullFlashcard = ({
 						<FontAwesomeIcon icon={faStar} />
 					</label>
 				</div>
+				{editable && (
+					<div className='remove-button'>
+						<button
+							className='no-button'
+							onClick={() => onRemove(index, id)}
+							data-tooltip-id='my-tooltip'
+							data-tooltip-content='Remove card'>
+							<FontAwesomeIcon
+								icon={faTrash}
+								color='var(--error-color)'
+								style={{ fontSize: 'min(2em, 5vw)' }}
+							/>
+						</button>
+					</div>
+				)}
 			</div>
 		</div>
 	);
