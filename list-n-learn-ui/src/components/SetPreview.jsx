@@ -1,10 +1,10 @@
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
 export const SetPreview = ({ title, description, numCards, id, deleteSet }) => {
 	return (
-		<div
-			className='card-ctr'
-			style={{ flexDirection: 'row' }}>
+		<div className='card-ctr'>
 			<div className='card card-short'>
 				<p>
 					<span>{title}</span>
@@ -34,8 +34,16 @@ export const SetPreview = ({ title, description, numCards, id, deleteSet }) => {
 					href={`/study?id=${id}`}>
 					Study Set
 				</a>
-				<button onClick={(() => deleteSet(id))}>
-					Remove
+				<button
+					className='no-button'
+					onClick={() => deleteSet(id)}
+					data-tooltip-id='my-tooltip'
+					data-tooltip-content='Delete Set'>
+					<FontAwesomeIcon
+						icon={faTrash}
+						color='var(--error-color)'
+						style={{ fontSize: 'min(2em, 5vw)' }}
+					/>
 				</button>
 			</div>
 		</div>

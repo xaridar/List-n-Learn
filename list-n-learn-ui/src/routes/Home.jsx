@@ -5,7 +5,8 @@ import { SetPreview } from '../components/SetPreview';
 import toast from 'react-hot-toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useSpeechRecognition } from 'react-speech-recognition';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { speakPhrase } from '../util';
 
 export const Home = () => {
 	const [sets, setSets] = useState([]);
@@ -17,7 +18,11 @@ export const Home = () => {
 
 		const setupUN = async () => {
 			const username = localStorage.getItem('lnl-user');
-			const sets = await fetch(`/sets?user=${username}`);
+			const sets = await fetch(`/sets?user=${username}`, {
+				headers: {
+					'Cache-Control': 'no-cache, no-store, must-revalidate',
+				},
+			});
 			setSets(await sets.json());
 		};
 		setupUN();
@@ -26,7 +31,31 @@ export const Home = () => {
 		setLoading(false);
 	}, [sets]);
 
-	const deleteSet = async (setId) => {
+	const deleteSet = async (setId, audio = false) => {
+		if (!audio) {
+			if (!window.confirm('Are you sure you want to delete this set? A deleted set cannot be retrieved.')) return;
+		} else {
+			let response = await speakPhrase(
+				'Are you sure you want to delete this set? A deleted set cannot be retrieved.',
+				true,
+				SpeechRecognition.getRecognition(),
+			);
+			let decided = false;
+			while (!decided) {
+				if (response === 'yes') {
+					decided = true;
+					break;
+				} else if (response === 'no') {
+					decided = true;
+					return;
+				}
+				response = speakPhrase(
+					"Sorry, I didn't get that. Are you sure you want to delete this set?",
+					true,
+					SpeechRecognition.getRecognition(),
+				);
+			}
+		}
 		try {
 			const response = await fetch('/set', {
 				method: 'DELETE',
@@ -35,9 +64,9 @@ export const Home = () => {
 				},
 				body: JSON.stringify({ setId }),
 			});
-	
+
 			const json = await response.json();
-	
+
 			if (json.success) {
 				toast.success('Set deleted successfully');
 				setSets((prevSets) => prevSets.filter((set) => set._id !== setId)); // Remove set from state

@@ -36,10 +36,38 @@ export const EditSet = () => {
 			}
 		};
 		getSet();
-	}, [setID]);
+	}, [setID, navigate]);
 
 	// Remove a card from the set
-	const removeCard = async (i, cardId) => {
+	const removeCard = async (i, cardId, audio = false) => {
+		if (!audio) {
+			if (
+				!window.confirm(
+					'Are you sure you want to delete this card? A deleted card cannot be retrieved unless edits are discarded.',
+				)
+			)
+				return;
+		} else {
+			let response = await speakPhrase(
+				'Are you sure you want to delete this card? A deleted card cannot be retrieved unless edits are discarded.',
+				true,
+				SpeechRecognition.getRecognition(),
+			);
+			let decided = false;
+			while (!decided) {
+				if (response === 'yes') {
+					decided = true;
+				} else if (response === 'no') {
+					decided = true;
+					return;
+				}
+				response = speakPhrase(
+					"Sorry, I didn't get that. Are you sure you want to delete this card?",
+					true,
+					SpeechRecognition.getRecognition(),
+				);
+			}
+		}
 		setCards((cards) => {
 			cards.splice(i, 1);
 			return cards;
@@ -101,35 +129,34 @@ export const EditSet = () => {
 	};
 
 	const editTitle = async () => {
-        await speakPhrase(`The current title of this set is: ${title}`);
-        const newTitle = await speakPhrase(
-            'What would you like to change the title to?',
-            SpeechRecognition.getRecognition(),
-            true,
-        );
+		await speakPhrase(`The current title of this set is: ${title}`);
+		const newTitle = await speakPhrase(
+			'What would you like to change the title to?',
+			true,
+			SpeechRecognition.getRecognition(),
+		);
 
-        console.log(newTitle);
-        setTitle(
-            newTitle
-                .split(' ')
-                .filter((w) => w)
-                .map((w) => {
-                    return w[0].toUpperCase() + w.substring(1).toLowerCase();
-                })
-                .join(' '),
-        );
-    };
+		console.log(newTitle);
+		setTitle(
+			newTitle
+				.split(' ')
+				.filter((w) => w)
+				.map((w) => {
+					return w[0].toUpperCase() + w.substring(1).toLowerCase();
+				})
+				.join(' '),
+		);
+	};
 
-    const editDesc = async () => {
-        await speakPhrase(`The current description of this set is: ${description}`);
-        const newDesc = await speakPhrase(
-            'What would you like to change the description to?',
-            SpeechRecognition.getRecognition(),
-            true,
-        );
-        setDescription(newDesc);
-    };
-
+	const editDesc = async () => {
+		await speakPhrase(`The current description of this set is: ${description}`);
+		const newDesc = await speakPhrase(
+			'What would you like to change the description to?',
+			true,
+			SpeechRecognition.getRecognition(),
+		);
+		setDescription(newDesc);
+	};
 
 	// Add a new blank card to the set
 	const handleNewCard = async () => {
@@ -180,7 +207,6 @@ export const EditSet = () => {
 					className='input-h1'
 					placeholder='Set Title'
 				/>
-				<div></div>
 				<input
 					value={description}
 					onChange={handleDescriptionChange}
@@ -203,11 +229,18 @@ export const EditSet = () => {
 				))}
 				<div ref={bottomRef}></div>
 			</Reorder.Group>
-			<button
-				onClick={() => handleSave()}
-				className='button save'>
-				Save Changes
-			</button>
+			<div className='buttons-row save'>
+				<button
+					onClick={() => navigate(`/view?id=${setID}`)}
+					className='button cancel'>
+					Cancel
+				</button>
+				<button
+					onClick={() => handleSave()}
+					className='button'>
+					Save Changes
+				</button>
+			</div>
 			<button
 				onClick={handleNewCard}
 				className='action-button button add-card'
