@@ -20,7 +20,12 @@ const getUser = async (username) => {
 };
 
 const getSetsByUser = async (username) => {
+	await Set.deleteMany({user: username, cards: {$size:0}})
 	const sets = await Set.find({ user: username }).populate();
+	// sets.forEach(async(s, i) => {
+	// 	if (s.cards.length == 0)
+	// 		await Set.deleteOne({_id: s._id});
+	// })
 	return sets;
 };
 
