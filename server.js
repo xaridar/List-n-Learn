@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { connect, getUser, getSetsByUser, getAllCards, createUser, getSet, updateSet, newSet, newCard } = require('./db');
+const { connect, getUser, getSetsByUser, getAllCards, createUser, getSet, updateSet, newSet, newCard, deleteSet } = require('./db');
 
 const app = express();
 
@@ -42,8 +42,8 @@ app.get('/set', async (req, res) => {
 
 app.put('/set', async (req, res) => {
 	try {
-		const {id, title, description, cards} = req.body;
-		const success = await updateSet(title, description, cards, id);
+		const {id, title, description, cards, toDel} = req.body;
+		const success = await updateSet(title, description, cards, id, toDel);
 		res.json({ success });
 	} catch (e) {
 		console.log(e);
@@ -61,6 +61,19 @@ app.post('/set', async (req, res) => {
 		console.log(e);
 		res.json({ success: false });
 	}
+})
+
+app.delete('/set', async (req, res) => {
+	try {
+        const { setId } = req.body; // Extract the set ID from the request body
+
+		deleteSet(setId)
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting set:', error);
+        res.json({ success: false });
+    }
 })
 
 app.post('/card', async (req, res) => {

@@ -31,16 +31,21 @@ export const Flashcard = forwardRef(({ started, term, definition, style }, ref) 
 		<div
 			style={style}
 			className='card-ctr'>
-			<div
-				className='card selectable'
-				onClick={flipCard}>
-				<p>{flipped ? definition : term}</p>
+			<div style={{ width: '100%' }}>
+				<div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
+					<div
+						className='card selectable'
+						style={{ width: '100%' }}
+						onClick={flipCard}>
+						<p>{flipped ? definition : term}</p>
+					</div>
+					<button
+						className='flip-btn'
+						onClick={flipCard}>
+						<FontAwesomeIcon icon={faArrowsRotate} />
+					</button>
+				</div>
 			</div>
-			<button
-				className='flip-btn'
-				onClick={flipCard}>
-				<FontAwesomeIcon icon={faArrowsRotate} />
-			</button>
 		</div>
 	);
 });

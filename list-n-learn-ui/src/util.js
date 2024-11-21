@@ -4,7 +4,7 @@ export const checkUser = async (username) => {
 	return Object.keys(json).length !== 0;
 };
 
-export const speakPhrase = async (phrase, recog = null, response = false) => {
+export const speakPhrase = async (phrase, response = false, recog = null) => {
 	window.speechSynthesis.cancel();
 	const utterance = new SpeechSynthesisUtterance(phrase);
 	window.speechSynthesis.speak(utterance);

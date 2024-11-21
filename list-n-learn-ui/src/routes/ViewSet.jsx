@@ -3,6 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FullFlashcard } from '../components/FullFlashcard';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { speakPhrase } from '../util';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBook, faPen } from '@fortawesome/free-solid-svg-icons';
 
 export const ViewSet = () => {
 	const [searchParams] = useSearchParams();
@@ -55,22 +57,22 @@ export const ViewSet = () => {
 
 	return (
 		<div className='view-set'>
-			<div className='buttons-row'>
-				{username === set.user ? (
-					<a
-						className='button editSet'
-						href={`/edit?id=${setID}`}>
-						Edit
-					</a>
-				) : (
-					<></>
-				)}
+			<a
+				className='button action-button editSet'
+				href={`/study?id=${setID}`}
+				data-tooltip-id='my-tooltip'
+				data-tooltip-content='Study Set'>
+				<FontAwesomeIcon icon={faBook} />
+			</a>
+			{set && username === set.user && (
 				<a
-					className='button editSet'
-					href={`/study?id=${setID}`}>
-					Study
+					className='button action-button ab-left editSet'
+					href={`/edit?id=${setID}`}
+					data-tooltip-id='my-tooltip'
+					data-tooltip-content='Edit Set'>
+					<FontAwesomeIcon icon={faPen} />
 				</a>
-			</div>
+			)}
 			<div className='setInformation'>
 				<h1 className='title'>{set.title}</h1>
 				<h2 className='setDescription'>{set.description}</h2>

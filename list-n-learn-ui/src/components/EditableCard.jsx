@@ -2,25 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { Reorder, useDragControls } from 'framer-motion';
 import { FullFlashcard } from './FullFlashcard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGripLinesVertical, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faGripLinesVertical, faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-export const EditableCard = ({ card }) => {
+export const EditableCard = ({ card, onRemove, index }) => {
 	const dragController = useDragControls();
 	const [favorite, setFavorite] = useState(card.favorite);
 
 	useEffect(() => {
 		card.favorite = favorite;
-	},[favorite]);
+	}, [favorite]);
 
 	return (
 		<Reorder.Item
 			value={card}
-			style={{ width: '100%', paddingInline: '1rem', boxSizing: 'border-box' }}
+			style={{ width: '100%', boxSizing: 'border-box' }}
 			dragListener={false}
 			dragControls={dragController}>
-			<div className="reorderable-card">
+			<div className='reorderable-card'>
 				<div
-					className="drag-handle"
+					className='drag-handle'
 					onPointerDown={(e) => dragController.start(e)}>
 					<FontAwesomeIcon icon={faGripLinesVertical} />
 				</div>
@@ -36,9 +36,12 @@ export const EditableCard = ({ card }) => {
 					definition={card.definition}
 					favorite={favorite}
 					onFavorite={(e) => {
-						setFavorite(f => !f)
+						setFavorite((f) => !f);
 						console.log(e);
 					}}
+					onRemove={onRemove}
+					index={index}
+					id={card._id}
 				/>
 			</div>
 		</Reorder.Item>
