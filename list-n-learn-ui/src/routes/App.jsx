@@ -130,12 +130,12 @@ export const App = () => {
 	const commands = [
 		{
 			command: 'Home',
-			callback: () => window.location.href = '/'
+			callback: () => (window.location.href = '/'),
 		},
 		{
-			command: 'Logout',
-			callback: () => logout()
-		}, 
+			command: 'Log out',
+			callback: () => logout(),
+		},
 	];
 	useSpeechRecognition(commands);
 	useEffect(() => {
