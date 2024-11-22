@@ -133,7 +133,7 @@ export const EditSet = () => {
 	};
 
 	const editTitle = async () => {
-		await speakPhrase(`The current title of this set is: ${title}`);
+		if (title) await speakPhrase(`The current title of this set is: ${title}`);
 		const newTitle = await speakPhrase(
 			'What would you like to change the title to?',
 			true,
@@ -153,7 +153,7 @@ export const EditSet = () => {
 	};
 
 	const editDesc = async () => {
-		await speakPhrase(`The current description of this set is: ${description}`);
+		if (description) await speakPhrase(`The current description of this set is: ${description}`);
 		const newDesc = await speakPhrase(
 			'What would you like to change the description to?',
 			true,
