@@ -29,3 +29,36 @@ export const speakPhrase = async (phrase, response = false, recog = null) => {
 			};
 		});
 };
+
+let logoutFn = () => null;
+
+export const registerLogout = (logout) => {
+	logoutFn = logout;
+};
+
+export const defCommands = (navigate) => [
+	{
+		command: 'Home',
+		callback: () => navigate('/'),
+	},
+	{
+		command: 'Log out',
+		callback: logoutFn,
+	},
+	{
+		command: 'Half speed',
+		callback: () => setSpeed(0.5),
+	},
+	{
+		command: 'Default speed',
+		callback: () => setSpeed(1),
+	},
+	{
+		command: 'Double speed',
+		callback: () => setSpeed(2),
+	},
+	{
+		command: 'Triple speed',
+		callback: () => setSpeed(3),
+	},
+];

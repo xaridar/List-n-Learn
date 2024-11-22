@@ -6,7 +6,7 @@ import { EditableCard } from '../components/EditableCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { speakPhrase } from '../util';
+import { defCommands, speakPhrase } from '../util';
 
 export const EditSet = () => {
 	const [searchParams] = useSearchParams();
@@ -21,6 +21,10 @@ export const EditSet = () => {
 
 	// Fetch set data on component mount
 	useEffect(() => {
+		if (!setID) {
+			navigate('/');
+			return;
+		}
 		const getSet = async () => {
 			try {
 				const res = await fetch(`/set?id=${setID}`);
@@ -171,6 +175,17 @@ export const EditSet = () => {
 		});
 	};
 
+	const listCards = async () => {
+		await speakPhrase('The terms in this set are:');
+		let phrase = '';
+		for (let i = 0; i < cards.length; i++) {
+			if (i !== 0) phrase += '; ';
+			if (i === cards.length - 1) phrase += 'and ';
+			phrase += cards[i].term;
+		}
+		await speakPhrase(phrase);
+	};
+
 	useEffect(() => {
 		if (!cards.length || cards[cards.length - 1].term !== '') return;
 		bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -194,7 +209,12 @@ export const EditSet = () => {
 			command: 'Save set',
 			callback: () => handleSave(true),
 		},
+		{
+			command: 'List cards',
+			callback: listCards,
+		},
 	];
+	commands.push(...defCommands(navigate));
 	useSpeechRecognition({ commands });
 
 	return (

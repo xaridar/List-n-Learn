@@ -5,11 +5,11 @@ import toast, { Toaster } from 'react-hot-toast';
 import { faClose, faPaperPlane, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateUsername } from 'unique-username-generator';
-import { checkUser, setSpeed } from '../util';
+import { checkUser, registerLogout, setSpeed } from '../util';
 import ReactLoading from 'react-loading';
-import { Menu, MenuItem, MenuButton, FocusableItem, SubMenu } from '@szhsin/react-menu';
+import { Menu, MenuItem, MenuButton, SubMenu } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import SpeechRecognition from 'react-speech-recognition';
 
 const router = createBrowserRouter([
 	{
@@ -127,33 +127,7 @@ export const App = () => {
 			document.removeEventListener('keydown', keyListener);
 		};
 	}, [keyListener]);
-	const commands = [
-		{
-			command: 'Home',
-			callback: () => (window.location.href = '/'),
-		},
-		{
-			command: 'Log out',
-			callback: () => logout(),
-		},
-		{
-			command: 'Half speed',
-			callback: () => setSpeed(0.5),
-		},
-		{
-			command: 'Default speed',
-			callback: () => setSpeed(1),
-		},
-		{
-			command: 'Double speed',
-			callback: () => setSpeed(2),
-		},
-		{
-			command: 'Triple speed',
-			callback: () => setSpeed(3),
-		},
-	];
-	useSpeechRecognition(commands);
+	registerLogout(logout);
 	useEffect(() => {
 		SpeechRecognition.startListening({ continuous: true, interimResults: true });
 	}, []);

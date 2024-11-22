@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Flashcard } from '../components/Flashcard';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { useSpeechRecognition } from 'react-speech-recognition';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faEye, faPen } from '@fortawesome/free-solid-svg-icons';
-import { speakPhrase } from '../util';
+import { defCommands, speakPhrase } from '../util';
 
 export const StudySet = () => {
 	const [searchParams] = useSearchParams();
@@ -53,6 +53,10 @@ export const StudySet = () => {
 	}, [index]);
 
 	useEffect(() => {
+		if (!setID) {
+			navigate('/');
+			return;
+		}
 		const getSet = () => {
 			console.log(setID);
 			fetch(`/set?id=${setID}`)
@@ -63,7 +67,7 @@ export const StudySet = () => {
 				});
 		};
 		getSet();
-	}, [setID]);
+	}, [setID, navigate]);
 	//check if user exist
 	const keyListener = useCallback(
 		(e) => {
@@ -124,6 +128,7 @@ export const StudySet = () => {
 			callback: () => setStarted(true),
 		},
 	];
+	commands.push(...defCommands(navigate));
 	useSpeechRecognition({ commands });
 
 	const username = localStorage.getItem('lnl-user');

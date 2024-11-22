@@ -1,6 +1,17 @@
 const express = require('express');
 const cors = require('cors');
-const { connect, getUser, getSetsByUser, getAllCards, createUser, getSet, updateSet, newSet, newCard, deleteSet } = require('./db');
+const {
+	connect,
+	getUser,
+	getSetsByUser,
+	getAllCards,
+	createUser,
+	getSet,
+	updateSet,
+	newSet,
+	newCard,
+	deleteSet,
+} = require('./db');
 
 const app = express();
 
@@ -42,58 +53,58 @@ app.get('/set', async (req, res) => {
 
 app.put('/set', async (req, res) => {
 	try {
-		const {id, title, description, cards, toDel} = req.body;
+		const { id, title, description, cards, toDel } = req.body;
 		const success = await updateSet(title, description, cards, id, toDel);
 		res.json({ success });
 	} catch (e) {
 		console.log(e);
 		res.json({ success: false });
 	}
-})
+});
 
 app.post('/set', async (req, res) => {
 	try {
 		const { username } = req.body;
-		const set = await newSet( username );
+		const set = await newSet(username);
 		const id = set._id;
 		res.json({ id, success: true });
 	} catch (e) {
 		console.log(e);
 		res.json({ success: false });
 	}
-})
+});
 
 app.delete('/set', async (req, res) => {
 	try {
-        const { setId } = req.body; // Extract the set ID from the request body
+		const { setId } = req.body; // Extract the set ID from the request body
 
-		deleteSet(setId)
+		deleteSet(setId);
 
-        res.json({ success: true });
-    } catch (error) {
-        console.error('Error deleting set:', error);
-        res.json({ success: false });
-    }
-})
+		res.json({ success: true });
+	} catch (error) {
+		console.error('Error deleting set:', error);
+		res.json({ success: false });
+	}
+});
 
 app.post('/card', async (req, res) => {
 	try {
-		const { term, definition, favorite, setID } = req.body;  // Get data for the new card
-        const newCard = await newCard({ term, definition, favorite }); // Create new card instance
+		const { term, definition, favorite, setID } = req.body; // Get data for the new card
+		const newCard = await newCard({ term, definition, favorite }); // Create new card instance
 		const id = newCard._id;
 
 		if (setID) {
-            const set = await Set.findById(setID);
-            set.cards.push(newCard._id); // Add card ID to the set's card list
-            await set.save(); // Save the updated set
-        }
+			const set = await Set.findById(setID);
+			set.cards.push(newCard._id); // Add card ID to the set's card list
+			await set.save(); // Save the updated set
+		}
 
 		res.json({ id, success: true });
 	} catch (e) {
 		console.log(e);
 		res.json({ success: false });
 	}
-})
+});
 
 const PORT = process.env.PORT || 8080;
 
