@@ -8,6 +8,7 @@ let speechRate = 1;
 
 export const setSpeed = (rate) => {
 	speechRate = rate;
+	speakPhrase(`Audio playback speed updated to ${rate}.`);
 };
 
 export const speakPhrase = async (phrase, response = false, recog = null) => {
