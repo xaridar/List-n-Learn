@@ -5,6 +5,7 @@ import { useSpeechRecognition } from 'react-speech-recognition';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faEye, faPen } from '@fortawesome/free-solid-svg-icons';
 import { defCommands, speakPhrase } from '../util';
+import { link } from 'framer-motion/client';
 
 export const StudySet = () => {
 	const [searchParams] = useSearchParams();
@@ -20,12 +21,16 @@ export const StudySet = () => {
 	const cardRef = useRef();
 	const navigate = useNavigate();
 
-	useEffect(() => {
+	const restartStudying = useCallback(() => {
 		setIndex(0);
 		setLeftDisabled(true);
 		if (cards.length < 2) setRightDisabled(true);
 		else setRightDisabled(false);
-	}, [cards]);
+	}, [cards.length]);
+
+	useEffect(() => {
+		restartStudying();
+	}, [cards, restartStudying]);
 	const incrementCount = useCallback(() => {
 		if (index + 1 >= cards.length - 1) {
 			setRightDisabled(true);
@@ -36,8 +41,9 @@ export const StudySet = () => {
 			setLeftDisabled(false);
 			setIndex(index + 1);
 			cardRef.current.flipToTerm();
-		}
-	}, [cards.length, index]);
+		} else if (started)
+			speakPhrase('You have reached the end of the set! If you\'d like to restart it, say "Restart".');
+	}, [cards.length, index, started]);
 
 	const decrementCount = useCallback(() => {
 		if (index - 1 <= 0) {
@@ -49,8 +55,8 @@ export const StudySet = () => {
 			setRightDisabled(false);
 			setIndex(index - 1);
 			cardRef.current.flipToTerm();
-		}
-	}, [index]);
+		} else if (started) speakPhrase('You are at the first card of the set!');
+	}, [index, started]);
 
 	useEffect(() => {
 		if (!setID) {
@@ -111,6 +117,10 @@ export const StudySet = () => {
 		{
 			command: 'Stop',
 			callback: () => cardRef.current.stopSpeech(),
+		},
+		{
+			command: 'Restart',
+			callback: restartStudying,
 		},
 		{
 			command: 'View set',

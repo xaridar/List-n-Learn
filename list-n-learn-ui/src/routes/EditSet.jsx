@@ -139,8 +139,6 @@ export const EditSet = () => {
 			true,
 			SpeechRecognition.getRecognition(),
 		);
-
-		console.log(newTitle);
 		setTitle(
 			newTitle
 				.split(' ')

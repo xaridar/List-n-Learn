@@ -32,7 +32,6 @@ const getAllCards = async () => {
 
 const getSet = async (id) => {
 	const set = await Set.findById(id).populate('cards');
-	if (!set?.cards.length) await Set.findByIdAndDelete(id);
 	return set;
 };
 

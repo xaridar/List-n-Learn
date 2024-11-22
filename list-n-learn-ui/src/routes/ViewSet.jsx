@@ -20,7 +20,7 @@ export const ViewSet = () => {
 			fetch(`/set?id=${setID}`)
 				.then((res) => res.json())
 				.then((res) => {
-					if (!res) {
+					if (!res.cards.length) {
 						navigate('/');
 						return;
 					}
