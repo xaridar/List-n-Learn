@@ -162,12 +162,9 @@ export const EditSet = () => {
 
 	const editDef = async (term) => {
 		const card = getCard(cards, term);
-		if (card == -1)
-		{
+		if (card === -1) {
 			await speakPhrase(`That is an invalid term`);
-		}
-		else
-		{
+		} else {
 			await speakPhrase(`The current definition of ${term} is ${card.definition}`);
 			const newDef = await speakPhrase(
 				'What would you like to change the definition to?',
@@ -176,19 +173,16 @@ export const EditSet = () => {
 			);
 			card.definition = newDef;
 		}
-	}
+	};
 
 	const getDef = async (term) => {
 		const card = getCard(cards, term);
-		if (card == -1)
-		{
+		if (card === -1) {
 			await speakPhrase(`That is an invalid term`);
-		}
-		else
-		{
+		} else {
 			await speakPhrase(`The current definition of ${term} is ${card.definition}`);
 		}
-	}
+	};
 
 	// Add a new blank card to the set
 	const handleNewCard = async () => {
@@ -212,6 +206,36 @@ export const EditSet = () => {
 			phrase += cards[i].term;
 		}
 		await speakPhrase(phrase);
+	};
+
+	const addFav = async () => {
+		const cardName = await speakPhrase(
+			'What card would you like to favorite?',
+			true,
+			SpeechRecognition.getRecognition(),
+		);
+		const card = getCard(cards, cardName);
+		if (card === -1) {
+			await speakPhrase(`That term doesn't exist!`);
+		} else {
+			card.favorite = true;
+			await speakPhrase(`The card '${cardName}' has been favorited!`);
+		}
+	};
+
+	const remFav = async () => {
+		const cardName = await speakPhrase(
+			'What card would you like to un-favorite?',
+			true,
+			SpeechRecognition.getRecognition(),
+		);
+		const card = getCard(cards, cardName);
+		if (card === -1) {
+			await speakPhrase(`That term doesn't exist!`);
+		} else {
+			card.favorite = false;
+			await speakPhrase(`The card '${cardName}' has been un-favorited!`);
+		}
 	};
 
 	useEffect(() => {
@@ -238,13 +262,29 @@ export const EditSet = () => {
 			callback: () => handleSave(true),
 		},
 		{
+			command: 'Cancel',
+			callback: () => navigate(`/view?id=${setID}`),
+		},
+		{
 			command: 'Edit *',
 			callback: editDef,
 		},
 		{
 			command: 'Define *',
 			callback: getDef,
-		}
+		},
+		{
+			command: 'Add favorite',
+			callback: addFav,
+		},
+		{
+			command: 'Remove favorite',
+			callback: remFav,
+		},
+		{
+			command: 'List cards',
+			callback: listCards,
+		},
 	];
 	commands.push(...defCommands(navigate));
 	useSpeechRecognition({ commands });

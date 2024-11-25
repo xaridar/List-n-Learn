@@ -32,20 +32,22 @@ export const speakPhrase = async (phrase, response = false, recog = null) => {
 };
 
 export const getCard = (cards, term) => {
-	for (const card of cards) 
-	{
-		if (card.term === term) 
-		{
-			 return card;
+	for (const card of cards) {
+		if (card.term === term) {
+			return card;
 		}
 	}
 	return -1;
-}
-	
+};
+
 let logoutFn = () => null;
+let loginFn = () => null;
 
 export const registerLogout = (logout) => {
 	logoutFn = logout;
+};
+export const registerLogin = (login) => {
+	loginFn = login;
 };
 
 export const defCommands = (navigate) => [
@@ -56,6 +58,10 @@ export const defCommands = (navigate) => [
 	{
 		command: 'Log out',
 		callback: logoutFn,
+	},
+	{
+		command: 'Log in',
+		callback: loginFn,
 	},
 	{
 		command: 'Half speed',

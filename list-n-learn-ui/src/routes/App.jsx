@@ -5,7 +5,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { faClose, faPaperPlane, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateUsername } from 'unique-username-generator';
-import { checkUser, registerLogout, setSpeed } from '../util';
+import { checkUser, registerLogin, registerLogout, setSpeed, speakPhrase } from '../util';
 import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton, SubMenu } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
@@ -47,7 +47,7 @@ export const App = () => {
 		};
 		fetchUser();
 	}, []);
-	const createUser = async () => {
+	const createUser = async (audio = false) => {
 		setLoading(true);
 		let uniqueUsername = false;
 		let username;
@@ -65,8 +65,9 @@ export const App = () => {
 			const json = await res.json();
 			if (json.success) uniqueUsername = true;
 		}
+		if (audio) speakPhrase(`Your username is: ${username}.`);
 		toast(
-			'Make sure to keep track of your username! This is necessary to login fom another device, and cannot be changed.',
+			'Make sure to keep track of your username! This is necessary to login from another device, and cannot be changed.',
 		);
 		setUsername(username);
 	};
@@ -128,6 +129,7 @@ export const App = () => {
 		};
 	}, [keyListener]);
 	registerLogout(logout);
+	registerLogin(createUser);
 	useEffect(() => {
 		SpeechRecognition.startListening({ continuous: true, interimResults: true });
 	}, []);
