@@ -1,3 +1,9 @@
+// Project name: List n' Learn
+// Description: Accessible flashcards with TTS and SST to enable hands-free studying
+// Filename: ViewSet.jsx
+// Description: Retreives a users' flashcard sets for viewing of individual cards
+// Last modified on: 11/25/24
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FullFlashcard } from '../components/FullFlashcard';
