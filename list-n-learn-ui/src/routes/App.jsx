@@ -10,6 +10,7 @@ import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton, SubMenu } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
 import SpeechRecognition from 'react-speech-recognition';
+//import Popup from './Popup';
 
 const router = createBrowserRouter([
 	{
@@ -76,6 +77,11 @@ export const App = () => {
 	const [signin, setSignin] = useState(false);
 	const [error, setError] = useState('');
 	const nameRef = useRef(null);
+	
+	const [helpPop, setHelpPop] = useState(false);
+	const helpMenu = () => {
+		setHelpPop(!helpPop)
+	};
 
 	const signIn = () => {
 		setSignin(true);
@@ -169,6 +175,7 @@ export const App = () => {
 									<MenuItem onClick={() => setSpeed(2)}>2x Speed</MenuItem>
 									<MenuItem onClick={() => setSpeed(3)}>3x Speed</MenuItem>
 								</SubMenu>
+								<MenuItem onClick={() => {setHelpPop(true); }}>Help</MenuItem>
 								<MenuItem onClick={logout}>Logout</MenuItem>
 							</Menu>
 						</header>
@@ -191,41 +198,57 @@ export const App = () => {
 								onClick={signIn}>
 								Log into Existing Account
 							</button>
+							<button
+								className='button'
+								onClick={helpMenu}>
+								Help
+							</button>
 						</div>
 					)}
 				</div>
 			)}
 			{signin ? (
-				<form
-					onSubmit={setName}
-					className='fullpage'
-					onClick={closeInput}>
-					<div
-						className='dialog'
-						onClick={(e) => e.stopPropagation()}>
-						<div>
-							<input
-								title='Username'
-								placeholder='Username'
-								ref={nameRef}
-							/>
-							<button
-								className='button'
-								type={'submit'}>
-								<FontAwesomeIcon icon={faPaperPlane} />
-							</button>
-						</div>
-						<p className='error-msg'>{error}</p>
+				<form onSubmit={setName} className="fullpage" onClick={closeInput}>
+					<div className="dialog" onClick={(e) => e.stopPropagation()}>
+					<div>
+						<input
+						title="Username"
+						placeholder="Username"
+						ref={nameRef}
+						/>
+						<button className="button" type={"submit"}>
+						<FontAwesomeIcon icon={faPaperPlane} />
+						</button>
 					</div>
-					<button
-						className='close'
-						onClick={closeInput}>
-						<FontAwesomeIcon icon={faClose} />
+					<p className="error-msg">{error}</p>
+					</div>
+					<button className="close" onClick={closeInput}>
+					<FontAwesomeIcon icon={faClose} />
 					</button>
 				</form>
-			) : (
-				<></>
-			)}
-		</>
-	);
-};
+				) : null}
+				{helpPop && (
+				<div
+					className="fullpage"
+					onClick={() => setHelpPop(false)} // Close menu when clicking outside
+				>
+					<div
+					className="dialog"
+					onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+					>
+					<h2>Help Menu (NEEDS TO BE CHANGED)</h2>
+					<p>Here are some tips to get started:</p>
+					<ul>
+						<li>To create an account, click "Create Account" and mark down the given username Create a set with the plus icon.</li>
+						<li>To log in, use your previously generated username.</li>
+						<li>Contact support if you lose your username.</li>
+						<li>ADD ALL VOICE COMMANDS INTO HELP MENU -Ethan</li>
+					</ul>
+					<button className="close" onClick={() => setHelpPop(false)}>
+					<FontAwesomeIcon icon={faClose} />
+					</button>
+					</div>
+				</div>
+				)}
+			</>
+			)};
