@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Flashcard } from '../components/Flashcard';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import { useSpeechRecognition } from 'react-speech-recognition';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faEye, faPen } from '@fortawesome/free-solid-svg-icons';
-import { speakPhrase } from '../util';
+import { defCommands, speakPhrase } from '../util';
+import { link } from 'framer-motion/client';
 
 export const StudySet = () => {
 	const [searchParams] = useSearchParams();
@@ -20,12 +21,16 @@ export const StudySet = () => {
 	const cardRef = useRef();
 	const navigate = useNavigate();
 
-	useEffect(() => {
+	const restartStudying = useCallback(() => {
 		setIndex(0);
 		setLeftDisabled(true);
 		if (cards.length < 2) setRightDisabled(true);
 		else setRightDisabled(false);
-	}, [cards]);
+	}, [cards.length]);
+
+	useEffect(() => {
+		restartStudying();
+	}, [cards, restartStudying]);
 	const incrementCount = useCallback(() => {
 		if (index + 1 >= cards.length - 1) {
 			setRightDisabled(true);
@@ -36,8 +41,9 @@ export const StudySet = () => {
 			setLeftDisabled(false);
 			setIndex(index + 1);
 			cardRef.current.flipToTerm();
-		}
-	}, [cards.length, index]);
+		} else if (started)
+			speakPhrase('You have reached the end of the set! If you\'d like to restart it, say "Restart".');
+	}, [cards.length, index, started]);
 
 	const decrementCount = useCallback(() => {
 		if (index - 1 <= 0) {
@@ -49,10 +55,14 @@ export const StudySet = () => {
 			setRightDisabled(false);
 			setIndex(index - 1);
 			cardRef.current.flipToTerm();
-		}
-	}, [index]);
+		} else if (started) speakPhrase('You are at the first card of the set!');
+	}, [index, started]);
 
 	useEffect(() => {
+		if (!setID) {
+			navigate('/');
+			return;
+		}
 		const getSet = () => {
 			console.log(setID);
 			fetch(`/set?id=${setID}`)
@@ -63,7 +73,7 @@ export const StudySet = () => {
 				});
 		};
 		getSet();
-	}, [setID]);
+	}, [setID, navigate]);
 	//check if user exist
 	const keyListener = useCallback(
 		(e) => {
@@ -109,6 +119,10 @@ export const StudySet = () => {
 			callback: () => cardRef.current.stopSpeech(),
 		},
 		{
+			command: 'Restart',
+			callback: restartStudying,
+		},
+		{
 			command: 'View set',
 			callback: () => navigate(`/view?id=${setID}`),
 		},
@@ -124,6 +138,7 @@ export const StudySet = () => {
 			callback: () => setStarted(true),
 		},
 	];
+	commands.push(...defCommands(navigate));
 	useSpeechRecognition({ commands });
 
 	const username = localStorage.getItem('lnl-user');
@@ -132,6 +147,11 @@ export const StudySet = () => {
 
 	return (
 		<div style={{ maxWidth: '1000px', margin: 'auto' }}>
+			<div
+				className='button'
+				onClick={() => setStarted(true)}>
+				Start Studying
+			</div>
 			<div className='study-group'>
 				<div className='arrow-ctr'>
 					<button

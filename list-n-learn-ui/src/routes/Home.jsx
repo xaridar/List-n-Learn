@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactLoading from 'react-loading';
 import { useNavigate } from 'react-router-dom';
 import { SetPreview } from '../components/SetPreview';
@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { speakPhrase } from '../util';
+import { defCommands, speakPhrase } from '../util';
 
 export const Home = () => {
 	const [sets, setSets] = useState([]);
@@ -79,7 +79,7 @@ export const Home = () => {
 		}
 	};
 
-	const newSet = async () => {
+	const newSet = async (audio = false) => {
 		try {
 			const response = await fetch('/set', {
 				method: 'POST',
@@ -96,10 +96,12 @@ export const Home = () => {
 			const setID = json.id;
 
 			if (json.success) {
-				toast.success('Set made');
+				toast.success('Set created');
+				if (audio) speakPhrase('Set created!');
 				navigate(`/edit?id=${setID}`);
 			} else {
-				toast.error('Set has not been made');
+				toast.error('Set not created');
+				if (audio) speakPhrase('Set not created');
 			}
 		} catch (error) {
 			console.error('Error creating set:', error);
@@ -121,13 +123,14 @@ export const Home = () => {
 	const commands = [
 		{
 			command: 'New set',
-			callback: newSet,
+			callback: () => newSet(true),
 		},
 		{
 			command: 'Delete set *',
 			callback: deleteSetByTitle,
 		},
 	];
+	commands.push(...defCommands(navigate));
 	useSpeechRecognition({ commands });
 
 	return (

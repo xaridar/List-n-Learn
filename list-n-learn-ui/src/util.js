@@ -4,9 +4,17 @@ export const checkUser = async (username) => {
 	return Object.keys(json).length !== 0;
 };
 
+let speechRate = 1;
+
+export const setSpeed = (rate) => {
+	speechRate = rate;
+	speakPhrase(`Audio playback speed updated to ${rate}.`);
+};
+
 export const speakPhrase = async (phrase, response = false, recog = null) => {
 	window.speechSynthesis.cancel();
 	const utterance = new SpeechSynthesisUtterance(phrase);
+	utterance.rate = speechRate;
 	window.speechSynthesis.speak(utterance);
 	await new Promise((res, rej) => {
 		utterance.onend = res;
@@ -34,3 +42,35 @@ export const getCard = (cards, term) => {
 	return -1;
 }
 	
+let logoutFn = () => null;
+
+export const registerLogout = (logout) => {
+	logoutFn = logout;
+};
+
+export const defCommands = (navigate) => [
+	{
+		command: 'Home',
+		callback: () => navigate('/'),
+	},
+	{
+		command: 'Log out',
+		callback: logoutFn,
+	},
+	{
+		command: 'Half speed',
+		callback: () => setSpeed(0.5),
+	},
+	{
+		command: 'Default speed',
+		callback: () => setSpeed(1),
+	},
+	{
+		command: 'Double speed',
+		callback: () => setSpeed(2),
+	},
+	{
+		command: 'Triple speed',
+		callback: () => setSpeed(3),
+	},
+];

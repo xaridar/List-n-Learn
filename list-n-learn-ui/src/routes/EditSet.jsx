@@ -6,7 +6,7 @@ import { EditableCard } from '../components/EditableCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { speakPhrase, getCard } from '../util';
+import { defCommands, speakPhrase, getCard } from '../util';
 
 export const EditSet = () => {
 	const [searchParams] = useSearchParams();
@@ -21,6 +21,10 @@ export const EditSet = () => {
 
 	// Fetch set data on component mount
 	useEffect(() => {
+		if (!setID) {
+			navigate('/');
+			return;
+		}
 		const getSet = async () => {
 			try {
 				const res = await fetch(`/set?id=${setID}`);
@@ -129,14 +133,12 @@ export const EditSet = () => {
 	};
 
 	const editTitle = async () => {
-		await speakPhrase(`The current title of this set is: ${title}`);
+		if (title) await speakPhrase(`The current title of this set is: ${title}`);
 		const newTitle = await speakPhrase(
 			'What would you like to change the title to?',
 			true,
 			SpeechRecognition.getRecognition(),
 		);
-
-		console.log(newTitle);
 		setTitle(
 			newTitle
 				.split(' ')
@@ -149,7 +151,7 @@ export const EditSet = () => {
 	};
 
 	const editDesc = async () => {
-		await speakPhrase(`The current description of this set is: ${description}`);
+		if (description) await speakPhrase(`The current description of this set is: ${description}`);
 		const newDesc = await speakPhrase(
 			'What would you like to change the description to?',
 			true,
@@ -201,6 +203,17 @@ export const EditSet = () => {
 		});
 	};
 
+	const listCards = async () => {
+		await speakPhrase('The terms in this set are:');
+		let phrase = '';
+		for (let i = 0; i < cards.length; i++) {
+			if (i !== 0) phrase += '; ';
+			if (i === cards.length - 1) phrase += 'and ';
+			phrase += cards[i].term;
+		}
+		await speakPhrase(phrase);
+	};
+
 	useEffect(() => {
 		if (!cards.length || cards[cards.length - 1].term !== '') return;
 		bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -224,15 +237,8 @@ export const EditSet = () => {
 			command: 'Save set',
 			callback: () => handleSave(true),
 		},
-		{
-			command: 'Edit term *',
-			callback: editDef,
-		},
-		{
-			command: 'Define *',
-			callback: getDef,
-		},
 	];
+	commands.push(...defCommands(navigate));
 	useSpeechRecognition({ commands });
 
 	return (

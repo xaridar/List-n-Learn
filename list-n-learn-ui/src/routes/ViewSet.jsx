@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FullFlashcard } from '../components/FullFlashcard';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { speakPhrase } from '../util';
+import { defCommands, speakPhrase } from '../util';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faPen } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,17 +11,25 @@ export const ViewSet = () => {
 	const setID = searchParams.get('id');
 	const navigate = useNavigate();
 	useEffect(() => {
+		if (!setID) {
+			navigate('/');
+			return;
+		}
 		const getSet = () => {
 			console.log(setID);
 			fetch(`/set?id=${setID}`)
 				.then((res) => res.json())
 				.then((res) => {
+					if (!res.cards.length) {
+						navigate('/');
+						return;
+					}
 					setInfo((set) => res);
 					setCards((set) => res.cards);
 				});
 		};
 		getSet();
-	}, [setID]);
+	}, [setID, navigate]);
 
 	const username = localStorage.getItem('lnl-user');
 
@@ -38,6 +46,18 @@ export const ViewSet = () => {
 
 	const [cards, setCards] = useState([]);
 	const [set, setInfo] = useState([]);
+
+	const listCards = async () => {
+		await speakPhrase('The terms in this set are:');
+		let phrase = '';
+		for (let i = 0; i < cards.length; i++) {
+			if (i !== 0) phrase += '; ';
+			if (i === cards.length - 1) phrase += 'and ';
+			phrase += cards[i].term;
+		}
+		await speakPhrase(phrase);
+	};
+
 	const commands = [
 		{
 			command: 'Study set',
@@ -52,8 +72,13 @@ export const ViewSet = () => {
 				else speakPhrase('You cannot edit this set!');
 			},
 		},
+		{
+			command: 'List cards',
+			callback: listCards,
+		},
 	];
-	useSpeechRecognition({ commands });
+	commands.push(...defCommands(navigate));
+	const { transcript } = useSpeechRecognition({ commands });
 
 	return (
 		<div className='view-set'>
@@ -84,6 +109,7 @@ export const ViewSet = () => {
 					favorite={c.favorite}
 					key={c._id}></FullFlashcard>
 			))}
+			{transcript}
 		</div>
 	);
 };

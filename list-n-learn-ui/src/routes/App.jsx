@@ -5,9 +5,9 @@ import toast, { Toaster } from 'react-hot-toast';
 import { faClose, faPaperPlane, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateUsername } from 'unique-username-generator';
-import { checkUser } from '../util';
+import { checkUser, registerLogout, setSpeed } from '../util';
 import ReactLoading from 'react-loading';
-import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
+import { Menu, MenuItem, MenuButton, SubMenu } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
 import SpeechRecognition from 'react-speech-recognition';
 
@@ -127,6 +127,7 @@ export const App = () => {
 			document.removeEventListener('keydown', keyListener);
 		};
 	}, [keyListener]);
+	registerLogout(logout);
 	useEffect(() => {
 		SpeechRecognition.startListening({ continuous: true, interimResults: true });
 	}, []);
@@ -162,6 +163,12 @@ export const App = () => {
 								}
 								transition>
 								<MenuItem href={'/'}>View your sets</MenuItem>
+								<SubMenu label='Set Playback Speed'>
+									<MenuItem onClick={() => setSpeed(0.5)}>Half Speed</MenuItem>
+									<MenuItem onClick={() => setSpeed(1)}>Default Speed</MenuItem>
+									<MenuItem onClick={() => setSpeed(2)}>2x Speed</MenuItem>
+									<MenuItem onClick={() => setSpeed(3)}>3x Speed</MenuItem>
+								</SubMenu>
 								<MenuItem onClick={logout}>Logout</MenuItem>
 							</Menu>
 						</header>

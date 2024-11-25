@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Reorder, useDragControls } from 'framer-motion';
 import { FullFlashcard } from './FullFlashcard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGripLinesVertical, faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faGripLinesVertical } from '@fortawesome/free-solid-svg-icons';
 
 export const EditableCard = ({ card, onRemove, index }) => {
 	const dragController = useDragControls();
@@ -10,7 +10,7 @@ export const EditableCard = ({ card, onRemove, index }) => {
 
 	useEffect(() => {
 		card.favorite = favorite;
-	}, [favorite]);
+	}, [favorite, card]);
 
 	return (
 		<Reorder.Item
