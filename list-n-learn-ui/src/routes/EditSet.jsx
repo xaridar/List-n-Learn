@@ -6,7 +6,7 @@ import { EditableCard } from '../components/EditableCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { speakPhrase } from '../util';
+import { speakPhrase, getCard } from '../util';
 
 export const EditSet = () => {
 	const [searchParams] = useSearchParams();
@@ -158,6 +158,36 @@ export const EditSet = () => {
 		setDescription(newDesc);
 	};
 
+	const editDef = async (term) => {
+		const card = getCard(cards, term);
+		if (card == -1)
+		{
+			await speakPhrase(`That is an invalid term`);
+		}
+		else
+		{
+			await speakPhrase(`The current definition of ${term} is ${card.definition}`);
+			const newDef = await speakPhrase(
+				'What would you like to change the definition to?',
+				true,
+				SpeechRecognition.getRecognition(),
+			);
+			card.definition = newDef;
+		}
+	}
+
+	const getDef = async (term) => {
+		const card = getCard(cards, term);
+		if (card == -1)
+		{
+			await speakPhrase(`That is an invalid term`);
+		}
+		else
+		{
+			await speakPhrase(`The current definition of ${term} is ${card.definition}`);
+		}
+	}
+
 	// Add a new blank card to the set
 	const handleNewCard = async () => {
 		setCards((cards) => {
@@ -193,6 +223,14 @@ export const EditSet = () => {
 		{
 			command: 'Save set',
 			callback: () => handleSave(true),
+		},
+		{
+			command: 'Edit term *',
+			callback: editDef,
+		},
+		{
+			command: 'Define *',
+			callback: getDef,
 		},
 	];
 	useSpeechRecognition({ commands });

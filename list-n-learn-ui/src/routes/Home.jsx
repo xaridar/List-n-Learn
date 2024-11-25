@@ -106,10 +106,26 @@ export const Home = () => {
 			toast.error('Failed to create set');
 		}
 	};
+
+	const deleteSetByTitle = async (title) => {
+		for (const set of sets)
+		{
+			if (set.title === title)
+			{
+				deleteSet(set._id);
+			}
+		}
+		await speakPhrase(`This set does not exist`);
+	}
+
 	const commands = [
 		{
 			command: 'New set',
 			callback: newSet,
+		},
+		{
+			command: 'Delete set *',
+			callback: deleteSetByTitle,
 		},
 	];
 	useSpeechRecognition({ commands });

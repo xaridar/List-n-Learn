@@ -22,3 +22,15 @@ export const speakPhrase = async (phrase, response = false, recog = null) => {
 			};
 		});
 };
+
+export const getCard = (cards, term) => {
+	for (const card of cards) 
+	{
+		if (card.term === term) 
+		{
+			 return card;
+		}
+	}
+	return -1;
+}
+	
