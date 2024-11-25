@@ -38,7 +38,7 @@ export const Flashcard = forwardRef(({ started, term, definition, style, favorit
 						style={{ width: '100%' }}
 						onClick={flipCard}>
 						<p>{flipped ? definition : term}</p>
-						{favorite ? <FontAwesomeIcon icon={faStar} style={{color: "yellow", position: "absolute", top: "10px", right: "10px"}}/> : ''}
+						{favorite ? <FontAwesomeIcon icon={faStar}/> : ''}
 					</div>
 					<button
 						className='flip-btn'

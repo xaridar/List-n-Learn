@@ -79,6 +79,7 @@ export const Home = () => {
 		}
 	};
 
+	// Creates empty set for user to edit to emmulate creating a new set
 	const newSet = async (audio = false) => {
 		try {
 			const response = await fetch('/set', {
@@ -93,6 +94,7 @@ export const Home = () => {
 			});
 
 			const json = await response.json();
+			// Retrieve set id from db to create link for redirecting for set editing
 			const setID = json.id;
 
 			if (json.success) {

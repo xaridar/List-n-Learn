@@ -29,6 +29,7 @@ export const EditSet = () => {
 			try {
 				const res = await fetch(`/set?id=${setID}`);
 				const data = await res.json();
+				// Checks if user is same as user who created set - do not want non-owner to be able to edit
 				if (data.user !== localStorage.getItem('lnl-user')) navigate('/');
 				else {
 					setTitle(data.title || '');

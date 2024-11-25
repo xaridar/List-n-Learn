@@ -20,6 +20,7 @@ const getUser = async (username) => {
 };
 
 const getSetsByUser = async (username) => {
+	// Deletes empty sets that may have been created so they aren't returned
 	await Set.deleteMany({ user: username, cards: { $size: 0 } });
 	const sets = await Set.find({ user: username }).populate('cards');
 	return sets;
