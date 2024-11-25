@@ -224,6 +224,15 @@ ul {
 	margin: auto;
 }
 
+.card.selectable svg {
+	color: yellow; 
+	position: absolute; 
+	top: 1em;
+	right: 1em;
+	stroke-width: 4px;
+	stroke: black;
+}
+
 .cardFront {
 	margin-right: 10px;
 }
