@@ -21,6 +21,8 @@ export const ViewSet = () => {
 			navigate('/');
 			return;
 		}
+		// Retrieves set from db and stores info in setInfo and cards in setCards
+		// Returns to home if setID does not exist
 		const getSet = () => {
 			console.log(setID);
 			fetch(`/set?id=${setID}`)
@@ -84,7 +86,7 @@ export const ViewSet = () => {
 		},
 	];
 	commands.push(...defCommands(navigate));
-	const { transcript } = useSpeechRecognition({ commands });
+	useSpeechRecognition({ commands });
 
 	return (
 		<div className='view-set'>
@@ -115,7 +117,6 @@ export const ViewSet = () => {
 					favorite={c.favorite}
 					key={c._id}></FullFlashcard>
 			))}
-			{transcript}
 		</div>
 	);
 };

@@ -10,9 +10,14 @@ import { link } from 'framer-motion/client';
 export const StudySet = () => {
 	const [searchParams] = useSearchParams();
 	const setID = searchParams.get('id');
-	const favorites = searchParams.get('favorite') === 'true';
+	
+	useEffect(() => {
+		setStudyingFavs(searchParams.get('favorite') === 'true')
+	}, [])
 
+	const [studyingFavs, setStudyingFavs] = useState(false);
 	const [cards, setCards] = useState([]);
+	const [currCards, setCurrCards] = useState([]);
 	const [info, setInfo] = useState();
 	const [index, setIndex] = useState(0);
 	const [started, setStarted] = useState(false);
@@ -22,28 +27,32 @@ export const StudySet = () => {
 	const navigate = useNavigate();
 
 	const restartStudying = useCallback(() => {
+		setCurrCards(studyingFavs ? cards.filter(card => card.favorite) : cards);
+		console.log(cards.filter(cards => cards.favorite))
 		setIndex(0);
 		setLeftDisabled(true);
-		if (cards.length < 2) setRightDisabled(true);
-		else setRightDisabled(false);
-	}, [cards.length]);
+		cardRef.current?.flipToTerm();
+	}, [cards, studyingFavs]);
 
 	useEffect(() => {
-		restartStudying();
-	}, [cards, restartStudying]);
+		if (currCards.length < 2) setRightDisabled(true);
+		else setRightDisabled(false);
+	}, [currCards])
+
 	const incrementCount = useCallback(() => {
-		if (index + 1 >= cards.length - 1) {
+		console.log(currCards);
+		if (index + 1 >= currCards.length - 1) {
 			setRightDisabled(true);
 		} else {
 			setRightDisabled(false);
 		}
-		if (index + 1 < cards.length) {
+		if (index + 1 < currCards.length) {
 			setLeftDisabled(false);
 			setIndex(index + 1);
 			cardRef.current.flipToTerm();
 		} else if (started)
 			speakPhrase('You have reached the end of the set! If you\'d like to restart it, say "Restart".');
-	}, [cards.length, index, started]);
+	}, [currCards.length, index, started]);
 
 	const decrementCount = useCallback(() => {
 		if (index - 1 <= 0) {
@@ -74,6 +83,11 @@ export const StudySet = () => {
 		};
 		getSet();
 	}, [setID, navigate]);
+
+	useEffect(() => {
+		restartStudying();
+	}, [cards]);
+
 	//check if user exist
 	const keyListener = useCallback(
 		(e) => {
@@ -161,13 +175,13 @@ export const StudySet = () => {
 						<FontAwesomeIcon icon={faArrowLeft} />
 					</button>
 				</div>
-				{cards.length ? (
+				{currCards.length ? (
 					<Flashcard
 						started={started}
 						ref={cardRef}
-						term={cards[index].term}
-						definition={cards[index].definition}
-						favorite={cards[index].favorite}
+						term={currCards[index].term}
+						definition={currCards[index].definition}
+						favorite={currCards[index].favorite}
 					/>
 				) : (
 					''
@@ -181,6 +195,7 @@ export const StudySet = () => {
 					</button>
 				</div>
 			</div>
+			<button className='button' onClick={restartStudying}>Start from Beginnning</button>
 			<a
 				className='button action-button editSet'
 				href={`/view?id=${setID}`}
