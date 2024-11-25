@@ -1,9 +1,9 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowsRotate } from '@fortawesome/free-solid-svg-icons';
+import { faArrowsRotate, faStar } from '@fortawesome/free-solid-svg-icons';
 import { speakPhrase } from '../util';
 
-export const Flashcard = forwardRef(({ started, term, definition, style }, ref) => {
+export const Flashcard = forwardRef(({ started, term, definition, style, favorite }, ref) => {
 	useImperativeHandle(ref, () => ({
 		flipToTerm() {
 			setFlipped(false);
@@ -38,6 +38,7 @@ export const Flashcard = forwardRef(({ started, term, definition, style }, ref) 
 						style={{ width: '100%' }}
 						onClick={flipCard}>
 						<p>{flipped ? definition : term}</p>
+						{favorite ? <FontAwesomeIcon icon={faStar} style={{color: "yellow", position: "absolute", top: "10px", right: "10px"}}/> : ''}
 					</div>
 					<button
 						className='flip-btn'

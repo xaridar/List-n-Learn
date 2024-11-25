@@ -167,6 +167,7 @@ export const StudySet = () => {
 						ref={cardRef}
 						term={cards[index].term}
 						definition={cards[index].definition}
+						favorite={cards[index].favorite}
 					/>
 				) : (
 					''

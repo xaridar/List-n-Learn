@@ -237,6 +237,14 @@ export const EditSet = () => {
 			command: 'Save set',
 			callback: () => handleSave(true),
 		},
+		{
+			command: 'Edit *',
+			callback: editDef,
+		},
+		{
+			command: 'Define *',
+			callback: getDef,
+		}
 	];
 	commands.push(...defCommands(navigate));
 	useSpeechRecognition({ commands });
