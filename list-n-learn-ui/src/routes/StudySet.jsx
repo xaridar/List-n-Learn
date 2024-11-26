@@ -84,27 +84,27 @@ export const StudySet = () => {
 	}, [cards, restartStudying, studyingFavs]);
 
 	//check if user exist
-	const keyListener = useCallback(
-		(e) => {
-			if (e.code === 'Space') {
-				cardRef.current.flipCard();
-			}
-			if (e.code === 'ArrowLeft') {
-				decrementCount();
-			}
-			if (e.code === 'ArrowRight') {
-				incrementCount();
-			}
-		},
-		[incrementCount, decrementCount],
-	);
-	useEffect(() => {
-		document.addEventListener('keydown', keyListener, true);
+	// const keyListener = useCallback(
+	// 	(e) => {
+	// 		if (e.code === 'Space') {
+	// 			cardRef.current.flipCard();
+	// 		}
+	// 		if (e.code === 'ArrowLeft') {
+	// 			decrementCount();
+	// 		}
+	// 		if (e.code === 'ArrowRight') {
+	// 			incrementCount();
+	// 		}
+	// 	},
+	// 	[incrementCount, decrementCount],
+	// );
+	// useEffect(() => {
+	// 	document.addEventListener('keydown', keyListener, true);
 
-		return () => {
-			document.removeEventListener('keydown', keyListener);
-		};
-	}, [keyListener]);
+	// 	return () => {
+	// 		document.removeEventListener('keydown', keyListener);
+	// 	};
+	// }, [keyListener]);
 	const commands = [
 		{
 			command: 'Next card',
