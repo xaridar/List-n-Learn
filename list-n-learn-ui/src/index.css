@@ -7,6 +7,11 @@
 	--error-color: rgb(255 118 219);
 }
 
+.no-anim * {
+	transition: none !important;
+	animation: none !important;
+}
+
 * {
 	box-sizing: border-box;
 }
@@ -214,6 +219,32 @@ ul {
 	width: 10em;
 }
 
+.card.flipBack {
+	-webkit-animation: cardFlip 0.4s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+	animation: cardFlip 0.4s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+}
+
+.card.flipBack p {
+	-moz-transform: scale(-1, 1);
+	-webkit-transform: scale(-1, 1);
+	-o-transform: scale(-1, 1);
+	-ms-transform: scale(-1, 1);
+	transform: scale(-1, 1);
+}
+
+.no-anim .card.flipBack p {
+	-moz-transform: none;
+	-webkit-transform: none;
+	-o-transform: none;
+	-ms-transform: none;
+	transform: none;
+}
+
+.card.flipFront {
+	-webkit-animation: cardFlipBack 0.4s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+	animation: cardFlipBack 0.4s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+}
+
 .card-short {
 	width: 20rem;
 	aspect-ratio: 4 / 1;
@@ -379,5 +410,46 @@ ul {
 @media screen and (max-width: 1300px) {
 	.card-ctr .buttons-row {
 		flex-direction: column;
+	}
+}
+@-webkit-keyframes cardFlip {
+	0% {
+		-webkit-transform: rotateY(0);
+		transform: rotateY(0);
+	}
+	100% {
+		-webkit-transform: rotateY(180deg);
+		transform: rotateY(180deg);
+	}
+}
+@keyframes cardFlip {
+	0% {
+		-webkit-transform: rotateY(0);
+		transform: rotateY(0);
+	}
+	100% {
+		-webkit-transform: rotateY(180deg);
+		transform: rotateY(180deg);
+	}
+}
+
+@-webkit-keyframes cardFlipBack {
+	0% {
+		-webkit-tranform: rotateY(180deg);
+		transform: rotateY(180deg);
+	}
+	100% {
+		-webkit-transform: rotateY(0);
+		transform: rotateY(0);
+	}
+}
+@keyframes cardFlipBack {
+	0% {
+		-webkit-transform: rotateY(180deg);
+		transform: rotateY(180deg);
+	}
+	100% {
+		-webkit-transform: rotateY(0);
+		transform: rotateY(0);
 	}
 }

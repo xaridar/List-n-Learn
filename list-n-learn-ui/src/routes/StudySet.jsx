@@ -4,7 +4,7 @@ import { Flashcard } from '../components/Flashcard';
 import { useSpeechRecognition } from 'react-speech-recognition';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faEye, faPen } from '@fortawesome/free-solid-svg-icons';
-import { defCommands, speakPhrase } from '../util';
+import { defCommands, speakPhrase, useAnim } from '../util';
 
 export const StudySet = () => {
 	const [searchParams] = useSearchParams();
@@ -20,6 +20,7 @@ export const StudySet = () => {
 	const [rightDisable, setRightDisabled] = useState(true);
 	const cardRef = useRef();
 	const navigate = useNavigate();
+	const [anim, setAnim] = useAnim();
 
 	const restartStudying = useCallback(() => {
 		if (studyingFavs === -1) return;
@@ -85,7 +86,6 @@ export const StudySet = () => {
 	//check if user exist
 	const keyListener = useCallback(
 		(e) => {
-			console.log(e.code);
 			if (e.code === 'Space') {
 				cardRef.current.flipCard();
 			}
@@ -168,7 +168,7 @@ export const StudySet = () => {
 			},
 		},
 	];
-	commands.push(...defCommands(navigate));
+	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });
 
 	const username = localStorage.getItem('lnl-user');
@@ -178,7 +178,9 @@ export const StudySet = () => {
 	return (
 		<>
 			{studyingFavs === -1 ? (
-				<div class='fullpage'>
+				<div
+					class='fullpage'
+					style={{ height: 'fit-content', margin: 'auto' }}>
 					<div className='buttons-row'>
 						<button
 							className='button'
@@ -219,7 +221,7 @@ export const StudySet = () => {
 								<div className='arrow-ctr'>
 									<button
 										className='no-button arrow'
-										disabled={!leftDisable ? '' : 'true'}
+										disabled={leftDisable}
 										onClick={decrementCount}>
 										<FontAwesomeIcon icon={faArrowLeft} />
 									</button>
@@ -234,7 +236,7 @@ export const StudySet = () => {
 								<div className='arrow-ctr'>
 									<button
 										className='no-button arrow'
-										disabled={!rightDisable ? '' : 'true'}
+										disabled={rightDisable}
 										onClick={incrementCount}>
 										<FontAwesomeIcon icon={faArrowRight} />
 									</button>

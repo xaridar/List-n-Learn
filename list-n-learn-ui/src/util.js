@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 export const checkUser = async (username) => {
 	const res = await fetch(`/user?name=${username}`);
 	const json = await res.json();
@@ -42,6 +44,15 @@ export const getCard = (cards, term) => {
 
 let logoutFn = () => null;
 let loginFn = () => null;
+let isAnim = localStorage.getItem('lnl-anim');
+export const useAnim = () => {
+	const [anim, setAnim] = useState(isAnim);
+	useEffect(() => {
+		isAnim = anim;
+		localStorage.setItem('lnl-anim', anim);
+	}, [anim]);
+	return [anim, setAnim];
+};
 
 export const registerLogout = (logout) => {
 	logoutFn = logout;
@@ -50,7 +61,7 @@ export const registerLogin = (login) => {
 	loginFn = login;
 };
 
-export const defCommands = (navigate) => [
+export const defCommands = (navigate, setAnim) => [
 	{
 		command: 'Home',
 		callback: () => navigate('/'),
@@ -78,5 +89,17 @@ export const defCommands = (navigate) => [
 	{
 		command: 'Triple speed',
 		callback: () => setSpeed(3),
+	},
+	{
+		command: 'Animation off',
+		callback: () => {
+			setAnim(false);
+		},
+	},
+	{
+		command: 'Animation on',
+		callback: () => {
+			setAnim(true);
+		},
 	},
 ];

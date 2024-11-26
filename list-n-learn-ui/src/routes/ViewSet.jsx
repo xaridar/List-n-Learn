@@ -7,8 +7,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FullFlashcard } from '../components/FullFlashcard';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { defCommands, getCard, speakPhrase } from '../util';
+import { useSpeechRecognition } from 'react-speech-recognition';
+import { defCommands, getCard, speakPhrase, useAnim } from '../util';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faPen } from '@fortawesome/free-solid-svg-icons';
 
@@ -16,6 +16,7 @@ export const ViewSet = () => {
 	const [searchParams] = useSearchParams();
 	const setID = searchParams.get('id');
 	const navigate = useNavigate();
+	const [anim, setAnim] = useAnim();
 	useEffect(() => {
 		if (!setID) {
 			navigate('/');
@@ -98,7 +99,7 @@ export const ViewSet = () => {
 			callback: getDef,
 		},
 	];
-	commands.push(...defCommands(navigate));
+	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });
 
 	return (

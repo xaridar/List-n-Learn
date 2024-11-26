@@ -5,7 +5,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { faClose, faPaperPlane, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateUsername } from 'unique-username-generator';
-import { checkUser, registerLogin, registerLogout, setSpeed, speakPhrase } from '../util';
+import { checkUser, registerLogin, registerLogout, setSpeed, speakPhrase, useAnim } from '../util';
 import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton, SubMenu } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
@@ -78,6 +78,7 @@ export const App = () => {
 	const [signin, setSignin] = useState(false);
 	const [error, setError] = useState('');
 	const nameRef = useRef(null);
+	const [anim, setAnim] = useAnim();
 
 	const [helpPop, setHelpPop] = useState(false);
 	const helpMenu = () => {
@@ -154,7 +155,7 @@ export const App = () => {
 					className='loading'
 				/>
 			) : (
-				<div className='App'>
+				<div className={`App ${anim ? '' : 'no-anim'}`}>
 					{username ? (
 						<header>
 							<a
@@ -177,6 +178,7 @@ export const App = () => {
 									<MenuItem onClick={() => setSpeed(2)}>2x Speed</MenuItem>
 									<MenuItem onClick={() => setSpeed(3)}>3x Speed</MenuItem>
 								</SubMenu>
+								<MenuItem onClick={() => setAnim((a) => !a)}>Animations {anim ? 'off' : 'on'}</MenuItem>
 								<MenuItem
 									onClick={() => {
 										setHelpPop(true);

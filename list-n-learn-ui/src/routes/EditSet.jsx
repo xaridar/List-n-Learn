@@ -6,7 +6,7 @@ import { EditableCard } from '../components/EditableCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { defCommands, speakPhrase, getCard } from '../util';
+import { defCommands, speakPhrase, getCard, useAnim } from '../util';
 
 export const EditSet = () => {
 	const [searchParams] = useSearchParams();
@@ -18,6 +18,7 @@ export const EditSet = () => {
 	const [toDel, setToDel] = useState([]);
 	const [description, setDescription] = useState('');
 	const bottomRef = useRef();
+	const [anim, setAnim] = useAnim();
 
 	// Fetch set data on component mount
 	useEffect(() => {
@@ -287,7 +288,7 @@ export const EditSet = () => {
 			callback: listCards,
 		},
 	];
-	commands.push(...defCommands(navigate));
+	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });
 
 	return (

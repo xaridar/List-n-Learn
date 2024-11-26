@@ -6,12 +6,13 @@ import toast from 'react-hot-toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { defCommands, speakPhrase } from '../util';
+import { defCommands, speakPhrase, useAnim } from '../util';
 
 export const Home = () => {
 	const [sets, setSets] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
+	const [anim, setAnim] = useAnim();
 
 	useEffect(() => {
 		setSets([]);
@@ -112,15 +113,13 @@ export const Home = () => {
 	};
 
 	const deleteSetByTitle = async (title) => {
-		for (const set of sets)
-		{
-			if (set.title === title)
-			{
+		for (const set of sets) {
+			if (set.title === title) {
 				deleteSet(set._id);
 			}
 		}
 		await speakPhrase(`This set does not exist`);
-	}
+	};
 
 	const commands = [
 		{
@@ -132,7 +131,7 @@ export const Home = () => {
 			callback: deleteSetByTitle,
 		},
 	];
-	commands.push(...defCommands(navigate));
+	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });
 
 	return (
