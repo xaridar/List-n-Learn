@@ -33,6 +33,7 @@ export const Home = () => {
 	}, [sets]);
 
 	const deleteSet = async (setId, audio = false) => {
+		console.log(audio);
 		if (!audio) {
 			if (!window.confirm('Are you sure you want to delete this set? A deleted set cannot be retrieved.')) return;
 		} else {
@@ -50,7 +51,7 @@ export const Home = () => {
 					decided = true;
 					return;
 				}
-				response = speakPhrase(
+				response = await speakPhrase(
 					"Sorry, I didn't get that. Are you sure you want to delete this set?",
 					true,
 					SpeechRecognition.getRecognition(),
@@ -70,9 +71,11 @@ export const Home = () => {
 
 			if (json.success) {
 				toast.success('Set deleted successfully');
+				if (audio) await speakPhrase('Set deleted successfully.');
 				setSets((prevSets) => prevSets.filter((set) => set._id !== setId)); // Remove set from state
 			} else {
 				toast.error('Failed to delete set');
+				if (audio) await speakPhrase('Failed to delete set.');
 			}
 		} catch (error) {
 			console.error('Error deleting set:', error);
@@ -110,12 +113,25 @@ export const Home = () => {
 			console.error('Error creating set:', error);
 			toast.error('Failed to create set');
 		}
+	};	
+
+	const listSets = async () => {
+		await speakPhrase('The sets you\'ve made are:');
+		let phrase = '';
+		for (let i = 0; i < sets.length; i++) {
+			if (i !== 0) phrase += '; ';
+			if (i === sets.length - 1) phrase += 'and ';
+			phrase += sets[i].title;
+		}
+		await speakPhrase(phrase);
 	};
 
 	const deleteSetByTitle = async (title) => {
 		for (const set of sets) {
-			if (set.title === title) {
-				deleteSet(set._id);
+			console.log(set.title.trim().toLowerCase(), title);
+			if (set.title.trim().toLowerCase() === title.trim().toLowerCase()) {
+				await deleteSet(set._id, true);
+				return;
 			}
 		}
 		await speakPhrase(`This set does not exist`);
@@ -125,6 +141,10 @@ export const Home = () => {
 		{
 			command: 'New set',
 			callback: () => newSet(true),
+		},
+		{
+			command: 'List sets',
+			callback: listSets
 		},
 		{
 			command: 'Delete set *',

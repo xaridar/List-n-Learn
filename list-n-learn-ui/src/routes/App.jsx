@@ -5,11 +5,11 @@ import toast, { Toaster } from 'react-hot-toast';
 import { faClose, faPaperPlane, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateUsername } from 'unique-username-generator';
-import { checkUser, registerLogin, registerLogout, setSpeed, speakPhrase, useAnim } from '../util';
+import { checkUser, registerLogout, setSpeed, speakPhrase, useAnim } from '../util';
 import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton, SubMenu } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
-import SpeechRecognition from 'react-speech-recognition';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 //import Popup from './Popup';
 
 const router = createBrowserRouter([
@@ -32,6 +32,13 @@ const router = createBrowserRouter([
 ]);
 
 export const App = () => {
+
+	const [username, setUsername] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [signin, setSignin] = useState(false);
+	const [error, setError] = useState('');
+	const nameRef = useRef(null);
+	const [anim, setAnim] = useAnim();
 	useEffect(() => {
 		const fetchUser = async () => {
 			const user = localStorage.getItem('lnl-user');
@@ -49,15 +56,16 @@ export const App = () => {
 		fetchUser();
 	}, []);
 	const createUser = async (audio = false) => {
+		if (username != null) return;
 		setLoading(true);
 		let uniqueUsername = false;
-		let username;
+		let un;
 		while (!uniqueUsername) {
 			// Extremely low chance of collisions (random selection of approx. 5.4B options)
-			username = generateUsername('', 2);
+			un = generateUsername('', 2);
 			const res = await fetch('/user', {
 				method: 'POST',
-				body: JSON.stringify({ username }),
+				body: JSON.stringify({ username: un }),
 				headers: {
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
@@ -66,19 +74,12 @@ export const App = () => {
 			const json = await res.json();
 			if (json.success) uniqueUsername = true;
 		}
-		if (audio) speakPhrase(`Your username is: ${username}.`);
+		if (audio) speakPhrase(`Your username is: ${un}.`);
 		toast(
 			'Make sure to keep track of your username! This is necessary to login from another device, and cannot be changed.',
 		);
-		setUsername(username);
+		setUsername(un);
 	};
-
-	const [username, setUsername] = useState(null);
-	const [loading, setLoading] = useState(true);
-	const [signin, setSignin] = useState(false);
-	const [error, setError] = useState('');
-	const nameRef = useRef(null);
-	const [anim, setAnim] = useAnim();
 
 	const [helpPop, setHelpPop] = useState(false);
 	const helpMenu = () => {
@@ -135,9 +136,21 @@ export const App = () => {
 			document.removeEventListener('keydown', keyListener);
 		};
 	}, [keyListener]);
-	registerLogout(logout);
-	registerLogin(createUser);
+	const commands = [
+		{
+			command: 'Login',
+			callback: () => createUser(true)
+		},
+		{
+			command: 'Log in',
+			callback: () => createUser(true)
+		}
+	]
+
+	useSpeechRecognition({ commands });
+
 	useEffect(() => {
+		registerLogout(logout);
 		SpeechRecognition.startListening({ continuous: true, interimResults: true });
 	}, []);
 

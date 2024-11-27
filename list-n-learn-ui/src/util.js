@@ -35,7 +35,7 @@ export const speakPhrase = async (phrase, response = false, recog = null) => {
 
 export const getCard = (cards, term) => {
 	for (const card of cards) {
-		if (card.term === term) {
+		if (card.term.trim().toLowerCase() === term.trim().toLowerCase()) {
 			return card;
 		}
 	}
@@ -43,7 +43,6 @@ export const getCard = (cards, term) => {
 };
 
 let logoutFn = () => null;
-let loginFn = () => null;
 let isAnim = localStorage.getItem('lnl-anim');
 export const useAnim = () => {
 	const [anim, setAnim] = useState(isAnim);
@@ -57,9 +56,6 @@ export const useAnim = () => {
 export const registerLogout = (logout) => {
 	logoutFn = logout;
 };
-export const registerLogin = (login) => {
-	loginFn = login;
-};
 
 export const defCommands = (navigate, setAnim) => [
 	{
@@ -71,8 +67,8 @@ export const defCommands = (navigate, setAnim) => [
 		callback: logoutFn,
 	},
 	{
-		command: 'Log in',
-		callback: loginFn,
+		command: 'Logout',
+		callback: logoutFn,
 	},
 	{
 		command: 'Half speed',

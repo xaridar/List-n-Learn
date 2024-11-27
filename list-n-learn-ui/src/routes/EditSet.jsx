@@ -148,7 +148,7 @@ export const EditSet = () => {
 				.map((w) => {
 					return w[0].toUpperCase() + w.substring(1).toLowerCase();
 				})
-				.join(' '),
+				.join(' ').trim(),
 		);
 	};
 
@@ -159,7 +159,7 @@ export const EditSet = () => {
 			true,
 			SpeechRecognition.getRecognition(),
 		);
-		setDescription(newDesc);
+		setDescription(newDesc.trim());
 	};
 
 	const editDef = async (term) => {
@@ -173,7 +173,7 @@ export const EditSet = () => {
 				true,
 				SpeechRecognition.getRecognition(),
 			);
-			card.definition = newDef;
+			card.definition = newDef.trim();
 		}
 	};
 
