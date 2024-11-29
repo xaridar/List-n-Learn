@@ -10,7 +10,6 @@ import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton, SubMenu } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
 import SpeechRecognition from 'react-speech-recognition';
-//import Popup from './Popup';
 
 const router = createBrowserRouter([
 	{
@@ -183,7 +182,7 @@ export const App = () => {
 									onClick={() => {
 										setHelpPop(true);
 									}}>
-									Help
+									Commands List
 								</MenuItem>
 								<MenuItem onClick={logout}>Logout</MenuItem>
 							</Menu>
@@ -254,16 +253,36 @@ export const App = () => {
 						className='dialog'
 						onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
 					>
-						<h2>Help Menu (NEEDS TO BE CHANGED)</h2>
-						<p>Here are some tips to get started:</p>
+						<h2>Commands List</h2>
+						<p>Here are some tips to get started with voice commands:</p>
 						<ul>
-							<li>
-								To create an account, click "Create Account" and mark down the given username Create a
-								set with the plus icon.
-							</li>
-							<li>To log in, use your previously generated username.</li>
-							<li>Contact support if you lose your username.</li>
-							<li>ADD ALL VOICE COMMANDS INTO HELP MENU -Ethan</li>
+						<li>
+							<strong>On the Study Page:</strong>
+							<ul>
+							<li>Say "Next card" or "Previous card" to navigate through flashcards.</li>
+							<li>Say "Flip" to toggle between the term and definition on a card.</li>
+							<li>Say "Restart" to begin the set from the start.</li>
+							<li>Say "Repeat" to hear the current card's text again.</li>
+							<li>Say "Stop" to end audio playback.</li>
+							<li>Say "Study favorites" or "Study all" to focus on favorited or all cards.</li>
+							</ul>
+						</li>
+						<li>
+							<strong>On the Edit Page:</strong>
+							<ul>
+							<li>Say "Add card" to create a new flashcard.</li>
+							<li>Say "Edit term to [new term]" or "Edit definition to [new definition]" to modify a card.</li>
+							</ul>
+						</li>
+						<li>
+							<strong>On the View Page:</strong>
+							<ul>
+							<li>Say "List cards" to hear all card titles in the set.</li>
+							<li>Say "Define [term]" to hear the definition of a term.</li>
+							<li>Say "View set" to navigate to the set view.</li>
+							<li>Say "Edit set" to navigate to the set editor.</li>
+							</ul>
+						</li>
 						</ul>
 						<button
 							className='close'
