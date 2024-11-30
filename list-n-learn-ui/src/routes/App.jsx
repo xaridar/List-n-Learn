@@ -1,3 +1,42 @@
+/*
+  This file defines the main `App` component for the "List n' Learn" application. 
+  It manages user authentication, routing, and primary application features, including:
+
+  - **User Authentication**:
+    - Handles user creation and login/logout functionality using local storage.
+    - Generates unique usernames and verifies existing users through a backend API.
+    - Uses the `generateUsername` library for random username generation.
+    - Integrates voice feedback for new usernames and displays a toast notification.
+
+  - **Routing**:
+    - Utilizes react-router-dom to define and manage routes for different app views:
+      - `/` (Home)
+      - `/edit` (Edit Set)
+      - `/view` (View Set)
+      - `/study` (Study Set)
+
+  - **UI Components and Interactions**:
+    - Provides a header with a dropdown menu using @szhsin/react-menu for user options:
+      - Adjust playback speed.
+      - Enable/disable animations.
+      - Help menu.
+      - Logout.
+    - Displays a loading animation during async operations.
+
+  - **Speech and Accessibility**:
+    - Integrates `react-speech-recognition` for speech recognition
+    - Utilizes `react-hot-toast` for user notifications.
+    - Includes `react-tooltip`
+
+  - **State and Effects**:
+    - Manages state using React's `useState` for state funcitons
+    - Leverages `useEffect` for fetching user data, local storage updates, and initializing speech recognition.
+    - Implements keyboard accessibility, e.g., closing modals with the `Escape` key.
+
+  - **Help Menu**:
+    - Includes help menu for users
+
+*/
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Home, EditSet, ViewSet, StudySet } from '.';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -267,20 +306,40 @@ export const App = () => {
 									<li>Say "Restart" to begin the set from the start.</li>
 									<li>Say "Repeat" to hear the current card's text again.</li>
 									<li>Say "Stop" to end audio playback.</li>
+									<li>Say "Start Audio" to start audio playback functionality.</li>
 									<li>Say "Study favorites" or "Study all" to focus on favorited or all cards.</li>
 								</ul>
 								<h3>On the Edit Page:</h3>
 								<ul>
 									<li>Say "Add card" to create a new flashcard.</li>
-									<li>Say "Edit term to [new term]" or "Edit definition to [new definition]" to modify a card.</li>
+									<li>"Edit definition [new definition]" to modify a card.</li>
+									<li>Say "Edit Title"</li>
+									edit description
+									save set
+									cancel
+									define
+									list cards
+									add favorite remove favorite
 								</ul>
 								<h3>On the View Page:</h3>
 								<ul>
+									
 									<li>Say "List cards" to hear all card titles in the set.</li>
 									<li>Say "Define [term]" to hear the definition of a term.</li>
-									<li>Say "View set" to navigate to the set view.</li>
+									<li>Say "Study set" to navigate to the set view.</li>
 									<li>Say "Edit set" to navigate to the set editor.</li>
 								</ul>
+
+								on home
+
+								view set
+								Edit set
+								study set
+								list set
+
+								delete set 
+
+								+ all dropdown commands
 							</section>
 							<button
 								className='close'

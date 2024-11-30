@@ -1,3 +1,32 @@
+/*
+  This file defines the `Home` component, the dashboard for managing flashcard sets in the "List n' Learn" app.
+
+  **Core Features**:
+  - **Set Management**:
+    - Fetches user sets from the backend using their username on component mount.
+    - Allows creating new sets (`newSet`) and deleting sets by ID (`deleteSet`) or title (`deleteSetByTitle`).
+    - Handles deletion with both text and voice-based confirmation.
+
+  - **Speech Commands**:
+    - Integrates `react-speech-recognition` for commands like:
+      - "New set" to create a set.
+      - "Delete set [title]" to remove a set by name.
+
+  - **UI and Feedback**:
+    - Displays sets using the `SetPreview` component.
+    - Includes a button for adding new sets, styled with a plus icon.
+    - Shows loading indicators (`ReactLoading`) during data fetch.
+    - Uses `react-hot-toast` for notifications on CRUD actions.
+
+  - **Error Handling**:
+    - Provides user feedback for operation successes or failures.
+    - Gracefully manages fetch errors during API calls.
+
+  **Technologies**:
+  - React for state and effects.
+  - `react-router-dom` for navigation.
+  - Speech and voice interactivity via `react-speech-recognition`.
+*/
 import React, { useState, useEffect } from 'react';
 import ReactLoading from 'react-loading';
 import { useNavigate } from 'react-router-dom';
