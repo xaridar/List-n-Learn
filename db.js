@@ -75,8 +75,6 @@ const updateSet = async (title, description, cards, id, toDel) => {
 		else i++;
 	}
 
-	console.log(toDel);
-
 	for (let i = 0; i < toDel.length; i++) {
 		await Card.deleteOne({ _id: toDel[i] });
 	}
@@ -85,7 +83,6 @@ const updateSet = async (title, description, cards, id, toDel) => {
 	const set = await getSet(id);
 	set.title = title;
 	set.description = description;
-	console.log(set.cards);
 	set.cards = cards;
 	await set.save();
 	return true;

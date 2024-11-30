@@ -19,6 +19,11 @@ export const EditSet = () => {
 	const [description, setDescription] = useState('');
 	const bottomRef = useRef();
 	const [anim, setAnim] = useAnim();
+	const [updater, inc] = useState(0);
+
+	const update = () => {
+		inc(i => i + 1);
+	}
 
 	// Fetch set data on component mount
 	useEffect(() => {
@@ -107,7 +112,6 @@ export const EditSet = () => {
 			description,
 			toDel,
 		};
-		console.log(updatedSet);
 
 		try {
 			const response = await fetch('/set', {
@@ -125,8 +129,8 @@ export const EditSet = () => {
 				if (audio) await speakPhrase('Your set has been saved!');
 				navigate(`/view?id=${setID}`);
 			} else {
-				toast.error('Set has not been saved');
-				if (audio) await speakPhrase('Set has not been saved due to an error.');
+				toast.error('Set has not been saved, either due to having no cards contained or a server error.');
+				if (audio) await speakPhrase('Set has not been saved, either due to having no cards contained or a server error.');
 			}
 		} catch (error) {
 			console.error('Error saving set:', error);
@@ -174,6 +178,7 @@ export const EditSet = () => {
 				SpeechRecognition.getRecognition(),
 			);
 			card.definition = newDef.trim();
+			update();
 		}
 	};
 
@@ -268,7 +273,7 @@ export const EditSet = () => {
 			callback: () => navigate(`/view?id=${setID}`),
 		},
 		{
-			command: 'Edit *',
+			command: 'Edit definition *',
 			callback: editDef,
 		},
 		{
@@ -319,6 +324,7 @@ export const EditSet = () => {
 						key={c._id}
 						index={i}
 						onRemove={removeCard} // Pass remove function
+						updater={updater}
 					/>
 				))}
 				<div ref={bottomRef}></div>

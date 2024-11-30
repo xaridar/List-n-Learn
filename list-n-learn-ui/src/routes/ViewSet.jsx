@@ -25,7 +25,6 @@ export const ViewSet = () => {
 		// Retrieves set from db and stores info in setInfo and cards in setCards
 		// Returns to home if setID does not exist
 		const getSet = () => {
-			console.log(setID);
 			fetch(`/set?id=${setID}`)
 				.then((res) => res.json())
 				.then((res) => {

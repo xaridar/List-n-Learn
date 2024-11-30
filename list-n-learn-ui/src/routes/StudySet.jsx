@@ -34,7 +34,6 @@ export const StudySet = () => {
 	}, [cards, studyingFavs]);
 
 	const incrementCount = useCallback(() => {
-		console.log(currCards);
 		if (index + 1 >= currCards.length - 1) {
 			setRightDisabled(true);
 		} else {
@@ -67,7 +66,6 @@ export const StudySet = () => {
 			return;
 		}
 		const getSet = () => {
-			console.log(setID);
 			fetch(`/set?id=${setID}`)
 				.then((res) => res.json())
 				.then((res) => {
@@ -128,7 +126,11 @@ export const StudySet = () => {
 		},
 		{
 			command: 'Restart',
-			callback: () => setStudyingFavs(-1),
+			callback: () => restartStudying(),
+		},
+		{
+			command: 'Pick s',
+			callback: () => restartStudying(),
 		},
 		{
 			command: 'View set',

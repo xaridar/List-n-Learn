@@ -33,7 +33,6 @@ export const Home = () => {
 	}, [sets]);
 
 	const deleteSet = async (setId, audio = false) => {
-		console.log(audio);
 		if (!audio) {
 			if (!window.confirm('Are you sure you want to delete this set? A deleted set cannot be retrieved.')) return;
 		} else {
@@ -128,7 +127,6 @@ export const Home = () => {
 
 	const deleteSetByTitle = async (title) => {
 		for (const set of sets) {
-			console.log(set.title.trim().toLowerCase(), title);
 			if (set.title.trim().toLowerCase() === title.trim().toLowerCase()) {
 				await deleteSet(set._id, true);
 				return;

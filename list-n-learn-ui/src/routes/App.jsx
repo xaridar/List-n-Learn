@@ -116,8 +116,11 @@ export const App = () => {
 			if (signin && e.key === 'Escape') {
 				closeInput();
 			}
+			if (helpPop && e.key === 'Escape') {
+				setHelpPop(false);
+			}
 		},
-		[signin],
+		[signin, helpPop],
 	);
 	useEffect(() => {
 		nameRef.current?.focus();
@@ -191,7 +194,7 @@ export const App = () => {
 									<MenuItem onClick={() => setSpeed(2)}>2x Speed</MenuItem>
 									<MenuItem onClick={() => setSpeed(3)}>3x Speed</MenuItem>
 								</SubMenu>
-								<MenuItem onClick={() => setAnim((a) => !a)}>Animations {anim ? 'off' : 'on'}</MenuItem>
+								<MenuItem onClick={() => setAnim(`${!anim}`)}>Animations {anim ? 'off' : 'on'}</MenuItem>
 								<MenuItem
 									onClick={() => {
 										setHelpPop(true);
@@ -260,7 +263,7 @@ export const App = () => {
 			) : null}
 			{helpPop && (
 				<div
-					className='fullpage'
+					className='fullpage bg'
 					onClick={() => setHelpPop(false)} // Close menu when clicking outside
 				>
 					<div

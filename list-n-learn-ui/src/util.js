@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import useLocalStorage from 'react-use-localstorage';
 
 export const checkUser = async (username) => {
 	const res = await fetch(`/user?name=${username}`);
@@ -43,14 +44,13 @@ export const getCard = (cards, term) => {
 };
 
 let logoutFn = () => null;
-let isAnim = localStorage.getItem('lnl-anim');
 export const useAnim = () => {
-	const [anim, setAnim] = useState(isAnim);
+	const [anim, setAnim] = useLocalStorage('lnl-anim', 'true');
+	const [boolAnim, setBoolAnim] = useState(anim !== 'false');
 	useEffect(() => {
-		isAnim = anim;
-		localStorage.setItem('lnl-anim', anim);
+		setBoolAnim(anim === 'true');
 	}, [anim]);
-	return [anim, setAnim];
+	return [boolAnim, setAnim];
 };
 
 export const registerLogout = (logout) => {
@@ -89,13 +89,13 @@ export const defCommands = (navigate, setAnim) => [
 	{
 		command: 'Animation off',
 		callback: () => {
-			setAnim(false);
+			setAnim('false');
 		},
 	},
 	{
 		command: 'Animation on',
 		callback: () => {
-			setAnim(true);
+			setAnim('true');
 		},
 	},
 ];
