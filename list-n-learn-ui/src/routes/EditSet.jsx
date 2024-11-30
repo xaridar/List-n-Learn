@@ -1,3 +1,31 @@
+/*
+  This file defines the `EditSet` component, allowing users to edit flashcard sets.
+
+  **Key Features**:
+  - **Set Management**:
+    - Fetches and displays set data (title, description, and cards)
+    - Enables adding, removing, and reordering cards using `framer-motion`'s `Reorder` component.
+    - Allows saving changes to the backend or discarding edits.
+
+  - **Voice Commands**:
+    - Integrates `react-speech-recognition` for editing via speech.
+    - Commands include:
+      - "Add card" to create a new card.
+      - "Edit title/description"
+      - "Define [term]"
+      - "Save set" to save changes.
+      - "Add/remove favorite" to toggle card favorites.
+
+  - **Error Handling**:
+    - Prevents saving without a title or description.
+    - Handles fetch errors when retrieving or updating sets.
+
+  - **Technologies**:
+    - `React` for state and effects.
+    - `react-speech-recognition` for voice interaction.
+    - `framer-motion` for drag-and-drop card reordering.
+    - Backend integration for CRUD operations on sets.
+*/
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -19,11 +47,6 @@ export const EditSet = () => {
 	const [description, setDescription] = useState('');
 	const bottomRef = useRef();
 	const [anim, setAnim] = useAnim();
-	const [updater, inc] = useState(0);
-
-	const update = () => {
-		inc(i => i + 1);
-	}
 
 	// Fetch set data on component mount
 	useEffect(() => {
@@ -112,6 +135,7 @@ export const EditSet = () => {
 			description,
 			toDel,
 		};
+		console.log(updatedSet);
 
 		try {
 			const response = await fetch('/set', {
@@ -129,8 +153,8 @@ export const EditSet = () => {
 				if (audio) await speakPhrase('Your set has been saved!');
 				navigate(`/view?id=${setID}`);
 			} else {
-				toast.error('Set has not been saved, either due to having no cards contained or a server error.');
-				if (audio) await speakPhrase('Set has not been saved, either due to having no cards contained or a server error.');
+				toast.error('Set has not been saved');
+				if (audio) await speakPhrase('Set has not been saved due to an error.');
 			}
 		} catch (error) {
 			console.error('Error saving set:', error);
@@ -152,7 +176,7 @@ export const EditSet = () => {
 				.map((w) => {
 					return w[0].toUpperCase() + w.substring(1).toLowerCase();
 				})
-				.join(' ').trim(),
+				.join(' '),
 		);
 	};
 
@@ -163,7 +187,7 @@ export const EditSet = () => {
 			true,
 			SpeechRecognition.getRecognition(),
 		);
-		setDescription(newDesc.trim());
+		setDescription(newDesc);
 	};
 
 	const editDef = async (term) => {
@@ -177,8 +201,7 @@ export const EditSet = () => {
 				true,
 				SpeechRecognition.getRecognition(),
 			);
-			card.definition = newDef.trim();
-			update();
+			card.definition = newDef;
 		}
 	};
 
@@ -192,17 +215,34 @@ export const EditSet = () => {
 	};
 
 	// Add a new blank card to the set
-	const handleNewCard = async () => {
-		setCards((cards) => {
-			const card = {
-				term: '',
-				definition: '',
-				favorite: false,
-				_id: 'newCard' + cards.length,
-			};
-			return [...cards, card];
-		});
-	};
+	const handleNewCard = async (audio = false) => {
+		const card = {
+			term: '',
+			definition: '',
+			favorite: false,
+			_id: 'newCard' + cards.length,
+		};
+
+		if (audio){
+			const speechTerm = await speakPhrase('What would you like the term to be?',
+			true,
+			SpeechRecognition.getRecognition());
+
+			card.term = speechTerm.trim();
+
+			const speechDefinition = await speakPhrase('What would you like the definition to be?',
+			true,
+			SpeechRecognition.getRecognition());
+
+			card.definition = speechDefinition.trim();
+
+			//console.log(speechTerm);
+			//console.log(speechDefinition);
+
+			await speakPhrase(`You have added a card with term ${speechTerm}`)
+		}
+		setCards(cards => [...cards, card]);
+	};	
 
 	const listCards = async () => {
 		await speakPhrase('The terms in this set are:');
@@ -254,7 +294,7 @@ export const EditSet = () => {
 	const commands = [
 		{
 			command: 'Add card',
-			callback: handleNewCard,
+			callback: () => handleNewCard(true),
 		},
 		{
 			command: 'Edit title',
@@ -273,7 +313,7 @@ export const EditSet = () => {
 			callback: () => navigate(`/view?id=${setID}`),
 		},
 		{
-			command: 'Edit definition *',
+			command: 'Edit *',
 			callback: editDef,
 		},
 		{
@@ -324,7 +364,6 @@ export const EditSet = () => {
 						key={c._id}
 						index={i}
 						onRemove={removeCard} // Pass remove function
-						updater={updater}
 					/>
 				))}
 				<div ref={bottomRef}></div>

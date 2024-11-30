@@ -1,3 +1,24 @@
+/*
+  The `EditableCard` component represents a single editable flashcard within a reorderable list.
+
+  **Features**:
+  - **Reorderable Cards**:
+    - Uses `framer-motion`'s `Reorder.Item` for drag-and-drop functionality.
+    - Includes a draggable handle (`FontAwesomeIcon` with `faGripLinesVertical`) for reordering.
+
+  - **Editable Flashcard**:
+    - Renders a `FullFlashcard` component with editable fields for term and definition.
+    - Updates the `card` object directly when fields are modified.
+
+  - **Favorite Toggle**:
+    - Displays a favorite toggle button linked to the card's state.
+    - Updates the card's `favorite` property when toggled.
+
+  **Props**:
+  - `card`: Object containing term, definition, and favorite state.
+  - `onRemove`: Function to handle card deletion.
+  - `index`: Card's position in the list.
+*/
 import React, { useEffect, useReducer, useState } from 'react';
 import { Reorder, useDragControls } from 'framer-motion';
 import { FullFlashcard } from './FullFlashcard';
