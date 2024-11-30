@@ -44,6 +44,8 @@ export const getCard = (cards, term) => {
 };
 
 let logoutFn = () => null;
+let loginFn = () => null;
+let helpFn = () => null;
 export const useAnim = () => {
 	const [anim, setAnim] = useLocalStorage('lnl-anim', 'true');
 	const [boolAnim, setBoolAnim] = useState(anim !== 'false');
@@ -56,11 +58,29 @@ export const useAnim = () => {
 export const registerLogout = (logout) => {
 	logoutFn = logout;
 };
+export const registerLogin = (login) => {
+	loginFn = login;
+};
+export const registerHelp = (help) => {
+	helpFn = help;
+};
 
 export const defCommands = (navigate, setAnim) => [
 	{
 		command: 'Home',
 		callback: () => navigate('/'),
+	},
+	{
+		command: 'Help',
+		callback: helpFn
+	},
+	{
+		command: 'Login',
+		callback: loginFn
+	},
+	{
+		command: 'Log in',
+		callback: loginFn
 	},
 	{
 		command: 'Log out',
@@ -88,14 +108,10 @@ export const defCommands = (navigate, setAnim) => [
 	},
 	{
 		command: 'Animation off',
-		callback: () => {
-			setAnim('false');
-		},
+		callback: () => setAnim('false'),
 	},
 	{
 		command: 'Animation on',
-		callback: () => {
-			setAnim('true');
-		},
+		callback: () => setAnim('true'),
 	},
 ];

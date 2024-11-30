@@ -5,11 +5,11 @@ import toast, { Toaster } from 'react-hot-toast';
 import { faClose, faPaperPlane, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateUsername } from 'unique-username-generator';
-import { checkUser, registerLogout, setSpeed, speakPhrase, useAnim } from '../util';
+import { checkUser, registerHelp, registerLogout, registerLogin, setSpeed, speakPhrase, useAnim } from '../util';
 import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton, SubMenu } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import SpeechRecognition from 'react-speech-recognition';
 //import Popup from './Popup';
 
 const router = createBrowserRouter([
@@ -139,21 +139,11 @@ export const App = () => {
 			document.removeEventListener('keydown', keyListener);
 		};
 	}, [keyListener]);
-	const commands = [
-		{
-			command: 'Login',
-			callback: () => createUser(true)
-		},
-		{
-			command: 'Log in',
-			callback: () => createUser(true)
-		}
-	]
-
-	useSpeechRecognition({ commands });
 
 	useEffect(() => {
 		registerLogout(logout);
+		registerLogin(() => createUser(true));
+		registerHelp(helpMenu);
 		SpeechRecognition.startListening({ continuous: true, interimResults: true });
 	}, []);
 
@@ -172,141 +162,134 @@ export const App = () => {
 				/>
 			) : (
 				<div className={`App ${anim ? '' : 'no-anim'}`}>
-					{username ? (
-						<header>
-							<a
-								href='/'
-								style={{ color: 'currentcolor', textDecoration: 'none' }}>
-								List n' Learn
-							</a>
-							<Menu
-								menuButton={
-									<MenuButton className='button button-sm'>
-										{username}
-										<FontAwesomeIcon icon={faCaretDown} />
-									</MenuButton>
-								}
-								transition>
-								<MenuItem href={'/'}>View your sets</MenuItem>
-								<SubMenu label='Set Playback Speed'>
-									<MenuItem onClick={() => setSpeed(0.5)}>Half Speed</MenuItem>
-									<MenuItem onClick={() => setSpeed(1)}>Default Speed</MenuItem>
-									<MenuItem onClick={() => setSpeed(2)}>2x Speed</MenuItem>
-									<MenuItem onClick={() => setSpeed(3)}>3x Speed</MenuItem>
-								</SubMenu>
-								<MenuItem onClick={() => setAnim(`${!anim}`)}>Animations {anim ? 'off' : 'on'}</MenuItem>
-								<MenuItem
-									onClick={() => {
-										setHelpPop(true);
-									}}>
-									Commands List
-								</MenuItem>
-								<MenuItem onClick={logout}>Logout</MenuItem>
-							</Menu>
-						</header>
-					) : (
-						<h1>List n' Learn</h1>
-					)}
-					{username ? (
-						<main>
-							<RouterProvider router={router} />
-						</main>
-					) : (
-						<div className='buttons-row'>
-							<button
-								className='button'
-								onClick={createUser}>
-								Create Account
-							</button>
-							<button
-								className='button'
-								onClick={signIn}>
-								Log into Existing Account
-							</button>
-							<button
-								className='button'
-								onClick={helpMenu}>
-								Help
-							</button>
-						</div>
-					)}
-				</div>
-			)}
-			{signin ? (
-				<form
-					onSubmit={setName}
-					className='fullpage bg'
-					onClick={closeInput}>
-					<div
-						className='dialog'
-						onClick={(e) => e.stopPropagation()}>
-						<div>
-							<input
-								title='Username'
-								placeholder='Username'
-								ref={nameRef}
-							/>
-							<button
-								className='button'
-								type={'submit'}>
-								<FontAwesomeIcon icon={faPaperPlane} />
-							</button>
-						</div>
-						<p className='error-msg'>{error}</p>
-					</div>
-					<button
-						className='close'
-						onClick={closeInput}>
-						<FontAwesomeIcon icon={faClose} />
-					</button>
-				</form>
-			) : null}
-			{helpPop && (
-				<div
-					className='fullpage bg'
-					onClick={() => setHelpPop(false)} // Close menu when clicking outside
-				>
-					<div
-						className='dialog'
-						onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-					>
-						<h2>Commands List</h2>
-						<p>Here are some tips to get started with voice commands:</p>
-						<ul>
-						<li>
-							<strong>On the Study Page:</strong>
-							<ul>
-							<li>Say "Next card" or "Previous card" to navigate through flashcards.</li>
-							<li>Say "Flip" to toggle between the term and definition on a card.</li>
-							<li>Say "Restart" to begin the set from the start.</li>
-							<li>Say "Repeat" to hear the current card's text again.</li>
-							<li>Say "Stop" to end audio playback.</li>
-							<li>Say "Study favorites" or "Study all" to focus on favorited or all cards.</li>
-							</ul>
-						</li>
-						<li>
-							<strong>On the Edit Page:</strong>
-							<ul>
-							<li>Say "Add card" to create a new flashcard.</li>
-							<li>Say "Edit term to [new term]" or "Edit definition to [new definition]" to modify a card.</li>
-							</ul>
-						</li>
-						<li>
-							<strong>On the View Page:</strong>
-							<ul>
-							<li>Say "List cards" to hear all card titles in the set.</li>
-							<li>Say "Define [term]" to hear the definition of a term.</li>
-							<li>Say "View set" to navigate to the set view.</li>
-							<li>Say "Edit set" to navigate to the set editor.</li>
-							</ul>
-						</li>
-						</ul>
+				{username ? (
+					<header>
+						<a
+							href='/'
+							style={{ color: 'currentcolor', textDecoration: 'none' }}>
+							List n' Learn
+						</a>
+						<Menu
+							menuButton={
+								<MenuButton className='button button-sm'>
+									{username}
+									<FontAwesomeIcon icon={faCaretDown} />
+								</MenuButton>
+							}
+							transition>
+							<MenuItem href={'/'}>View your sets</MenuItem>
+							<SubMenu label='Set Playback Speed'>
+								<MenuItem onClick={() => setSpeed(0.5)}>Half Speed</MenuItem>
+								<MenuItem onClick={() => setSpeed(1)}>Default Speed</MenuItem>
+								<MenuItem onClick={() => setSpeed(2)}>2x Speed</MenuItem>
+								<MenuItem onClick={() => setSpeed(3)}>3x Speed</MenuItem>
+							</SubMenu>
+							<MenuItem onClick={() => setAnim(`${!anim}`)}>Animations {anim ? 'off' : 'on'}</MenuItem>
+							<MenuItem
+								onClick={() => {
+									setHelpPop(true);
+								}}>
+								Commands List
+							</MenuItem>
+							<MenuItem onClick={logout}>Logout</MenuItem>
+						</Menu>
+					</header>
+				) : (
+					<h1>List n' Learn</h1>
+				)}
+				{username ? (
+					<main>
+						<RouterProvider router={router} />
+					</main>
+				) : (
+					<div className='buttons-row'>
 						<button
-							className='close'
-							onClick={() => setHelpPop(false)}>
-							<FontAwesomeIcon icon={faClose} />
+							className='button'
+							onClick={createUser}>
+							Create Account
+						</button>
+						<button
+							className='button'
+							onClick={signIn}>
+							Log into Existing Account
+						</button>
+						<button
+							className='button'
+							onClick={helpMenu}>
+							Help
 						</button>
 					</div>
+				)}
+				{signin ? (
+					<div className='fullpage bg' onClick={closeInput}>
+						<form onSubmit={setName}>
+							<div
+								className='dialog'
+								onClick={(e) => e.stopPropagation()}>
+								<div>
+									<input
+										title='Username'
+										placeholder='Username'
+										ref={nameRef}
+									/>
+									<button
+										className='button'
+										type={'submit'}>
+										<FontAwesomeIcon icon={faPaperPlane} />
+									</button>
+								</div>
+								<p className='error-msg'>{error}</p>
+							</div>
+							<button
+								className='close'
+								onClick={closeInput}>
+								<FontAwesomeIcon icon={faClose} />
+							</button>
+						</form>
+					</div>
+				) : null}
+				{helpPop && (
+					<div
+						className='fullpage bg'
+						onClick={() => setHelpPop(false)} // Close menu when clicking outside
+					>
+						<div
+							className='dialog'
+							onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+						>
+							<section>
+								<h2 style={{marginTop: '0'}}>Commands List</h2>
+								<p>Here are some tips to get started with voice commands:</p>
+								<h3>On the Study Page:</h3>
+								<ul>
+									<li>Say "Next card" or "Previous card" to navigate through flashcards.</li>
+									<li>Say "Flip" to toggle between the term and definition on a card.</li>
+									<li>Say "Restart" to begin the set from the start.</li>
+									<li>Say "Repeat" to hear the current card's text again.</li>
+									<li>Say "Stop" to end audio playback.</li>
+									<li>Say "Study favorites" or "Study all" to focus on favorited or all cards.</li>
+								</ul>
+								<h3>On the Edit Page:</h3>
+								<ul>
+									<li>Say "Add card" to create a new flashcard.</li>
+									<li>Say "Edit term to [new term]" or "Edit definition to [new definition]" to modify a card.</li>
+								</ul>
+								<h3>On the View Page:</h3>
+								<ul>
+									<li>Say "List cards" to hear all card titles in the set.</li>
+									<li>Say "Define [term]" to hear the definition of a term.</li>
+									<li>Say "View set" to navigate to the set view.</li>
+									<li>Say "Edit set" to navigate to the set editor.</li>
+								</ul>
+							</section>
+							<button
+								className='close'
+								onClick={() => setHelpPop(false)}>
+								<FontAwesomeIcon icon={faClose} />
+							</button>
+						</div>
+					</div>
+				)}
 				</div>
 			)}
 		</>

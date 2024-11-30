@@ -48,7 +48,7 @@ const createUser = async (username) => {
 };
 
 const updateSet = async (title, description, cards, id, toDel) => {
-	if (cards.some((c) => ((c.term === '') != c.definition) === '')) return false;
+	if (cards.some(c => (c.term === '') != (c.definition === ''))) return false;
 	await Promise.all(
 		cards.map(async (c, i) => {
 			if (c.term === '' && c.definition === '') {
