@@ -1,3 +1,9 @@
+/**
+ * This file defines the CRUD API used for data operations and user fetching for List n' Learn.
+ * 
+ * 
+ */
+
 const express = require('express');
 const cors = require('cors');
 const {
@@ -9,7 +15,6 @@ const {
 	getSet,
 	updateSet,
 	newSet,
-	newCard,
 	deleteSet,
 } = require('./db');
 

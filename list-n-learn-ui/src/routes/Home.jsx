@@ -7,7 +7,7 @@
     - Allows creating new sets (`newSet`) and deleting sets by ID (`deleteSet`) or title (`deleteSetByTitle`).
     - Handles deletion with both text and voice-based confirmation.
 
-  - **Speech Commands**:
+  - **Voice Commands**:
     - Integrates `react-speech-recognition` for commands like:
       - "New set" to create a set.
       - "Delete set [title]" to remove a set by name.
