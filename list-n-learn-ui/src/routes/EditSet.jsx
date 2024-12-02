@@ -89,13 +89,14 @@ export const EditSet = () => {
 			);
 			let decided = false;
 			while (!decided) {
-				if (response === 'yes') {
+				if (response.trim().toLowerCase() === 'yes') {
 					decided = true;
-				} else if (response === 'no') {
+					break;
+				} else if (response.trim().toLowerCase() === 'no') {
 					decided = true;
 					return;
 				}
-				response = speakPhrase(
+				response = await speakPhrase(
 					"Sorry, I didn't get that. Are you sure you want to delete this card?",
 					true,
 					SpeechRecognition.getRecognition(),
@@ -332,6 +333,20 @@ export const EditSet = () => {
 			command: 'List cards',
 			callback: listCards,
 		},
+		{
+			command: 'Delete *',
+			callback: (term) => {
+				for (let i = 0; i < cards.length; i++) {
+					const card = cards[i];
+					console.log(term);
+					if (card.term.trim().toLowerCase() === term.trim().toLowerCase()) {
+						removeCard(i, card._id, true);
+						return;
+					}
+				}
+				speakPhrase(`That term doesn't exist!`);	
+			}
+		}	  
 	];
 	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });
@@ -381,7 +396,7 @@ export const EditSet = () => {
 				</button>
 			</div>
 			<button
-				onClick={handleNewCard}
+				onClick={() => handleNewCard()}
 				className='action-button button add-card'
 				data-tooltip-id='my-tooltip'
 				data-tooltip-content='Add card to set'>
