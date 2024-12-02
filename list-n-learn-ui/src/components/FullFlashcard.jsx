@@ -1,3 +1,24 @@
+/*
+  This file defines the `FullFlashcard` component, which displays a singular card's term and definitio at the same time (used in View Set and Edit Set (through EditableFlashcard)).
+
+  **Core Features**:
+	- Reorderable Cards:
+		- Uses `framer-motion`'s `Reorder.Item` for drag-and-drop functionality.
+		- Includes a draggable handle (`FontAwesomeIcon` with `faGripLinesVertical`) for reordering.
+
+  	-	Editable Flashcard:
+		- Renders a `FullFlashcard` component with editable fields for term and definition.
+		- Updates the `card` object directly when fields are modified.
+
+	- Favorite Toggle:
+		- Displays a favorite toggle button linked to the card's state.
+		- Updates the card's `favorite` property when toggled.
+
+	- Technologies:
+		- `React` for state, references, and effects.
+		- Backend integration for CRUD operations on cards.
+*/
+
 import React, { useRef } from 'react';
 import { faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

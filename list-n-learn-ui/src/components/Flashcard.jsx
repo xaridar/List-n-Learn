@@ -1,3 +1,15 @@
+/*
+  This file defines the `Flashcard` component, which displays a singular card in a set that can be flipped to view the term and definition (used in Study Set).
+
+  **Core Features**:
+  - **Interact with Card**:
+	- Flip card (default display is term)
+	- Read current side of card aloud
+
+  - **Technologies**:
+    - `React` for state, references, and effects.
+*/
+
 import React, { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faStar } from '@fortawesome/free-solid-svg-icons';

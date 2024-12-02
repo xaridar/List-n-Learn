@@ -1,3 +1,35 @@
+/*
+  This file defines the `Study` component, where a user is able to study a flashcard set in the "List n' Learn" app.
+
+  **Core Features**:
+  - **Study Set**:
+	- Allows user to choose between studying favorited cards or the full set
+	- Displays single card at once
+	- Allows user to restart studying from the beginning of the set
+	- Users can flip card to see / hear term or definition
+	- Navigate through cards using arrows / voice
+
+  - **Voice Commands**:
+    - Study all cards
+	- Study only favorited cards
+	- Start voice to begin studying with voice
+	- Restart studying from the beginning of the set
+	- Flip card
+	- Repeat current side of current card
+	- Stop voice control
+	- Go to view or edit the set from this page
+ 
+  - **Error Handling**:
+	- If a card with a given term doesn't exist, user is informed that it is an invalid card (when asking for definition)
+	- If user attempts to edit set but isn't the owner, user is informed that they are not able to edit the set and are not sent to the edit functionality
+
+  - **Technologies**:
+    - `React` for state and effects.
+    - `react-speech-recognition` for voice interaction.
+	- `react-router-dom` for page navigation and fetching URL parameters
+    - Backend integration for CRUD operations on sets.
+*/
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Flashcard } from '../components/Flashcard';

@@ -1,3 +1,17 @@
+/*
+  This file defines the `Set Preview` component, which displays a set's title, description, and number of cards.
+
+  **Core Features**:
+  - **Interact with Set**:
+	- Navigate to edit, view, or study set
+	- Delete set
+
+  - **Technologies**:
+    - `React` for state, references, and effects.
+    - Backend integration for CRUD operations on sets.
+*/
+
+
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
