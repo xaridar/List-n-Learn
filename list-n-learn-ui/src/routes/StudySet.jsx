@@ -12,10 +12,10 @@ export const StudySet = () => {
 	const setID = searchParams.get('id');
 	
 	useEffect(() => {
-		setStudyingFavs(searchParams.get('favorite') === 'true')
+		//setStudyingFavs(searchParams.get('favorite') === 'true')
 	}, [])
 
-	const [studyingFavs, setStudyingFavs] = useState(false);
+	const [studyingFavs, setStudyingFavs] = useState(-1);
 	const [cards, setCards] = useState([]);
 	const [currCards, setCurrCards] = useState([]);
 	const [info, setInfo] = useState();
@@ -27,6 +27,7 @@ export const StudySet = () => {
 	const navigate = useNavigate();
 
 	const restartStudying = useCallback(() => {
+		if (studyingFavs == -1) return;
 		setCurrCards(studyingFavs ? cards.filter(card => card.favorite) : cards);
 		console.log(cards.filter(cards => cards.favorite))
 		setIndex(0);
