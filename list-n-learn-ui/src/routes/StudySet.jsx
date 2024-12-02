@@ -1,3 +1,18 @@
+/*
+	This file defines the 'StudySet' component which  allows users to work through the given cards in the selected set.
+
+	**Key Features**
+	- **Set Management**
+		- Checks users access to the given set
+		- Using the Usestate to access the cards in the set
+		- Increment and Decrement through the study set to access previous and following cards
+
+	- **Voice Commands**
+		- Integrates `react-speech-recognition` for commands like:
+		- "Next card" to move to the net card in the set
+		- "Restart" to restart from the beginning of the set
+	
+*/
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Flashcard } from '../components/Flashcard';
