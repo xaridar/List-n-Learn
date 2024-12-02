@@ -1,8 +1,25 @@
-// Project name: List n' Learn
-// Description: Accessible flashcards with TTS and SST to enable hands-free studying
-// Filename: ViewSet.jsx
-// Description: Retreives a users' flashcard sets for viewing of individual cards
-// Last modified on: 11/25/24
+/*
+  This file defines the `View` component, where a user is able to view a flashcard set in the "List n' Learn" app.
+
+  **Core Features**:
+  - **Set Display**:
+	- Fetches and displays set data (title, description, and cards)
+
+  - **Voice Commands**:
+	- List all cards in the set (term and definition)
+	- Define a given term (read definition of term if a card exists)
+	- Go to study or edit the set from this page
+ 
+  - **Error Handling**:
+	- If a card with a given term doesn't exist, user is informed that it is an invalid card (when asking for definition)
+	- If user attempts to edit set but isn't the owner, user is informed that they are not able to edit the set and are not sent to the edit functionality
+
+  - **Technologies**:
+    - `React` for state and effects.
+    - `react-speech-recognition` for voice interaction.
+	- `react-router-dom` for page navigation and fetching URL parameters
+    - Backend integration for CRUD operations on sets.
+*/
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
