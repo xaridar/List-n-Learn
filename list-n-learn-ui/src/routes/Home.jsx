@@ -72,10 +72,10 @@ export const Home = () => {
 			);
 			let decided = false;
 			while (!decided) {
-				if (response === 'yes') {
+				if (response.trim().toLowerCase() === 'yes') {
 					decided = true;
 					break;
-				} else if (response === 'no') {
+				} else if (response.trim().toLowerCase() === 'no') {
 					decided = true;
 					return;
 				}

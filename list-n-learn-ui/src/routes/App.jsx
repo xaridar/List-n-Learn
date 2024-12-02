@@ -312,34 +312,30 @@ export const App = () => {
 								<h3>On the Edit Page:</h3>
 								<ul>
 									<li>Say "Add card" to create a new flashcard.</li>
-									<li>"Edit definition [new definition]" to modify a card.</li>
+									<li>Say "Edit definition [new definition]" to modify a card.</li>
 									<li>Say "Edit Title"</li>
-									edit description
-									save set
-									cancel
-									define
-									list cards
-									add favorite remove favorite
+									<li>Say "Edit Description"</li>
+									<li>Say "Save Set" to save changes</li>
+									<li>Say "Cancel" to cancel changes</li>
+									<li>Say "Define (Term)" to define a card</li>
+									<li>Say "List Cards" to list all current cards in the set</li>
+									<li>Say "Add / Remove favorite" to toggle the favorited funciton</li>
 								</ul>
 								<h3>On the View Page:</h3>
 								<ul>
-									
 									<li>Say "List cards" to hear all card titles in the set.</li>
 									<li>Say "Define [term]" to hear the definition of a term.</li>
 									<li>Say "Study set" to navigate to the set view.</li>
 									<li>Say "Edit set" to navigate to the set editor.</li>
 								</ul>
-
-								on home
-
-								view set
-								Edit set
-								study set
-								list set
-
-								delete set 
-
-								+ all dropdown commands
+								<h3>On the Home Page:</h3>
+								<ul>
+									<li>Say "View (set)" to view a set</li>
+									<li>Say "Edit (set)" to edit a set</li>
+									<li>Say "Study (set)" to study a set</li>
+									<li>Say "List (set)" to list a set</li>
+									<li>Say "Delete (set)" to delete a set</li>
+								</ul>
 							</section>
 							<button
 								className='close'

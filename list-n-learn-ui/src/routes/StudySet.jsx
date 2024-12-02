@@ -144,10 +144,6 @@ export const StudySet = () => {
 			callback: () => restartStudying(),
 		},
 		{
-			command: 'Pick s',
-			callback: () => restartStudying(),
-		},
-		{
 			command: 'View set',
 			callback: () => navigate(`/view?id=${setID}`),
 		},

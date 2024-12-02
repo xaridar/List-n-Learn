@@ -1,16 +1,14 @@
 /**
  * This file defines the CRUD API used for data operations and user fetching for List n' Learn.
- * 
- * 
  */
 
+// Express.js is used for API integration
 const express = require('express');
 const cors = require('cors');
 const {
 	connect,
 	getUser,
 	getSetsByUser,
-	getAllCards,
 	createUser,
 	getSet,
 	updateSet,
@@ -22,6 +20,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+// Route to fetch a user by name
 app.get('/user', async (req, res) => {
 	const user = await getUser(req.query.name);
 	if (!user.length) {
@@ -31,6 +30,7 @@ app.get('/user', async (req, res) => {
 	}
 });
 
+// Route to create a user given a username
 app.post('/user', async (req, res) => {
 	try {
 		const user = await createUser(req.body.username);
@@ -41,21 +41,19 @@ app.post('/user', async (req, res) => {
 	}
 });
 
+// Route to get all the sets created by a given user
 app.get('/sets', async (req, res) => {
 	const sets = await getSetsByUser(req.query.user);
 	res.json(sets);
 });
 
-app.get('/allcards', async (req, res) => {
-	const cards = await getAllCards();
-	res.json(cards);
-});
-
+// Route to get all information and cards associated with a set
 app.get('/set', async (req, res) => {
 	const set = await getSet(req.query.id);
 	res.json(set);
 });
 
+// Route to update an existing set
 app.put('/set', async (req, res) => {
 	try {
 		const { id, title, description, cards, toDel } = req.body;
@@ -67,6 +65,7 @@ app.put('/set', async (req, res) => {
 	}
 });
 
+// Route to create a new empty set
 app.post('/set', async (req, res) => {
 	try {
 		const { username } = req.body;
@@ -79,6 +78,7 @@ app.post('/set', async (req, res) => {
 	}
 });
 
+// Route to delete a card set
 app.delete('/set', async (req, res) => {
 	try {
 		const { setId } = req.body; // Extract the set ID from the request body
@@ -92,25 +92,8 @@ app.delete('/set', async (req, res) => {
 	}
 });
 
-app.post('/card', async (req, res) => {
-	try {
-		const { term, definition, favorite, setID } = req.body; // Get data for the new card
-		const newCard = await newCard({ term, definition, favorite }); // Create new card instance
-		const id = newCard._id;
-
-		if (setID) {
-			const set = await Set.findById(setID);
-			set.cards.push(newCard._id); // Add card ID to the set's card list
-			await set.save(); // Save the updated set
-		}
-
-		res.json({ id, success: true });
-	} catch (e) {
-		console.log(e);
-		res.json({ success: false });
-	}
-});
-
+// API by default listens on port 8080;
+// React frontend proxies all internal requests to this server for API functionality
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
