@@ -164,44 +164,36 @@ export const Home = () => {
 		await speakPhrase(`This set does not exist`);
 	};
 
-	const pickViewSet = async  () => {
-		console.log('Which set would you like to access?');
-		const response = await speakPhrase(`Which set would you like to access?`, true, SpeechRecognition.getRecognition());
+	const pickViewSet = async (title) => {
 		for (let i = 0; i < sets.length; i++){
-			if(response == sets[i].title){
+			if(title == sets[i].title){
 				navigate(`/view?id=${sets[i]._id}`);
-			}
-			else{
-				console.log('The set you named does not exist.');
-				speakPhrase('The set you named does not exist.');
+				return;
 			}
 		}
+		console.log('The set you named does not exist.');
+		await speakPhrase('The set you named does not exist.');
 	}
-	const pickStudySet = async  () => {
-		console.log('which set would you like to access');
-		const response = speakPhrase(`which set would you like to access`);
+	const pickStudySet = async (title) => {
 		for (let i = 0; i < sets.length; i++){
-			if(response == sets[i]){
+			if(title == sets[i].title){
 				navigate(`/study?id=${sets[i]._id}`);
-			}
-			else{
-				console.log('The set you named does not exist.');
-				speakPhrase('The set you named does not exist.')
+				return;
 			}
 		}
+		console.log('The set you named does not exist.');
+		await speakPhrase('The set you named does not exist.');
 	}
-	const pickEditSet = async  () => {
-		console.log('which set would you like to access');
-		const response = speakPhrase(`which set would you like to access`);
+
+	const pickEditSet = async (title) => {
 		for (let i = 0; i < sets.length; i++){
-			if(response == sets[i]){
-				navigate(`/view?id=${sets[i]._id}`);
-			}
-			else{
-				console.log('The set you named does not exist.');
-				speakPhrase('The set you named does not exist.');
+			if(title == sets[i].title){
+				navigate(`/edit?id=${sets[i]._id}`);
+				return;
 			}
 		}
+		console.log('The set you named does not exist.');
+		await speakPhrase('The set you named does not exist.');
 	}
 
 	const commands = [
@@ -218,16 +210,16 @@ export const Home = () => {
 			callback: deleteSetByTitle,
 		},
 		{
-			command: 'View set',
-			callback: () => pickViewSet(),
+			command: 'View *',
+			callback: pickViewSet,
 		},
 		{
-			command: 'Study set',
-			callback: () => pickStudySet(),
+			command: 'Study *',
+			callback: pickStudySet,
 		},
 		{
-			command: 'Edit set',
-			callback: () => pickEditSet(),
+			command: 'Edit *',
+			callback: pickEditSet,
 		}
 		
 	];
