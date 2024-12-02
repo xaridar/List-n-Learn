@@ -49,6 +49,7 @@ import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton, SubMenu } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
 import SpeechRecognition from 'react-speech-recognition';
+import useLocalStorage from 'react-use-localstorage';
 //import Popup from './Popup';
 
 const router = createBrowserRouter([
@@ -78,6 +79,7 @@ export const App = () => {
 	const [error, setError] = useState('');
 	const nameRef = useRef(null);
 	const [anim, setAnim] = useAnim();
+	const [newUser, setNewUser] = useLocalStorage('lnl-new', 'true');
 	useEffect(() => {
 		const fetchUser = async () => {
 			const user = localStorage.getItem('lnl-user');
@@ -123,6 +125,7 @@ export const App = () => {
 	const [helpPop, setHelpPop] = useState(false);
 	const helpMenu = () => {
 		setHelpPop(!helpPop);
+		setNewUser('false');
 	};
 
 	const signIn = () => {
@@ -157,6 +160,7 @@ export const App = () => {
 			}
 			if (helpPop && e.key === 'Escape') {
 				setHelpPop(false);
+				setNewUser('false');
 			}
 		},
 		[signin, helpPop],
@@ -185,6 +189,10 @@ export const App = () => {
 		registerHelp(helpMenu);
 		SpeechRecognition.startListening({ continuous: true, interimResults: true });
 	}, []);
+
+	useEffect(() => {
+		if (newUser === 'true') setHelpPop(true);
+	}, [newUser]);
 
 	return (
 		<>
@@ -339,7 +347,10 @@ export const App = () => {
 							</section>
 							<button
 								className='close'
-								onClick={() => setHelpPop(false)}>
+								onClick={() => {
+									setHelpPop(false);
+									setNewUser('false');
+								}}>
 								<FontAwesomeIcon icon={faClose} />
 							</button>
 						</div>
