@@ -4,16 +4,11 @@ import { Flashcard } from '../components/Flashcard';
 import { useSpeechRecognition } from 'react-speech-recognition';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight, faEye, faPen } from '@fortawesome/free-solid-svg-icons';
-import { defCommands, speakPhrase } from '../util';
-import { link } from 'framer-motion/client';
+import { defCommands, speakPhrase, useAnim } from '../util';
 
 export const StudySet = () => {
 	const [searchParams] = useSearchParams();
 	const setID = searchParams.get('id');
-	
-	useEffect(() => {
-		//setStudyingFavs(searchParams.get('favorite') === 'true')
-	}, [])
 
 	const [studyingFavs, setStudyingFavs] = useState(-1);
 	const [cards, setCards] = useState([]);
@@ -25,23 +20,20 @@ export const StudySet = () => {
 	const [rightDisable, setRightDisabled] = useState(true);
 	const cardRef = useRef();
 	const navigate = useNavigate();
+	const [anim, setAnim] = useAnim();
 
 	const restartStudying = useCallback(() => {
-		if (studyingFavs == -1) return;
-		setCurrCards(studyingFavs ? cards.filter(card => card.favorite) : cards);
-		console.log(cards.filter(cards => cards.favorite))
+		if (studyingFavs === -1) return;
+		const newCards = studyingFavs ? cards.filter((card) => card.favorite) : cards;
+		setCurrCards(newCards);
 		setIndex(0);
 		setLeftDisabled(true);
 		cardRef.current?.flipToTerm();
+		if (newCards.length < 2) setRightDisabled(true);
+		else setRightDisabled(false);
 	}, [cards, studyingFavs]);
 
-	useEffect(() => {
-		if (currCards.length < 2) setRightDisabled(true);
-		else setRightDisabled(false);
-	}, [currCards])
-
 	const incrementCount = useCallback(() => {
-		console.log(currCards);
 		if (index + 1 >= currCards.length - 1) {
 			setRightDisabled(true);
 		} else {
@@ -53,7 +45,7 @@ export const StudySet = () => {
 			cardRef.current.flipToTerm();
 		} else if (started)
 			speakPhrase('You have reached the end of the set! If you\'d like to restart it, say "Restart".');
-	}, [currCards.length, index, started]);
+	}, [currCards, index, started]);
 
 	const decrementCount = useCallback(() => {
 		if (index - 1 <= 0) {
@@ -74,7 +66,6 @@ export const StudySet = () => {
 			return;
 		}
 		const getSet = () => {
-			console.log(setID);
 			fetch(`/set?id=${setID}`)
 				.then((res) => res.json())
 				.then((res) => {
@@ -86,32 +77,32 @@ export const StudySet = () => {
 	}, [setID, navigate]);
 
 	useEffect(() => {
+		if (studyingFavs === -1) return;
 		restartStudying();
-	}, [cards]);
+	}, [cards, restartStudying, studyingFavs]);
 
 	//check if user exist
-	const keyListener = useCallback(
-		(e) => {
-			console.log(e.code);
-			if (e.code === 'Space') {
-				cardRef.current.flipCard();
-			}
-			if (e.code === 'ArrowLeft') {
-				decrementCount();
-			}
-			if (e.code === 'ArrowRight') {
-				incrementCount();
-			}
-		},
-		[incrementCount, decrementCount],
-	);
-	useEffect(() => {
-		document.addEventListener('keydown', keyListener, true);
+	// const keyListener = useCallback(
+	// 	(e) => {
+	// 		if (e.code === 'Space') {
+	// 			cardRef.current.flipCard();
+	// 		}
+	// 		if (e.code === 'ArrowLeft') {
+	// 			decrementCount();
+	// 		}
+	// 		if (e.code === 'ArrowRight') {
+	// 			incrementCount();
+	// 		}
+	// 	},
+	// 	[incrementCount, decrementCount],
+	// );
+	// useEffect(() => {
+	// 	document.addEventListener('keydown', keyListener, true);
 
-		return () => {
-			document.removeEventListener('keydown', keyListener);
-		};
-	}, [keyListener]);
+	// 	return () => {
+	// 		document.removeEventListener('keydown', keyListener);
+	// 	};
+	// }, [keyListener]);
 	const commands = [
 		{
 			command: 'Next card',
@@ -135,7 +126,11 @@ export const StudySet = () => {
 		},
 		{
 			command: 'Restart',
-			callback: restartStudying,
+			callback: () => restartStudying(),
+		},
+		{
+			command: 'Pick s',
+			callback: () => restartStudying(),
 		},
 		{
 			command: 'View set',
@@ -149,11 +144,33 @@ export const StudySet = () => {
 			},
 		},
 		{
-			command: 'Start studying',
-			callback: () => setStarted(true),
+			command: 'Start voice',
+			callback: () => {
+				if (studyingFavs === -1) {
+					speakPhrase("Please choose 'study favorites' or 'study all' before starting voice.");
+				} else setStarted(true);
+			},
+		},
+		{
+			command: 'Study favorites',
+			callback: async () => {
+				if (started) {
+					await speakPhrase('You are now studying the favorited cards in this set!');
+					setTimeout(() => setStudyingFavs(true), 2000);
+				} else setStudyingFavs(true);
+			},
+		},
+		{
+			command: 'Study all',
+			callback: async () => {
+				if (started) {
+					await speakPhrase('You are now studying all cards in this set!');
+					setTimeout(() => setStudyingFavs(false), 2000);
+				} else setStudyingFavs(false);
+			},
 		},
 	];
-	commands.push(...defCommands(navigate));
+	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });
 
 	const username = localStorage.getItem('lnl-user');
@@ -161,49 +178,80 @@ export const StudySet = () => {
 	//Use flashcard component
 
 	return (
-		<div style={{ maxWidth: '1000px', margin: 'auto' }}>
-			<div
-				className='button'
-				onClick={() => setStarted(true)}>
-				Start Studying
-			</div>
-			<div className='study-group'>
-				<div className='arrow-ctr'>
-					<button
-						className='no-button arrow'
-						disabled={!leftDisable ? '' : 'true'}
-						onClick={decrementCount}>
-						<FontAwesomeIcon icon={faArrowLeft} />
-					</button>
+		<>
+			{studyingFavs === -1 ? (
+				<div
+					class='fullpage'
+					style={{ height: 'fit-content', margin: 'auto' }}>
+					<div className='buttons-row'>
+						<button
+							className='button'
+							onClick={() => setStudyingFavs(false)}>
+							Study All Cards
+						</button>
+						<button
+							className='button'
+							onClick={() => setStudyingFavs(true)}>
+							Study Favorites
+						</button>
+					</div>
 				</div>
-				{currCards.length ? (
-					<Flashcard
-						started={started}
-						ref={cardRef}
-						term={currCards[index].term}
-						definition={currCards[index].definition}
-						favorite={currCards[index].favorite}
-					/>
-				) : (
-					''
-				)}
-				<div className='arrow-ctr'>
-					<button
-						className='no-button arrow'
-						disabled={!rightDisable ? '' : 'true'}
-						onClick={incrementCount}>
-						<FontAwesomeIcon icon={faArrowRight} />
-					</button>
+			) : (
+				<div style={{ maxWidth: '1000px', margin: 'auto' }}>
+					<div
+						className='buttons-row'
+						style={{ marginTop: '1em' }}>
+						<button
+							className='button'
+							onClick={() => setStarted(true)}>
+							Start Voice
+						</button>
+						<button
+							className='button'
+							onClick={() => restartStudying()}>
+							Start from Beginning
+						</button>
+						<button
+							className='button'
+							onClick={() => setStudyingFavs(!studyingFavs)}>
+							{!studyingFavs ? 'Study Favorites' : 'Study All Cards'}
+						</button>
+					</div>
+					<div className='study-group'>
+						{currCards.length ? (
+							<>
+								<div className='arrow-ctr'>
+									<button
+										className='no-button arrow'
+										disabled={leftDisable}
+										onClick={decrementCount}>
+										<FontAwesomeIcon icon={faArrowLeft} />
+									</button>
+								</div>
+								<Flashcard
+									started={started && studyingFavs !== -1}
+									ref={cardRef}
+									term={currCards[index].term}
+									definition={currCards[index].definition}
+									favorite={currCards[index].favorite}
+								/>
+								<div className='arrow-ctr'>
+									<button
+										className='no-button arrow'
+										disabled={rightDisable}
+										onClick={incrementCount}>
+										<FontAwesomeIcon icon={faArrowRight} />
+									</button>
+								</div>
+							</>
+						) : studyingFavs === true ? (
+							<p>There are no favorited cards in this set!</p>
+						) : (
+							''
+						)}
+					</div>
 				</div>
-			</div>
-			<button className='button' onClick={restartStudying}>Start from Beginnning</button>
-			<a
-				className='button action-button editSet'
-				href={`/view?id=${setID}`}
-				data-tooltip-id='my-tooltip'
-				data-tooltip-content='View Set'>
-				<FontAwesomeIcon icon={faEye} />
-			</a>
+			)}
 			{info && username === info.user && (
 				<a
 					className='button action-button ab-left editSet'
@@ -213,6 +261,13 @@ export const StudySet = () => {
 					<FontAwesomeIcon icon={faPen} />
 				</a>
 			)}
-		</div>
+			<a
+				className='button action-button'
+				href={`/view?id=${setID}`}
+				data-tooltip-id='my-tooltip'
+				data-tooltip-content='View Set'>
+				<FontAwesomeIcon icon={faEye} />
+			</a>
+		</>
 	);
 };

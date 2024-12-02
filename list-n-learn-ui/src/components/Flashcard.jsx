@@ -1,9 +1,10 @@
-import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faStar } from '@fortawesome/free-solid-svg-icons';
-import { speakPhrase } from '../util';
+import { speakPhrase, useAnim } from '../util';
 
 export const Flashcard = forwardRef(({ started, term, definition, style, favorite }, ref) => {
+	const [anim, setAnim] = useAnim();
 	useImperativeHandle(ref, () => ({
 		flipToTerm() {
 			setFlipped(false);
@@ -19,9 +20,20 @@ export const Flashcard = forwardRef(({ started, term, definition, style, favorit
 		},
 	}));
 
-	const flipCard = () => setFlipped((f) => !f);
+	const flipCard = () => {
+		setFlipped((f) => !f);
+		if (!anim) return;
+		if (flipped) {
+			cardRef.current?.classList.add('flipFront');
+			cardRef.current?.classList.remove('flipBack');
+		} else {
+			cardRef.current?.classList.add('flipBack');
+			cardRef.current?.classList.remove('flipFront');
+		}
+	};
 
 	const [flipped, setFlipped] = useState(false);
+	const cardRef = useRef();
 
 	useEffect(() => {
 		if (started) speakPhrase(flipped ? definition : term);
@@ -36,9 +48,10 @@ export const Flashcard = forwardRef(({ started, term, definition, style, favorit
 					<div
 						className='card selectable'
 						style={{ width: '100%' }}
-						onClick={flipCard}>
+						onClick={flipCard}
+						ref={cardRef}>
 						<p>{flipped ? definition : term}</p>
-						{favorite ? <FontAwesomeIcon icon={faStar}/> : ''}
+						{favorite ? <FontAwesomeIcon icon={faStar} /> : ''}
 					</div>
 					<button
 						className='flip-btn'

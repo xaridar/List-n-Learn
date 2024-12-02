@@ -1,3 +1,31 @@
+/*
+  This file defines the `EditSet` component, allowing users to edit flashcard sets.
+
+  **Key Features**:
+  - **Set Management**:
+    - Fetches and displays set data (title, description, and cards)
+    - Enables adding, removing, and reordering cards using `framer-motion`'s `Reorder` component.
+    - Allows saving changes to the backend or discarding edits.
+
+  - **Voice Commands**:
+    - Integrates `react-speech-recognition` for editing via speech.
+    - Commands include:
+      - "Add card" to create a new card.
+      - "Edit title/description"
+      - "Define [term]"
+      - "Save set" to save changes.
+      - "Add/remove favorite" to toggle card favorites.
+
+  - **Error Handling**:
+    - Prevents saving without a title or description.
+    - Handles fetch errors when retrieving or updating sets.
+
+  - **Technologies**:
+    - `React` for state and effects.
+    - `react-speech-recognition` for voice interaction.
+    - `framer-motion` for drag-and-drop card reordering.
+    - Backend integration for CRUD operations on sets.
+*/
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -6,7 +34,7 @@ import { EditableCard } from '../components/EditableCard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { defCommands, speakPhrase, getCard } from '../util';
+import { defCommands, speakPhrase, getCard, useAnim } from '../util';
 
 export const EditSet = () => {
 	const [searchParams] = useSearchParams();
@@ -18,6 +46,7 @@ export const EditSet = () => {
 	const [toDel, setToDel] = useState([]);
 	const [description, setDescription] = useState('');
 	const bottomRef = useRef();
+	const [anim, setAnim] = useAnim();
 
 	// Fetch set data on component mount
 	useEffect(() => {
@@ -163,12 +192,9 @@ export const EditSet = () => {
 
 	const editDef = async (term) => {
 		const card = getCard(cards, term);
-		if (card == -1)
-		{
+		if (card === -1) {
 			await speakPhrase(`That is an invalid term`);
-		}
-		else
-		{
+		} else {
 			await speakPhrase(`The current definition of ${term} is ${card.definition}`);
 			const newDef = await speakPhrase(
 				'What would you like to change the definition to?',
@@ -177,32 +203,46 @@ export const EditSet = () => {
 			);
 			card.definition = newDef;
 		}
-	}
+	};
 
 	const getDef = async (term) => {
 		const card = getCard(cards, term);
-		if (card == -1)
-		{
+		if (card === -1) {
 			await speakPhrase(`That is an invalid term`);
-		}
-		else
-		{
+		} else {
 			await speakPhrase(`The current definition of ${term} is ${card.definition}`);
 		}
-	}
+	};
 
 	// Add a new blank card to the set
-	const handleNewCard = async () => {
-		setCards((cards) => {
-			const card = {
-				term: '',
-				definition: '',
-				favorite: false,
-				_id: 'newCard' + cards.length,
-			};
-			return [...cards, card];
-		});
-	};
+	const handleNewCard = async (audio = false) => {
+		const card = {
+			term: '',
+			definition: '',
+			favorite: false,
+			_id: 'newCard' + cards.length,
+		};
+
+		if (audio){
+			const speechTerm = await speakPhrase('What would you like the term to be?',
+			true,
+			SpeechRecognition.getRecognition());
+
+			card.term = speechTerm.trim();
+
+			const speechDefinition = await speakPhrase('What would you like the definition to be?',
+			true,
+			SpeechRecognition.getRecognition());
+
+			card.definition = speechDefinition.trim();
+
+			//console.log(speechTerm);
+			//console.log(speechDefinition);
+
+			await speakPhrase(`You have added a card with term ${speechTerm}`)
+		}
+		setCards(cards => [...cards, card]);
+	};	
 
 	const listCards = async () => {
 		await speakPhrase('The terms in this set are:');
@@ -215,6 +255,36 @@ export const EditSet = () => {
 		await speakPhrase(phrase);
 	};
 
+	const addFav = async () => {
+		const cardName = await speakPhrase(
+			'What card would you like to favorite?',
+			true,
+			SpeechRecognition.getRecognition(),
+		);
+		const card = getCard(cards, cardName);
+		if (card === -1) {
+			await speakPhrase(`That term doesn't exist!`);
+		} else {
+			card.favorite = true;
+			await speakPhrase(`The card '${cardName}' has been favorited!`);
+		}
+	};
+
+	const remFav = async () => {
+		const cardName = await speakPhrase(
+			'What card would you like to un-favorite?',
+			true,
+			SpeechRecognition.getRecognition(),
+		);
+		const card = getCard(cards, cardName);
+		if (card === -1) {
+			await speakPhrase(`That term doesn't exist!`);
+		} else {
+			card.favorite = false;
+			await speakPhrase(`The card '${cardName}' has been un-favorited!`);
+		}
+	};
+
 	useEffect(() => {
 		if (!cards.length || cards[cards.length - 1].term !== '') return;
 		bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -224,7 +294,7 @@ export const EditSet = () => {
 	const commands = [
 		{
 			command: 'Add card',
-			callback: handleNewCard,
+			callback: () => handleNewCard(true),
 		},
 		{
 			command: 'Edit title',
@@ -239,15 +309,31 @@ export const EditSet = () => {
 			callback: () => handleSave(true),
 		},
 		{
+			command: 'Cancel',
+			callback: () => navigate(`/view?id=${setID}`),
+		},
+		{
 			command: 'Edit *',
 			callback: editDef,
 		},
 		{
 			command: 'Define *',
 			callback: getDef,
-		}
+		},
+		{
+			command: 'Add favorite',
+			callback: addFav,
+		},
+		{
+			command: 'Remove favorite',
+			callback: remFav,
+		},
+		{
+			command: 'List cards',
+			callback: listCards,
+		},
 	];
-	commands.push(...defCommands(navigate));
+	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });
 
 	return (

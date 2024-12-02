@@ -1,3 +1,7 @@
+/**
+ * Defines This file defines schemas for use with mongoose foreasy database manipulation
+ */
+
 const mongoose = require('mongoose');
 
 const defineSchemas = () => {

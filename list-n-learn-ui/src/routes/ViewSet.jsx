@@ -7,8 +7,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FullFlashcard } from '../components/FullFlashcard';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { defCommands, speakPhrase } from '../util';
+import { useSpeechRecognition } from 'react-speech-recognition';
+import { defCommands, getCard, speakPhrase, useAnim } from '../util';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faPen } from '@fortawesome/free-solid-svg-icons';
 
@@ -16,6 +16,7 @@ export const ViewSet = () => {
 	const [searchParams] = useSearchParams();
 	const setID = searchParams.get('id');
 	const navigate = useNavigate();
+	const [anim, setAnim] = useAnim();
 	useEffect(() => {
 		if (!setID) {
 			navigate('/');
@@ -24,7 +25,6 @@ export const ViewSet = () => {
 		// Retrieves set from db and stores info in setInfo and cards in setCards
 		// Returns to home if setID does not exist
 		const getSet = () => {
-			console.log(setID);
 			fetch(`/set?id=${setID}`)
 				.then((res) => res.json())
 				.then((res) => {
@@ -66,6 +66,15 @@ export const ViewSet = () => {
 		await speakPhrase(phrase);
 	};
 
+	const getDef = async (term) => {
+		const card = getCard(cards, term);
+		if (card === -1) {
+			await speakPhrase(`That is an invalid term`);
+		} else {
+			await speakPhrase(`The current definition of ${term} is ${card.definition}`);
+		}
+	};
+
 	const commands = [
 		{
 			command: 'Study set',
@@ -84,8 +93,12 @@ export const ViewSet = () => {
 			command: 'List cards',
 			callback: listCards,
 		},
+		{
+			command: 'Define *',
+			callback: getDef,
+		},
 	];
-	commands.push(...defCommands(navigate));
+	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });
 
 	return (

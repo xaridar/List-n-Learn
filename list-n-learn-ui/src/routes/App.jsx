@@ -1,3 +1,42 @@
+/*
+  This file defines the main `App` component for the "List n' Learn" application. 
+  It manages user authentication, routing, and primary application features, including:
+
+  - **User Authentication**:
+    - Handles user creation and login/logout functionality using local storage.
+    - Generates unique usernames and verifies existing users through a backend API.
+    - Uses the `generateUsername` library for random username generation.
+    - Integrates voice feedback for new usernames and displays a toast notification.
+
+  - **Routing**:
+    - Utilizes react-router-dom to define and manage routes for different app views:
+      - `/` (Home)
+      - `/edit` (Edit Set)
+      - `/view` (View Set)
+      - `/study` (Study Set)
+
+  - **UI Components and Interactions**:
+    - Provides a header with a dropdown menu using @szhsin/react-menu for user options:
+      - Adjust playback speed.
+      - Enable/disable animations.
+      - Help menu.
+      - Logout.
+    - Displays a loading animation during async operations.
+
+  - **Speech and Accessibility**:
+    - Integrates `react-speech-recognition` for speech recognition
+    - Utilizes `react-hot-toast` for user notifications.
+    - Includes `react-tooltip`
+
+  - **State and Effects**:
+    - Manages state using React's `useState` for state funcitons
+    - Leverages `useEffect` for fetching user data, local storage updates, and initializing speech recognition.
+    - Implements keyboard accessibility, e.g., closing modals with the `Escape` key.
+
+  - **Help Menu**:
+    - Includes help menu for users
+
+*/
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Home, EditSet, ViewSet, StudySet } from '.';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -5,7 +44,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { faClose, faPaperPlane, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateUsername } from 'unique-username-generator';
-import { checkUser, registerLogout, setSpeed } from '../util';
+import { checkUser, registerHelp, registerLogout, registerLogin, setSpeed, speakPhrase, useAnim } from '../util';
 import ReactLoading from 'react-loading';
 import { Menu, MenuItem, MenuButton, SubMenu } from '@szhsin/react-menu';
 import { Tooltip } from 'react-tooltip';
@@ -32,6 +71,13 @@ const router = createBrowserRouter([
 ]);
 
 export const App = () => {
+
+	const [username, setUsername] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [signin, setSignin] = useState(false);
+	const [error, setError] = useState('');
+	const nameRef = useRef(null);
+	const [anim, setAnim] = useAnim();
 	useEffect(() => {
 		const fetchUser = async () => {
 			const user = localStorage.getItem('lnl-user');
@@ -48,16 +94,17 @@ export const App = () => {
 		};
 		fetchUser();
 	}, []);
-	const createUser = async () => {
+	const createUser = async (audio = false) => {
+		if (username != null) return;
 		setLoading(true);
 		let uniqueUsername = false;
-		let username;
+		let un;
 		while (!uniqueUsername) {
 			// Extremely low chance of collisions (random selection of approx. 5.4B options)
-			username = generateUsername('', 2);
+			un = generateUsername('', 2);
 			const res = await fetch('/user', {
 				method: 'POST',
-				body: JSON.stringify({ username }),
+				body: JSON.stringify({ username: un }),
 				headers: {
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
@@ -66,21 +113,16 @@ export const App = () => {
 			const json = await res.json();
 			if (json.success) uniqueUsername = true;
 		}
+		if (audio) speakPhrase(`Your username is: ${un}.`);
 		toast(
-			'Make sure to keep track of your username! This is necessary to login fom another device, and cannot be changed.',
+			'Make sure to keep track of your username! This is necessary to login from another device, and cannot be changed.',
 		);
-		setUsername(username);
+		setUsername(un);
 	};
 
-	const [username, setUsername] = useState(null);
-	const [loading, setLoading] = useState(true);
-	const [signin, setSignin] = useState(false);
-	const [error, setError] = useState('');
-	const nameRef = useRef(null);
-	
 	const [helpPop, setHelpPop] = useState(false);
 	const helpMenu = () => {
-		setHelpPop(!helpPop)
+		setHelpPop(!helpPop);
 	};
 
 	const signIn = () => {
@@ -113,8 +155,11 @@ export const App = () => {
 			if (signin && e.key === 'Escape') {
 				closeInput();
 			}
+			if (helpPop && e.key === 'Escape') {
+				setHelpPop(false);
+			}
 		},
-		[signin],
+		[signin, helpPop],
 	);
 	useEffect(() => {
 		nameRef.current?.focus();
@@ -133,8 +178,11 @@ export const App = () => {
 			document.removeEventListener('keydown', keyListener);
 		};
 	}, [keyListener]);
-	registerLogout(logout);
+
 	useEffect(() => {
+		registerLogout(logout);
+		registerLogin(() => createUser(true));
+		registerHelp(helpMenu);
 		SpeechRecognition.startListening({ continuous: true, interimResults: true });
 	}, []);
 
@@ -152,103 +200,157 @@ export const App = () => {
 					className='loading'
 				/>
 			) : (
-				<div className='App'>
-					{username ? (
-						<header>
-							<a
-								href='/'
-								style={{ color: 'currentcolor', textDecoration: 'none' }}>
-								List n' Learn
-							</a>
-							<Menu
-								menuButton={
-									<MenuButton className='button button-sm'>
-										{username}
-										<FontAwesomeIcon icon={faCaretDown} />
-									</MenuButton>
-								}
-								transition>
-								<MenuItem href={'/'}>View your sets</MenuItem>
-								<SubMenu label='Set Playback Speed'>
-									<MenuItem onClick={() => setSpeed(0.5)}>Half Speed</MenuItem>
-									<MenuItem onClick={() => setSpeed(1)}>Default Speed</MenuItem>
-									<MenuItem onClick={() => setSpeed(2)}>2x Speed</MenuItem>
-									<MenuItem onClick={() => setSpeed(3)}>3x Speed</MenuItem>
-								</SubMenu>
-								<MenuItem onClick={() => {setHelpPop(true); }}>Help</MenuItem>
-								<MenuItem onClick={logout}>Logout</MenuItem>
-							</Menu>
-						</header>
-					) : (
-						<h1>List n' Learn</h1>
-					)}
-					{username ? (
-						<main>
-							<RouterProvider router={router} />
-						</main>
-					) : (
-						<div className='buttons-row'>
-							<button
-								className='button'
-								onClick={createUser}>
-								Create Account
-							</button>
-							<button
-								className='button'
-								onClick={signIn}>
-								Log into Existing Account
-							</button>
-							<button
-								className='button'
-								onClick={helpMenu}>
-								Help
-							</button>
-						</div>
-					)}
-				</div>
-			)}
-			{signin ? (
-				<form onSubmit={setName} className="fullpage" onClick={closeInput}>
-					<div className="dialog" onClick={(e) => e.stopPropagation()}>
-					<div>
-						<input
-						title="Username"
-						placeholder="Username"
-						ref={nameRef}
-						/>
-						<button className="button" type={"submit"}>
-						<FontAwesomeIcon icon={faPaperPlane} />
+				<div className={`App ${anim ? '' : 'no-anim'}`}>
+				{username ? (
+					<header>
+						<a
+							href='/'
+							style={{ color: 'currentcolor', textDecoration: 'none' }}>
+							List n' Learn
+						</a>
+						<Menu
+							menuButton={
+								<MenuButton className='button button-sm'>
+									{username}
+									<FontAwesomeIcon icon={faCaretDown} />
+								</MenuButton>
+							}
+							transition>
+							<MenuItem href={'/'}>View your sets</MenuItem>
+							<SubMenu label='Set Playback Speed'>
+								<MenuItem onClick={() => setSpeed(0.5)}>Half Speed</MenuItem>
+								<MenuItem onClick={() => setSpeed(1)}>Default Speed</MenuItem>
+								<MenuItem onClick={() => setSpeed(2)}>2x Speed</MenuItem>
+								<MenuItem onClick={() => setSpeed(3)}>3x Speed</MenuItem>
+							</SubMenu>
+							<MenuItem onClick={() => setAnim(`${!anim}`)}>Animations {anim ? 'off' : 'on'}</MenuItem>
+							<MenuItem
+								onClick={() => {
+									setHelpPop(true);
+								}}>
+								Commands List
+							</MenuItem>
+							<MenuItem onClick={logout}>Logout</MenuItem>
+						</Menu>
+					</header>
+				) : (
+					<h1>List n' Learn</h1>
+				)}
+				{username ? (
+					<main>
+						<RouterProvider router={router} />
+					</main>
+				) : (
+					<div className='buttons-row'>
+						<button
+							className='button'
+							onClick={createUser}>
+							Create Account
+						</button>
+						<button
+							className='button'
+							onClick={signIn}>
+							Log into Existing Account
+						</button>
+						<button
+							className='button'
+							onClick={helpMenu}>
+							Help
 						</button>
 					</div>
-					<p className="error-msg">{error}</p>
+				)}
+				{signin ? (
+					<div className='fullpage bg' onClick={closeInput}>
+						<form onSubmit={setName}>
+							<div
+								className='dialog'
+								onClick={(e) => e.stopPropagation()}>
+								<div>
+									<input
+										title='Username'
+										placeholder='Username'
+										ref={nameRef}
+									/>
+									<button
+										className='button'
+										type={'submit'}>
+										<FontAwesomeIcon icon={faPaperPlane} />
+									</button>
+								</div>
+								<p className='error-msg'>{error}</p>
+							</div>
+							<button
+								className='close'
+								onClick={closeInput}>
+								<FontAwesomeIcon icon={faClose} />
+							</button>
+						</form>
 					</div>
-					<button className="close" onClick={closeInput}>
-					<FontAwesomeIcon icon={faClose} />
-					</button>
-				</form>
 				) : null}
 				{helpPop && (
-				<div
-					className="fullpage"
-					onClick={() => setHelpPop(false)} // Close menu when clicking outside
-				>
 					<div
-					className="dialog"
-					onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+						className='fullpage bg'
+						onClick={() => setHelpPop(false)} // Close menu when clicking outside
 					>
-					<h2>Help Menu (NEEDS TO BE CHANGED)</h2>
-					<p>Here are some tips to get started:</p>
-					<ul>
-						<li>To create an account, click "Create Account" and mark down the given username Create a set with the plus icon.</li>
-						<li>To log in, use your previously generated username.</li>
-						<li>Contact support if you lose your username.</li>
-						<li>ADD ALL VOICE COMMANDS INTO HELP MENU -Ethan</li>
-					</ul>
-					<button className="close" onClick={() => setHelpPop(false)}>
-					<FontAwesomeIcon icon={faClose} />
-					</button>
+						<div
+							className='dialog'
+							onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+						>
+							<section>
+								<h2 style={{marginTop: '0'}}>Commands List</h2>
+								<p>Here are some tips to get started with voice commands:</p>
+								<h3>On the Study Page:</h3>
+								<ul>
+									<li>Say "Next card" or "Previous card" to navigate through flashcards.</li>
+									<li>Say "Flip" to toggle between the term and definition on a card.</li>
+									<li>Say "Restart" to begin the set from the start.</li>
+									<li>Say "Repeat" to hear the current card's text again.</li>
+									<li>Say "Stop" to end audio playback.</li>
+									<li>Say "Start Audio" to start audio playback functionality.</li>
+									<li>Say "Study favorites" or "Study all" to focus on favorited or all cards.</li>
+								</ul>
+								<h3>On the Edit Page:</h3>
+								<ul>
+									<li>Say "Add card" to create a new flashcard.</li>
+									<li>"Edit definition [new definition]" to modify a card.</li>
+									<li>Say "Edit Title"</li>
+									edit description
+									save set
+									cancel
+									define
+									list cards
+									add favorite remove favorite
+								</ul>
+								<h3>On the View Page:</h3>
+								<ul>
+									
+									<li>Say "List cards" to hear all card titles in the set.</li>
+									<li>Say "Define [term]" to hear the definition of a term.</li>
+									<li>Say "Study set" to navigate to the set view.</li>
+									<li>Say "Edit set" to navigate to the set editor.</li>
+								</ul>
+
+								on home
+
+								view set
+								Edit set
+								study set
+								list set
+
+								delete set 
+
+								+ all dropdown commands
+							</section>
+							<button
+								className='close'
+								onClick={() => setHelpPop(false)}>
+								<FontAwesomeIcon icon={faClose} />
+							</button>
+						</div>
 					</div>
-				</div>
 				)}
-			</>
-			)};
+				</div>
+			)}
+		</>
+	);
+};
