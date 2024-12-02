@@ -164,6 +164,38 @@ export const Home = () => {
 		await speakPhrase(`This set does not exist`);
 	};
 
+	const pickViewSet = async (title) => {
+		for (let i = 0; i < sets.length; i++){
+			if(title == sets[i].title){
+				navigate(`/view?id=${sets[i]._id}`);
+				return;
+			}
+		}
+		console.log('The set you named does not exist.');
+		await speakPhrase('The set you named does not exist.');
+	}
+	const pickStudySet = async (title) => {
+		for (let i = 0; i < sets.length; i++){
+			if(title == sets[i].title){
+				navigate(`/study?id=${sets[i]._id}`);
+				return;
+			}
+		}
+		console.log('The set you named does not exist.');
+		await speakPhrase('The set you named does not exist.');
+	}
+
+	const pickEditSet = async (title) => {
+		for (let i = 0; i < sets.length; i++){
+			if(title == sets[i].title){
+				navigate(`/edit?id=${sets[i]._id}`);
+				return;
+			}
+		}
+		console.log('The set you named does not exist.');
+		await speakPhrase('The set you named does not exist.');
+	}
+
 	const commands = [
 		{
 			command: 'New set',
@@ -177,6 +209,19 @@ export const Home = () => {
 			command: 'Delete set *',
 			callback: deleteSetByTitle,
 		},
+		{
+			command: 'View *',
+			callback: pickViewSet,
+		},
+		{
+			command: 'Study *',
+			callback: pickStudySet,
+		},
+		{
+			command: 'Edit *',
+			callback: pickEditSet,
+		}
+		
 	];
 	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });
