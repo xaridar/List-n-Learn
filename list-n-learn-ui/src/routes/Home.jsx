@@ -1,3 +1,32 @@
+/*
+  This file defines the `Home` component, the dashboard for managing flashcard sets in the "List n' Learn" app.
+
+  **Core Features**:
+  - **Set Management**:
+    - Fetches user sets from the backend using their username on component mount.
+    - Allows creating new sets (`newSet`) and deleting sets by ID (`deleteSet`) or title (`deleteSetByTitle`).
+    - Handles deletion with both text and voice-based confirmation.
+
+  - **Voice Commands**:
+    - Integrates `react-speech-recognition` for commands like:
+      - "New set" to create a set.
+      - "Delete set [title]" to remove a set by name.
+
+  - **UI and Feedback**:
+    - Displays sets using the `SetPreview` component.
+    - Includes a button for adding new sets, styled with a plus icon.
+    - Shows loading indicators (`ReactLoading`) during data fetch.
+    - Uses `react-hot-toast` for notifications on CRUD actions.
+
+  - **Error Handling**:
+    - Provides user feedback for operation successes or failures.
+    - Gracefully manages fetch errors during API calls.
+
+  **Technologies**:
+  - React for state and effects.
+  - `react-router-dom` for navigation.
+  - Speech and voice interactivity via `react-speech-recognition`.
+*/
 import React, { useState, useEffect } from 'react';
 import ReactLoading from 'react-loading';
 import { useNavigate } from 'react-router-dom';
@@ -6,12 +35,13 @@ import toast from 'react-hot-toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { defCommands, speakPhrase } from '../util';
+import { defCommands, speakPhrase, useAnim } from '../util';
 
 export const Home = () => {
 	const [sets, setSets] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
+	const [anim, setAnim] = useAnim();
 
 	useEffect(() => {
 		setSets([]);
@@ -49,7 +79,7 @@ export const Home = () => {
 					decided = true;
 					return;
 				}
-				response = speakPhrase(
+				response = await speakPhrase(
 					"Sorry, I didn't get that. Are you sure you want to delete this set?",
 					true,
 					SpeechRecognition.getRecognition(),
@@ -69,9 +99,11 @@ export const Home = () => {
 
 			if (json.success) {
 				toast.success('Set deleted successfully');
+				if (audio) await speakPhrase('Set deleted successfully.');
 				setSets((prevSets) => prevSets.filter((set) => set._id !== setId)); // Remove set from state
 			} else {
 				toast.error('Failed to delete set');
+				if (audio) await speakPhrase('Failed to delete set.');
 			}
 		} catch (error) {
 			console.error('Error deleting set:', error);
@@ -79,6 +111,7 @@ export const Home = () => {
 		}
 	};
 
+	// Creates empty set for user to edit to emmulate creating a new set
 	const newSet = async (audio = false) => {
 		try {
 			const response = await fetch('/set', {
@@ -93,6 +126,7 @@ export const Home = () => {
 			});
 
 			const json = await response.json();
+			// Retrieve set id from db to create link for redirecting for set editing
 			const setID = json.id;
 
 			if (json.success) {
@@ -107,18 +141,28 @@ export const Home = () => {
 			console.error('Error creating set:', error);
 			toast.error('Failed to create set');
 		}
+	};	
+
+	const listSets = async () => {
+		await speakPhrase('The sets you\'ve made are:');
+		let phrase = '';
+		for (let i = 0; i < sets.length; i++) {
+			if (i !== 0) phrase += '; ';
+			if (i === sets.length - 1) phrase += 'and ';
+			phrase += sets[i].title;
+		}
+		await speakPhrase(phrase);
 	};
 
 	const deleteSetByTitle = async (title) => {
-		for (const set of sets)
-		{
-			if (set.title === title)
-			{
-				deleteSet(set._id);
+		for (const set of sets) {
+			if (set.title.trim().toLowerCase() === title.trim().toLowerCase()) {
+				await deleteSet(set._id, true);
+				return;
 			}
 		}
 		await speakPhrase(`This set does not exist`);
-	}
+	};
 
 	const pickViewSet = async  () => {
 		console.log('Which set would you like to access?');
@@ -166,6 +210,10 @@ export const Home = () => {
 			callback: () => newSet(true),
 		},
 		{
+			command: 'List sets',
+			callback: listSets
+		},
+		{
 			command: 'Delete set *',
 			callback: deleteSetByTitle,
 		},
@@ -183,7 +231,7 @@ export const Home = () => {
 		}
 		
 	];
-	commands.push(...defCommands(navigate));
+	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });
 
 	return (

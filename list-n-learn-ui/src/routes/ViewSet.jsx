@@ -1,8 +1,14 @@
+// Project name: List n' Learn
+// Description: Accessible flashcards with TTS and SST to enable hands-free studying
+// Filename: ViewSet.jsx
+// Description: Retreives a users' flashcard sets for viewing of individual cards
+// Last modified on: 11/25/24
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FullFlashcard } from '../components/FullFlashcard';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { defCommands, speakPhrase } from '../util';
+import { useSpeechRecognition } from 'react-speech-recognition';
+import { defCommands, getCard, speakPhrase, useAnim } from '../util';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faPen } from '@fortawesome/free-solid-svg-icons';
 
@@ -10,13 +16,15 @@ export const ViewSet = () => {
 	const [searchParams] = useSearchParams();
 	const setID = searchParams.get('id');
 	const navigate = useNavigate();
+	const [anim, setAnim] = useAnim();
 	useEffect(() => {
 		if (!setID) {
 			navigate('/');
 			return;
 		}
+		// Retrieves set from db and stores info in setInfo and cards in setCards
+		// Returns to home if setID does not exist
 		const getSet = () => {
-			console.log(setID);
 			fetch(`/set?id=${setID}`)
 				.then((res) => res.json())
 				.then((res) => {
@@ -58,6 +66,15 @@ export const ViewSet = () => {
 		await speakPhrase(phrase);
 	};
 
+	const getDef = async (term) => {
+		const card = getCard(cards, term);
+		if (card === -1) {
+			await speakPhrase(`That is an invalid term`);
+		} else {
+			await speakPhrase(`The current definition of ${term} is ${card.definition}`);
+		}
+	};
+
 	const commands = [
 		{
 			command: 'Study set',
@@ -76,9 +93,13 @@ export const ViewSet = () => {
 			command: 'List cards',
 			callback: listCards,
 		},
+		{
+			command: 'Define *',
+			callback: getDef,
+		},
 	];
-	commands.push(...defCommands(navigate));
-	const { transcript } = useSpeechRecognition({ commands });
+	commands.push(...defCommands(navigate, setAnim));
+	useSpeechRecognition({ commands });
 
 	return (
 		<div className='view-set'>
@@ -109,7 +130,6 @@ export const ViewSet = () => {
 					favorite={c.favorite}
 					key={c._id}></FullFlashcard>
 			))}
-			{transcript}
 		</div>
 	);
 };
