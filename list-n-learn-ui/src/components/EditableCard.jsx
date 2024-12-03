@@ -19,7 +19,7 @@
   - `onRemove`: Function to handle card deletion.
   - `index`: Card's position in the list.
 */
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Reorder, useDragControls } from 'framer-motion';
 import { FullFlashcard } from './FullFlashcard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

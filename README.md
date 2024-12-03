@@ -5,22 +5,24 @@ List n' Learn is a web-based flashcard studying tool, built with text-to-speech 
 ## Development
 
 To start developing:
-- Ensure npm is installed in the system
-- Use `$ npm install` to install all necessary project dependencies
 
-- *Set Environment Variables*
-  - In the root directory, copy `.env.example` into a `.env` file
-    - Set MONGODB_PASS to the provided password
-- *Start the Server*
-  - In the root directory, call `$ npm start` to start the server
-- *Start the Client*
-  - Navigate to `list-n-learn-ui/package.json`
-  - Update the `proxy` field to match the URL output by the server
-  - Use `$ npm install` to install all necessary project dependencies for the frontend
-  - Still in the UI directory, use `$ npm start` to start the development client.
-    - The front-end application has been started at http://localhost:3000
+-   Ensure npm is installed in the system
+-   Use `$ npm install` to install all necessary project dependencies
 
-- Both the server and client are built with hot-reload functionality, so neither has to be restarted on file changes; rather, this is done automatically.
+-   _Set Environment Variables_
+    -   In the root directory, copy `.env.example` into a `.env` file
+        -   Set MONGODB_PASS to the provided password
+-   _Start the Server_
+    -   In the root directory, call `$ npm start` to start the server
+-   _Start the Client_
+
+    -   Navigate to `list-n-learn-ui/package.json`
+    -   Update the `proxy` field to match the URL output by the server
+    -   Use `$ npm install` to install all necessary project dependencies for the frontend
+    -   Still in the UI directory, use `$ npm start` to start the development client.
+        -   The front-end application has been started at http://localhost:3000
+
+-   Both the server and client are built with hot-reload functionality, so neither has to be restarted on file changes; rather, this is done automatically.
 
 ## Description
 

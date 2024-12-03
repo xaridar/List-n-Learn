@@ -5,16 +5,7 @@
 // Express.js is used for API integration
 const express = require('express');
 const cors = require('cors');
-const {
-	connect,
-	getUser,
-	getSetsByUser,
-	createUser,
-	getSet,
-	updateSet,
-	newSet,
-	deleteSet,
-} = require('./db');
+const { connect, getUser, getSetsByUser, createUser, getSet, updateSet, newSet, deleteSet } = require('./db');
 
 const app = express();
 

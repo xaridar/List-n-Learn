@@ -136,7 +136,6 @@ export const EditSet = () => {
 			description,
 			toDel,
 		};
-		console.log(updatedSet);
 
 		try {
 			const response = await fetch('/set', {
@@ -224,26 +223,27 @@ export const EditSet = () => {
 			_id: 'newCard' + cards.length,
 		};
 
-		if (audio){
-			const speechTerm = await speakPhrase('What would you like the term to be?',
-			true,
-			SpeechRecognition.getRecognition());
+		if (audio) {
+			const speechTerm = await speakPhrase(
+				'What would you like the term to be?',
+				true,
+				SpeechRecognition.getRecognition(),
+			);
 
 			card.term = speechTerm.trim();
 
-			const speechDefinition = await speakPhrase('What would you like the definition to be?',
-			true,
-			SpeechRecognition.getRecognition());
+			const speechDefinition = await speakPhrase(
+				'What would you like the definition to be?',
+				true,
+				SpeechRecognition.getRecognition(),
+			);
 
 			card.definition = speechDefinition.trim();
 
-			//console.log(speechTerm);
-			//console.log(speechDefinition);
-
-			await speakPhrase(`You have added a card with term ${speechTerm}`)
+			await speakPhrase(`You have added a card with term ${speechTerm}`);
 		}
-		setCards(cards => [...cards, card]);
-	};	
+		setCards((cards) => [...cards, card]);
+	};
 
 	const listCards = async () => {
 		await speakPhrase('The terms in this set are:');
@@ -338,15 +338,14 @@ export const EditSet = () => {
 			callback: (term) => {
 				for (let i = 0; i < cards.length; i++) {
 					const card = cards[i];
-					console.log(term);
 					if (card.term.trim().toLowerCase() === term.trim().toLowerCase()) {
 						removeCard(i, card._id, true);
 						return;
 					}
 				}
-				speakPhrase(`That term doesn't exist!`);	
-			}
-		}	  
+				speakPhrase(`That term doesn't exist!`);
+			},
+		},
 	];
 	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });

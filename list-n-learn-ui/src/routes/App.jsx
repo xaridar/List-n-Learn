@@ -72,7 +72,6 @@ const router = createBrowserRouter([
 ]);
 
 export const App = () => {
-
 	const [username, setUsername] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [signin, setSignin] = useState(false);
@@ -96,37 +95,40 @@ export const App = () => {
 		};
 		fetchUser();
 	}, []);
-	const createUser = async (audio = false) => {
-		if (username != null) return;
-		setLoading(true);
-		let uniqueUsername = false;
-		let un;
-		while (!uniqueUsername) {
-			// Extremely low chance of collisions (random selection of approx. 5.4B options)
-			un = generateUsername('', 2);
-			const res = await fetch('/user', {
-				method: 'POST',
-				body: JSON.stringify({ username: un }),
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-			});
-			const json = await res.json();
-			if (json.success) uniqueUsername = true;
-		}
-		if (audio) speakPhrase(`Your username is: ${un}.`);
-		toast(
-			'Make sure to keep track of your username! This is necessary to login from another device, and cannot be changed.',
-		);
-		setUsername(un);
-	};
+	const createUser = useCallback(
+		async (audio = false) => {
+			if (username != null) return;
+			setLoading(true);
+			let uniqueUsername = false;
+			let un;
+			while (!uniqueUsername) {
+				// Extremely low chance of collisions (random selection of approx. 5.4B options)
+				un = generateUsername('', 2);
+				const res = await fetch('/user', {
+					method: 'POST',
+					body: JSON.stringify({ username: un }),
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+				});
+				const json = await res.json();
+				if (json.success) uniqueUsername = true;
+			}
+			if (audio) speakPhrase(`Your username is: ${un}.`);
+			toast(
+				'Make sure to keep track of your username! This is necessary to login from another device, and cannot be changed.',
+			);
+			setUsername(un);
+		},
+		[username],
+	);
 
 	const [helpPop, setHelpPop] = useState(false);
-	const helpMenu = () => {
+	const helpMenu = useCallback(() => {
 		setHelpPop(!helpPop);
 		setNewUser('false');
-	};
+	}, [helpPop, setNewUser]);
 
 	const signIn = () => {
 		setSignin(true);
@@ -163,7 +165,7 @@ export const App = () => {
 				setNewUser('false');
 			}
 		},
-		[signin, helpPop],
+		[signin, helpPop, setNewUser],
 	);
 	useEffect(() => {
 		nameRef.current?.focus();
@@ -188,7 +190,7 @@ export const App = () => {
 		registerLogin(() => createUser(true));
 		registerHelp(helpMenu);
 		SpeechRecognition.startListening({ continuous: true, interimResults: true });
-	}, []);
+	}, [createUser, helpMenu]);
 
 	useEffect(() => {
 		if (newUser === 'true') setHelpPop(true);
@@ -209,153 +211,159 @@ export const App = () => {
 				/>
 			) : (
 				<div className={`App ${anim ? '' : 'no-anim'}`}>
-				{username ? (
-					<header>
-						<a
-							href='/'
-							style={{ color: 'currentcolor', textDecoration: 'none' }}>
-							List n' Learn
-						</a>
-						<Menu
-							menuButton={
-								<MenuButton className='button button-sm'>
-									{username}
-									<FontAwesomeIcon icon={faCaretDown} />
-								</MenuButton>
-							}
-							transition>
-							<MenuItem href={'/'}>View your sets</MenuItem>
-							<SubMenu label='Set Playback Speed'>
-								<MenuItem onClick={() => setSpeed(0.5)}>Half Speed</MenuItem>
-								<MenuItem onClick={() => setSpeed(1)}>Default Speed</MenuItem>
-								<MenuItem onClick={() => setSpeed(2)}>2x Speed</MenuItem>
-								<MenuItem onClick={() => setSpeed(3)}>3x Speed</MenuItem>
-							</SubMenu>
-							<MenuItem onClick={() => setAnim(`${!anim}`)}>Animations {anim ? 'off' : 'on'}</MenuItem>
-							<MenuItem
-								onClick={() => {
-									setHelpPop(true);
-								}}>
-								Commands List
-							</MenuItem>
-							<MenuItem onClick={logout}>Logout</MenuItem>
-						</Menu>
-					</header>
-				) : (
-					<h1>List n' Learn</h1>
-				)}
-				{username ? (
-					<main>
-						<RouterProvider router={router} />
-					</main>
-				) : (
-					<div className='buttons-row'>
-						<button
-							className='button'
-							onClick={createUser}>
-							Create Account
-						</button>
-						<button
-							className='button'
-							onClick={signIn}>
-							Log into Existing Account
-						</button>
-						<button
-							className='button'
-							onClick={helpMenu}>
-							Help
-						</button>
-					</div>
-				)}
-				{signin ? (
-					<div className='fullpage bg' onClick={closeInput}>
-						<form onSubmit={setName}>
-							<div
-								className='dialog'
-								onClick={(e) => e.stopPropagation()}>
-								<div>
-									<input
-										title='Username'
-										placeholder='Username'
-										ref={nameRef}
-									/>
-									<button
-										className='button'
-										type={'submit'}>
-										<FontAwesomeIcon icon={faPaperPlane} />
-									</button>
-								</div>
-								<p className='error-msg'>{error}</p>
-							</div>
+					{username ? (
+						<header>
+							<a
+								href='/'
+								style={{ color: 'currentcolor', textDecoration: 'none' }}>
+								List n' Learn
+							</a>
+							<Menu
+								menuButton={
+									<MenuButton className='button button-sm'>
+										{username}
+										<FontAwesomeIcon icon={faCaretDown} />
+									</MenuButton>
+								}
+								transition>
+								<MenuItem href={'/'}>View your sets</MenuItem>
+								<SubMenu label='Set Playback Speed'>
+									<MenuItem onClick={() => setSpeed(0.5)}>Half Speed</MenuItem>
+									<MenuItem onClick={() => setSpeed(1)}>Default Speed</MenuItem>
+									<MenuItem onClick={() => setSpeed(2)}>2x Speed</MenuItem>
+									<MenuItem onClick={() => setSpeed(3)}>3x Speed</MenuItem>
+								</SubMenu>
+								<MenuItem onClick={() => setAnim(`${!anim}`)}>
+									Animations {anim ? 'off' : 'on'}
+								</MenuItem>
+								<MenuItem
+									onClick={() => {
+										setHelpPop(true);
+									}}>
+									Commands List
+								</MenuItem>
+								<MenuItem onClick={logout}>Logout</MenuItem>
+							</Menu>
+						</header>
+					) : (
+						<h1>List n' Learn</h1>
+					)}
+					{username ? (
+						<main>
+							<RouterProvider router={router} />
+						</main>
+					) : (
+						<div className='buttons-row'>
 							<button
-								className='close'
-								onClick={closeInput}>
-								<FontAwesomeIcon icon={faClose} />
+								className='button'
+								onClick={createUser}>
+								Create Account
 							</button>
-						</form>
-					</div>
-				) : null}
-				{helpPop && (
-					<div
-						className='fullpage bg'
-						onClick={() => setHelpPop(false)} // Close menu when clicking outside
-					>
-						<div
-							className='dialog'
-							onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-						>
-							<section>
-								<h2 style={{marginTop: '0'}}>Commands List</h2>
-								<p>Here are some tips to get started with voice commands:</p>
-								<h3>On the Study Page:</h3>
-								<ul>
-									<li>Say "Next card" or "Previous card" to navigate through flashcards.</li>
-									<li>Say "Flip" to toggle between the term and definition on a card.</li>
-									<li>Say "Restart" to begin the set from the start.</li>
-									<li>Say "Repeat" to hear the current card's text again.</li>
-									<li>Say "Stop" to end audio playback.</li>
-									<li>Say "Start Audio" to start audio playback functionality.</li>
-									<li>Say "Study favorites" or "Study all" to focus on favorited or all cards.</li>
-								</ul>
-								<h3>On the Edit Page:</h3>
-								<ul>
-									<li>Say "Add card" to create a new flashcard.</li>
-									<li>Say "Edit definition [new definition]" to modify a card.</li>
-									<li>Say "Edit Title"</li>
-									<li>Say "Edit Description"</li>
-									<li>Say "Save Set" to save changes</li>
-									<li>Say "Cancel" to cancel changes</li>
-									<li>Say "Define (Term)" to define a card</li>
-									<li>Say "List Cards" to list all current cards in the set</li>
-									<li>Say "Add / Remove favorite" to toggle the favorited funciton</li>
-								</ul>
-								<h3>On the View Page:</h3>
-								<ul>
-									<li>Say "List cards" to hear all card titles in the set.</li>
-									<li>Say "Define [term]" to hear the definition of a term.</li>
-									<li>Say "Study set" to navigate to the set view.</li>
-									<li>Say "Edit set" to navigate to the set editor.</li>
-								</ul>
-								<h3>On the Home Page:</h3>
-								<ul>
-									<li>Say "View (set)" to view a set</li>
-									<li>Say "Edit (set)" to edit a set</li>
-									<li>Say "Study (set)" to study a set</li>
-									<li>Say "List (set)" to list a set</li>
-									<li>Say "Delete (set)" to delete a set</li>
-								</ul>
-							</section>
 							<button
-								className='close'
-								onClick={() => {
-									setHelpPop(false);
-									setNewUser('false');
-								}}>
-								<FontAwesomeIcon icon={faClose} />
+								className='button'
+								onClick={signIn}>
+								Log into Existing Account
+							</button>
+							<button
+								className='button'
+								onClick={helpMenu}>
+								Help
 							</button>
 						</div>
-					</div>
-				)}
+					)}
+					{signin ? (
+						<div
+							className='fullpage bg'
+							onClick={closeInput}>
+							<form onSubmit={setName}>
+								<div
+									className='dialog'
+									onClick={(e) => e.stopPropagation()}>
+									<div>
+										<input
+											title='Username'
+											placeholder='Username'
+											ref={nameRef}
+										/>
+										<button
+											className='button'
+											type={'submit'}>
+											<FontAwesomeIcon icon={faPaperPlane} />
+										</button>
+									</div>
+									<p className='error-msg'>{error}</p>
+								</div>
+								<button
+									className='close'
+									onClick={closeInput}>
+									<FontAwesomeIcon icon={faClose} />
+								</button>
+							</form>
+						</div>
+					) : null}
+					{helpPop && (
+						<div
+							className='fullpage bg'
+							onClick={() => setHelpPop(false)} // Close menu when clicking outside
+						>
+							<div
+								className='dialog'
+								onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+							>
+								<section>
+									<h2 style={{ marginTop: '0' }}>Commands List</h2>
+									<p>Here are some tips to get started with voice commands:</p>
+									<h3>On the Study Page:</h3>
+									<ul>
+										<li>Say "Next card" or "Previous card" to navigate through flashcards.</li>
+										<li>Say "Flip" to toggle between the term and definition on a card.</li>
+										<li>Say "Restart" to begin the set from the start.</li>
+										<li>Say "Repeat" to hear the current card's text again.</li>
+										<li>Say "Stop" to end audio playback.</li>
+										<li>Say "Start Audio" to start audio playback functionality.</li>
+										<li>
+											Say "Study favorites" or "Study all" to focus on favorited or all cards.
+										</li>
+									</ul>
+									<h3>On the Edit Page:</h3>
+									<ul>
+										<li>Say "Add card" to create a new flashcard.</li>
+										<li>Say "Edit definition [new definition]" to modify a card.</li>
+										<li>Say "Edit Title"</li>
+										<li>Say "Edit Description"</li>
+										<li>Say "Save Set" to save changes</li>
+										<li>Say "Cancel" to cancel changes</li>
+										<li>Say "Define (Term)" to define a card</li>
+										<li>Say "List Cards" to list all current cards in the set</li>
+										<li>Say "Add / Remove favorite" to toggle the favorited funciton</li>
+									</ul>
+									<h3>On the View Page:</h3>
+									<ul>
+										<li>Say "List cards" to hear all card titles in the set.</li>
+										<li>Say "Define [term]" to hear the definition of a term.</li>
+										<li>Say "Study set" to navigate to the set view.</li>
+										<li>Say "Edit set" to navigate to the set editor.</li>
+									</ul>
+									<h3>On the Home Page:</h3>
+									<ul>
+										<li>Say "View (set)" to view a set</li>
+										<li>Say "Edit (set)" to edit a set</li>
+										<li>Say "Study (set)" to study a set</li>
+										<li>Say "List (set)" to list a set</li>
+										<li>Say "Delete (set)" to delete a set</li>
+									</ul>
+								</section>
+								<button
+									className='close'
+									onClick={() => {
+										setHelpPop(false);
+										setNewUser('false');
+									}}>
+									<FontAwesomeIcon icon={faClose} />
+								</button>
+							</div>
+						</div>
+					)}
 				</div>
 			)}
 		</>

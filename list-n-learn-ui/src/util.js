@@ -104,15 +104,15 @@ export const defCommands = (navigate, setAnim) => [
 	},
 	{
 		command: 'Help',
-		callback: helpFn
+		callback: helpFn,
 	},
 	{
 		command: 'Login',
-		callback: loginFn
+		callback: loginFn,
 	},
 	{
 		command: 'Log in',
-		callback: loginFn
+		callback: loginFn,
 	},
 	{
 		command: 'Log out',
