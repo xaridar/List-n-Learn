@@ -141,10 +141,10 @@ export const Home = () => {
 			console.error('Error creating set:', error);
 			toast.error('Failed to create set');
 		}
-	};	
+	};
 
 	const listSets = async () => {
-		await speakPhrase('The sets you\'ve made are:');
+		await speakPhrase("The sets you've made are:");
 		let phrase = '';
 		for (let i = 0; i < sets.length; i++) {
 			if (i !== 0) phrase += '; ';
@@ -165,36 +165,36 @@ export const Home = () => {
 	};
 
 	const pickViewSet = async (title) => {
-		for (let i = 0; i < sets.length; i++){
-			if(title == sets[i].title){
+		for (let i = 0; i < sets.length; i++) {
+			if (title.trim().toLowerCase() === sets[i].title.trim().toLowerCase()) {
 				navigate(`/view?id=${sets[i]._id}`);
 				return;
 			}
 		}
-		console.log('The set you named does not exist.');
+		toast.error('The set you named does not exist.');
 		await speakPhrase('The set you named does not exist.');
-	}
+	};
 	const pickStudySet = async (title) => {
-		for (let i = 0; i < sets.length; i++){
-			if(title == sets[i].title){
+		for (let i = 0; i < sets.length; i++) {
+			if (title.trim().toLowerCase() === sets[i].title.trim().toLowerCase()) {
 				navigate(`/study?id=${sets[i]._id}`);
 				return;
 			}
 		}
-		console.log('The set you named does not exist.');
+		toast.error('The set you named does not exist.');
 		await speakPhrase('The set you named does not exist.');
-	}
+	};
 
 	const pickEditSet = async (title) => {
-		for (let i = 0; i < sets.length; i++){
-			if(title == sets[i].title){
+		for (let i = 0; i < sets.length; i++) {
+			if (title.trim().toLowerCase() === sets[i].title.trim().toLowerCase()) {
 				navigate(`/edit?id=${sets[i]._id}`);
 				return;
 			}
 		}
-		console.log('The set you named does not exist.');
+		toast.error('The set you named does not exist.');
 		await speakPhrase('The set you named does not exist.');
-	}
+	};
 
 	const commands = [
 		{
@@ -203,7 +203,7 @@ export const Home = () => {
 		},
 		{
 			command: 'List sets',
-			callback: listSets
+			callback: listSets,
 		},
 		{
 			command: 'Delete set *',
@@ -220,8 +220,7 @@ export const Home = () => {
 		{
 			command: 'Edit *',
 			callback: pickEditSet,
-		}
-		
+		},
 	];
 	commands.push(...defCommands(navigate, setAnim));
 	useSpeechRecognition({ commands });

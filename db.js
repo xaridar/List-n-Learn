@@ -82,7 +82,7 @@ const createUser = async (username) => {
  */
 const updateSet = async (title, description, cards, id, toDel) => {
 	// Set cannot be saved if any cards are unfinished
-	if (cards.some(c => (c.term === '') != (c.definition === ''))) return false;
+	if (cards.some((c) => (c.term === '') != (c.definition === ''))) return false;
 
 	// All cards in cards are resolved (updated, created, deleted) before proceeding
 	await Promise.all(
@@ -138,6 +138,18 @@ const updateSet = async (title, description, cards, id, toDel) => {
 const newSet = async (username) => {
 	const set = new Set({ user: username });
 	return await set.save();
+};
+
+/**
+ * Creates a new card in the database
+ * @param {string} term the term to be used for the card
+ * @param {string} definition the definition to be used for the card
+ * @param {boolean} favorite whether this card is favorited in its set
+ * @returns {Card} the saved card
+ */
+const newCard = async (term, definition, favorite) => {
+	const card = new Card({ term: term, definition: definition, favorite: favorite });
+	return await card.save();
 };
 
 module.exports = {
