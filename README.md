@@ -6,7 +6,7 @@ List n' Learn is a web-based flashcard studying tool, built with text-to-speech 
 
 To start developing:
 
--   Ensure npm is installed in the system
+-   Ensure [node.js](https://nodejs.org/en) is installed in the system
 -   Use `$ npm install` to install all necessary project dependencies
 
 -   _Set Environment Variables_
