@@ -10,7 +10,7 @@ To start developing:
 -   Use `$ npm install` to install all necessary project dependencies
 
 -   _Set Environment Variables_
-    -   In the root directory, copy `.env.example` into a `.env` file
+    -   In the root directory, rename `.env.example` to `.env`.
         -   Set MONGODB_PASS to the provided password
 -   _Start the Server_
     -   In the root directory, call `$ npm start` to start the server
