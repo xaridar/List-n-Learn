@@ -314,7 +314,7 @@ export const EditSet = () => {
 			callback: () => navigate(`/view?id=${setID}`),
 		},
 		{
-			command: 'Edit *',
+			command: 'Edit definition *',
 			callback: editDef,
 		},
 		{
