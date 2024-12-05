@@ -313,44 +313,55 @@ export const App = () => {
 								<section>
 									<h2 style={{ marginTop: '0' }}>Commands List</h2>
 									<p>Here are some tips to get started with voice commands:</p>
+									<h3>On any page:</h3>
+									<ul>
+										<li>Say "Home" to navigate to the home page</li>
+										<li>Say "Log out" to log out</li>
+										<li>Say "Half speed" to set audio speed to 0.5x</li>
+										<li>Say "Default speed" to set audio speed to default</li>
+										<li>Say "Double speed" to set audio speed to 2x</li>
+										<li>Say "Triple speed" to set audio speed to 3x</li>
+										<li>Say "Animations [on/off]" to toggle animations</li>
+										<li>Say "Help" to toggle this menu</li>
+									</ul>
+									<h3>On the Home Page:</h3>
+									<ul>
+										<li>Say "View [set]" to view a set</li>
+										<li>Say "Edit [set]" to edit a set</li>
+										<li>Say "Study [set]" to study a set</li>
+										<li>Say "List [set]" to list a set</li>
+										<li>Say "Delete set [set]" to delete a set</li>
+									</ul>
 									<h3>On the Study Page:</h3>
 									<ul>
-										<li>Say "Next card" or "Previous card" to navigate through flashcards.</li>
-										<li>Say "Flip" to toggle between the term and definition on a card.</li>
-										<li>Say "Restart" to begin the set from the start.</li>
-										<li>Say "Repeat" to hear the current card's text again.</li>
-										<li>Say "Stop" to end audio playback.</li>
-										<li>Say "Start Audio" to start audio playback functionality.</li>
+										<li>Say "Next card" or "Previous card" to navigate through flashcards</li>
+										<li>Say "Flip" to toggle between the term and definition on a card</li>
+										<li>Say "Restart" to begin the set from the start</li>
+										<li>Say "Repeat" to hear the current card's text again</li>
+										<li>Say "Stop" to end audio playback</li>
+										<li>Say "Start Voice" to start audio playback functionality</li>
 										<li>
-											Say "Study favorites" or "Study all" to focus on favorited or all cards.
+											Say "Study favorites" or "Study all" to focus on favorited or all cards
 										</li>
 									</ul>
 									<h3>On the Edit Page:</h3>
 									<ul>
-										<li>Say "Add card" to create a new flashcard.</li>
-										<li>Say "Edit definition [new definition]" to modify a card.</li>
-										<li>Say "Edit Title"</li>
-										<li>Say "Edit Description"</li>
-										<li>Say "Save Set" to save changes</li>
+										<li>Say "Add card" to create a new flashcard</li>
+										<li>Say "Edit definition [new definition]" to modify a card</li>
+										<li>Say "Edit title"</li>
+										<li>Say "Edit description"</li>
+										<li>Say "Save set" to save changes</li>
 										<li>Say "Cancel" to cancel changes</li>
-										<li>Say "Define (Term)" to define a card</li>
-										<li>Say "List Cards" to list all current cards in the set</li>
-										<li>Say "Add / Remove favorite" to toggle the favorited funciton</li>
+										<li>Say "Define [term]" to define a card</li>
+										<li>Say "List cards" to list all current cards in the set</li>
+										<li>Say "[Add/Remove] favorite" to toggle the favorited function</li>
 									</ul>
 									<h3>On the View Page:</h3>
 									<ul>
-										<li>Say "List cards" to hear all card titles in the set.</li>
-										<li>Say "Define [term]" to hear the definition of a term.</li>
-										<li>Say "Study set" to navigate to the set view.</li>
-										<li>Say "Edit set" to navigate to the set editor.</li>
-									</ul>
-									<h3>On the Home Page:</h3>
-									<ul>
-										<li>Say "View (set)" to view a set</li>
-										<li>Say "Edit (set)" to edit a set</li>
-										<li>Say "Study (set)" to study a set</li>
-										<li>Say "List (set)" to list a set</li>
-										<li>Say "Delete (set)" to delete a set</li>
+										<li>Say "List cards" to hear all card titles in the set</li>
+										<li>Say "Define [term]" to hear the definition of a term</li>
+										<li>Say "Study set" to navigate to the set view</li>
+										<li>Say "Edit set" to navigate to the set editor</li>
 									</ul>
 								</section>
 								<button
